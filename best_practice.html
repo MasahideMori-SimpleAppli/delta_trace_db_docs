@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Best Practices &#8212; DeltaTraceDB Docs 0.0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="_static/documentation_options.js?v=d45e8c67"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Handling Date and Time Safely" href="best_practices/datetime.html" />
+    <link rel="prev" title="Server-Side Coding" href="server.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="best-practices">
+<h1>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">¶</a></h1>
+<p>This section provides recommended patterns and practical guidance for using
+DeltaTraceDB safely and effectively in real applications.</p>
+<p>While the core usage of the database is intentionally simple, certain design
+choices — such as <em>how to store datetimes</em> or <em>how to serialize state</em> — can
+have long-term impact on maintainability and data consistency.</p>
+<p>The topics in this section focus on common pitfalls and production-oriented
+guidelines that help avoid data inconsistency, unexpected behavior, or
+performance issues.</p>
+<section id="handle-dates-and-times-appropriately">
+<h2>Handle dates and times appropriately<a class="headerlink" href="#handle-dates-and-times-appropriately" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Working with Date and Time</strong>:
+Understanding the differences between timezone-aware and local datetimes,
+preventing invalid comparisons, and recommended strategies for consistency.</p></li>
+</ul>
+</section>
+<section id="persisting-data">
+<h2>Persisting Data<a class="headerlink" href="#persisting-data" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Saving, Restoring, and Snapshots</strong>:
+How to serialize the entire database, restore it later, and use query logs
+to reconstruct state and support “time travel” debugging.</p></li>
+<li><p><strong>Rebuild Strategy with Query Logs</strong>:
+Taking advantage of the fact that all state changes are expressed as queries,
+enabling full historical reconstruction and rollback.</p></li>
+</ul>
+<p>These recommendations are not required for basic use, but they are highly
+recommended for building stable, maintainable systems — especially those with
+long-lived data.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Best Practice</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="best_practices/datetime.html">Handling Date and Time Safely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="best_practices/serialization.html">Saving, Restoring, and Time Travel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="best_practices/logging.html">Query Logging Strategy</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">DeltaTraceDB Docs</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="queries.html">Query Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="db_listeners.html">DB Listeners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server-Side Coding</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Best Practices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#handle-dates-and-times-appropriately">Handle dates and times appropriately</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#persisting-data">Persisting Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notice.html">Notice</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="server.html" title="previous chapter">Server-Side Coding</a></li>
+      <li>Next: <a href="best_practices/datetime.html" title="next chapter">Handling Date and Time Safely</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Masahide Mori.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/best_practice.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

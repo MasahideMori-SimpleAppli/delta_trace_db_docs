@@ -1,0 +1,109 @@
+======================================
+Count
+======================================
+
+Count the number of items in a collection.
+
+Overview
+----------------------------
+
+The **count** operation returns the total number of items stored
+in the specified collection.
+
+- This operation does **not modify** any data.
+- Useful for verifying data size, pagination logic, or diagnostic checks.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+
+          // Insert sample data
+          final rawUsers = [
+            {'id': 'u001', 'name': 'Alice'},
+            {'id': 'u002', 'name': 'Bob'},
+            {'id': 'u003', 'name': 'Charlie'},
+          ];
+
+          final addQuery = RawQueryBuilder.add(
+            target: 'users',
+            rawAddData: rawUsers,
+          ).build();
+          db.executeQuery(addQuery);
+
+          // Count the number of items in the "users" collection
+          final countQuery = RawQueryBuilder.count(
+            target: 'users',
+          ).build();
+
+          final result = db.executeQuery(countQuery);
+          print(result.toDict());
+
+          // Access the count directly:
+          print("Count = ${result.hitCount}");
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, RawQueryBuilder
+
+        db = DeltaTraceDatabase()
+
+        # Insert sample data
+        raw_users = [
+            {"id": "u001", "name": "Alice"},
+            {"id": "u002", "name": "Bob"},
+            {"id": "u003", "name": "Charlie"},
+        ]
+
+        add_query = RawQueryBuilder.add(
+            target="users",
+            raw_add_data=raw_users,
+        ).build()
+
+        db.execute_query(add_query)
+
+        # Count the number of items in the "users" collection
+        count_query = RawQueryBuilder.count(
+            target="users",
+        ).build()
+
+        result = db.execute_query(count_query)
+        print(result.to_dict())
+
+        # Access the count directly
+        print(f"Count = {result.hit_count}")
+
+Result
+----------------------------
+
+This function returns a :code:`QueryResult`.
+
+Example output:
+
+.. code-block:: text
+
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: count,
+    result: [], dbLength: 3, updateCount: 0, hitCount: 3, errorMessage: null}
+    Count = 3
+
+- The **count result** is stored in :code:`hitCount`.
+- Because this query only reads data, :code:`updateCount` is always **0**.
+
+
+Notes
+----------------------------
+
+- Recommended for measuring collection size or validating data volume.
+- :code:`cause` can be used for auditing or operational logging.

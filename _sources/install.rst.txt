@@ -1,0 +1,54 @@
+======================================
+Installation
+======================================
+
+Commentary
+----------------------------
+
+Each language version of **DeltaTraceDB** is implemented entirely in its respective language.
+This means:
+
+- The Dart version is written in **100% Dart**.
+- The Python version is written in **100% Python**.
+
+Because there are **no cross-language bindings or native dependencies**,
+installation is simple and requires **no special setup** beyond a standard Dart or Python environment.
+
+
+For Dart
+----------------------------
+
+You can install **DeltaTraceDB** for Dart from **pub.dev** as follows:
+
+`https://pub.dev/packages/delta_trace_db/install <https://pub.dev/packages/delta_trace_db/install>`__
+
+In your Flutter or Dart project directory, run:
+
+.. code-block:: bash
+
+    dart pub add delta_trace_db
+
+Alternatively, add the following line manually to your ``pubspec.yaml``:
+
+.. code-block:: yaml
+
+    dependencies:
+      delta_trace_db: any
+
+
+For Python
+----------------------------
+
+You can install **DeltaTraceDB** for Python via **pip**:
+
+`https://pypi.org/project/delta-trace-db/ <https://pypi.org/project/delta-trace-db/>`__
+
+.. code-block:: bash
+
+    pip install delta-trace-db
+
+Alternatively, add it to your ``requirements.txt`` file:
+
+.. code-block:: text
+
+    delta-trace-db

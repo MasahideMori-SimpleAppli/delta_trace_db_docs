@@ -1,0 +1,253 @@
+======================================
+GetAll
+======================================
+
+Retrieve all items from a specified collection.
+
+Overview
+----------------------------
+
+The **getAll** operation retrieves all items within a specified collection in a DeltaTraceDatabase instance.
+
+You can optionally limit, sort, or paginate the results using parameters such as
+:code:`limit`, :code:`offset`, :code:`startAfter`, or :code:`endBefore`.
+
+If no limitation or sorting options are specified, all items are returned in the order
+they were added to the database.
+
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+         import 'package:delta_trace_db/delta_trace_db.dart';
+         import 'package:file_state_manager/file_state_manager.dart';
+
+         class User extends CloneableFile {
+           final int age;
+           User({required this.age});
+
+           static User fromDict(Map<String, dynamic> src) => User(age: src['age']);
+           @override
+           Map<String, dynamic> toDict() => {'age': age};
+           @override
+           User clone() => fromDict(toDict());
+         }
+
+         void main() {
+           final db = DeltaTraceDatabase();
+
+           // Add 100 users
+           final users = List.generate(100, (i) => User(age: i));
+           final addQuery = QueryBuilder.add(target: 'users', addData: users).build();
+           db.executeQuery<User>(addQuery);
+
+           // Get all users
+           final q1 = QueryBuilder.getAll(target: 'users').build();
+           final r1 = db.executeQuery<User>(q1);
+           print(r1.result.length); // 100
+
+           // Limit results to 10
+           final q2 = QueryBuilder.getAll(target: 'users', limit: 10).build();
+           final r2 = db.executeQuery<User>(q2);
+           print(r2.result.length); // 10
+
+           // Get 10 users after offset 10
+           final q3 = QueryBuilder.getAll(
+             target: 'users',
+             limit: 10,
+             offset: 10,
+           ).build();
+           final r3 = db.executeQuery<User>(q3);
+           print(r3.toDict());
+           print(r3.result.last['age']); // 19
+
+           // Node: The data can be easily converted into a class.
+           final classList = r3.convert(User.fromDict);
+         }
+
+
+   .. tab-item:: Dart(RawData)
+
+      .. code-block:: dart
+
+         import 'package:delta_trace_db/delta_trace_db.dart';
+
+         void main() {
+           final db = DeltaTraceDatabase();
+
+           // Add 100 users (same as above)
+           final users = List.generate(100, (i) => {'age': i});
+           final addQuery = RawQueryBuilder.add(
+             target: 'users',
+             addData: users,
+           ).build();
+           db.executeQuery(addQuery);
+
+           // Get all users
+           final rawQ1 = RawQueryBuilder.getAll(target: 'users').build();
+           final rawR1 = db.executeQuery(rawQ1);
+           print(rawR1.result.length); // 100
+
+           // Limit results to 10
+           final rawQ2 = RawQueryBuilder.getAll(
+             target: 'users',
+             limit: 10,
+           ).build();
+           final rawR2 = db.executeQuery(rawQ2);
+           print(rawR2.result.length); // 10
+
+           // Get 10 users after offset 10
+           final rawQ3 = RawQueryBuilder.getAll(
+             target: 'users',
+             limit: 10,
+             offset: 10,
+           ).build();
+           final rawR3 = db.executeQuery(rawQ3);
+           print(rawR3.toDict());
+           print(rawR3.result.last['age']); // 19
+         }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from dataclasses import dataclass
+        from typing import Dict, Any
+        from file_state_manager import CloneableFile
+        from delta_trace_db import DeltaTraceDatabase, QueryBuilder
+
+
+        @dataclass
+        class User(CloneableFile):
+            age: int
+
+            @classmethod
+            def from_dict(cls, src: Dict[str, Any]) -> "User":
+                return User(age=src["age"])
+
+            def to_dict(self) -> Dict[str, Any]:
+                return {"age": self.age}
+
+            def clone(self) -> "User":
+                return User.from_dict(self.to_dict())
+
+
+        def main():
+            db = DeltaTraceDatabase()
+
+            # Add 100 users
+            users = [User(age=i) for i in range(100)]
+            add_query = QueryBuilder.add(target="users", add_data=users).build()
+            db.execute_query(add_query)
+
+            # Get all users
+            q1 = QueryBuilder.get_all(target="users").build()
+            r1 = db.execute_query(q1)
+            print(len(r1.result))  # 100
+
+            # Limit results to 10
+            q2 = QueryBuilder.get_all(target="users", limit=10).build()
+            r2 = db.execute_query(q2)
+            print(len(r2.result))  # 10
+
+            # Get 10 users after offset 10
+            q3 = QueryBuilder.get_all(
+                target="users",
+                limit=10,
+                offset=10,
+            ).build()
+            r3 = db.execute_query(q3)
+            print(r3.to_dict())
+            print(r3.result[-1]["age"])  # 19
+
+            # Note: The data can be easily converted into a class.
+            class_list = r3.convert(User.from_dict)
+
+
+        if __name__ == "__main__":
+            main()
+
+   .. tab-item:: Python(RawData)
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, RawQueryBuilder
+
+        db = DeltaTraceDatabase()
+
+        # Add 100 users (same as above)
+        users = [{"age": i} for i in range(100)]
+
+        add_query = RawQueryBuilder.add(
+            target="users",
+            raw_add_data=users,
+        ).build()
+
+        db.execute_query(add_query)
+
+        # Get all users
+        raw_q1 = RawQueryBuilder.get_all(target="users").build()
+        raw_r1 = db.execute_query(raw_q1)
+        print(len(raw_r1.result))  # 100
+
+        # Limit results to 10
+        raw_q2 = RawQueryBuilder.get_all(
+            target="users",
+            limit=10,
+        ).build()
+
+        raw_r2 = db.execute_query(raw_q2)
+        print(len(raw_r2.result))  # 10
+
+        # Get 10 users after offset 10
+        raw_q3 = RawQueryBuilder.get_all(
+            target="users",
+            limit=10,
+            offset=10,
+        ).build()
+
+        raw_r3 = db.execute_query(raw_q3)
+        print(raw_r3.to_dict())
+        print(raw_r3.result[-1]["age"])  # 19
+
+Result
+----------------------------
+
+The **executeQuery / execute_query** method returns a :code:`QueryResult` object.
+
+If a limit or paging option is applied, the result will contain only the corresponding items.
+
+Example output:
+
+.. code-block:: text
+
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: getAll,
+    result: [
+        {age: 10}, {age: 11}, {age: 12}, {age: 13}, {age: 14}, {age: 15}, {age: 16}, {age: 17}, {age: 18}, {age: 19}
+    ], dbLength: 100, updateCount: 0, hitCount: 100, errorMessage: null}
+
+
+Notes
+----------------------------
+
+- Collections are automatically created if they do not exist.
+- Paging can be controlled using **offset**, **startAfter**, or **endBefore**:
+
+  - :code:`offset`
+    Starts returning results from the specified numeric position.
+
+  - :code:`startAfter`
+    Starts returning results after a specific object.
+    This is stable even if new items are added during the search.
+
+  - :code:`endBefore`
+    Returns results before a specific object.
+
+- For sorting behavior, refer to the :ref:`sort<sort>` section.
+- For auditing or reasoning metadata, you can optionally use the :code:`cause` parameter.

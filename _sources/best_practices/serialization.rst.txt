@@ -1,0 +1,108 @@
+======================================
+Saving, Restoring, and Time Travel
+======================================
+
+Overview
+--------
+
+Since this database is an in-memory database, a save process is required to make the data persistent.
+
+DeltaTraceDB supports full serialization and restoration of the database state.
+This allows:
+
+- Saving the complete DB into a plain :code:`Map` object.
+- Reloading the database from saved data.
+- Replaying historical query logs to reconstruct any past state.
+
+This makes it easier to back up, migrate, clone, and debug your system, and it also means no app data lock-in.
+
+Basic Usage
+-----------
+
+Saving and Restoring:
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        final db = DeltaTraceDatabase();
+
+        // Various operations on the DB ... //
+
+        // Convert the entire DB to a Map.
+        final saved = db.toDict();
+
+        // The Map can be serialized using your preferred format or library.
+        // For example: JSON, binary, encrypted storage, etc.
+
+        // Create a new DB instance from the saved data.
+        final restored = DeltaTraceDatabase.fromDict(saved);
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        db = DeltaTraceDatabase()
+
+        # Various operations on the DB ... #
+
+        # Convert the entire DB to a Map.
+        saved = db.to_dict()
+
+        # The Map can be serialized using your preferred format or library.
+        # For example: JSON, binary, encrypted storage, etc.
+
+        # Create a new DB instance from the saved data.
+        restored = DeltaTraceDatabase.from_dict(saved)
+
+
+Time Travel with Query Logs
+---------------------------
+
+Every data-changing operation in DeltaTraceDB is expressed as a :code:`Query`.
+Therefore, by saving these queries in chronological order, it becomes possible to
+**replay** the database history and reproduce its state at any point in time.
+
+This is useful for:
+
+- Debugging "what happened and when"
+- Rebuilding DB state after partial corruption
+- Implementing undo/redo systems
+- Providing timeline-based versioning
+
+Why This Works
+--------------
+
+- All operations are expressed as structured queries.
+- Replaying the same queries in the same order produces the same state.
+- Snapshots provide anchor points so you do not need to replay from the origin.
+
+Recommended Workflow
+--------------------
+
+1. Periodically save a full DB snapshot using :code:`toDict()`.
+2. Continuously log all :code:`Query` objects applied after that snapshot.
+3. To restore to any past moment:
+   - Load the closest snapshot.
+   - Replay the log up to the target timestamp.
+
+Cause Metadata (Optional)
+-------------------------
+
+Queries may optionally include a :code:`Cause` object describing:
+
+- who performed the operation
+- when it occurred
+- what the intention was
+- where it originated
+- why it was triggered
+
+If populated, this makes debugging and audit trails much easier.
+
+Notes
+-----
+
+- The serialized DB data is a JSON object and does not include non-JSONizable objects such as callback functions.
+- Query logs may grow; old logs can be archived after new snapshots.

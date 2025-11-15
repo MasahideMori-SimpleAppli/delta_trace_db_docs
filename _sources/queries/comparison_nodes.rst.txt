@@ -1,0 +1,87 @@
+.. _comparison_nodes:
+
+======================================
+Comparison Nodes
+======================================
+
+**Comparison nodes** are used to compare field values in query conditions.
+
+Overview
+----------------------------
+Each comparison node inherits from :code:`QueryNode` and evaluates whether a field
+in the item meets a specific condition.
+
+Supported Comparison Nodes
+----------------------------
+Below is a list of all available comparison nodes and their behaviors.
+
+**Equality**
+   - **FieldEquals(field, value)**
+     True if the field equals the value.
+
+   - **FieldNotEquals(field, value)**
+     True if the field does not equal the value.
+
+**Relational (Greater/Less)**
+   - **FieldGreaterThan(field, value)**
+     True if the field value is greater than the given value.
+
+   - **FieldGreaterThanOrEqual(field, value)**
+     True if the field value is greater than or equal to the given value.
+
+   - **FieldLessThan(field, value)**
+     True if the field value is smaller than the given value.
+
+   - **FieldLessThanOrEqual(field, value)**
+     True if the field value is smaller than or equal to the given value.
+
+**Membership**
+   - **FieldContains(field, value)**
+     True if the field (which must be a string or list) contains the given value.
+
+   - **FieldIn(field, list)**
+     True if the field’s value is included in the given list.
+
+   - **FieldNotIn(field, list)**
+     True if the field’s value is *not* included in the given list.
+
+**Pattern Matching**
+   - **FieldMatchesRegex(field, pattern)**
+     True if the field’s value matches the regular expression.
+
+   - **FieldStartsWith(field, prefix)**
+     True if the field’s value starts with the specified prefix.
+
+   - **FieldEndsWith(field, suffix)**
+     True if the field’s value ends with the specified suffix.
+
+
+Examples
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+         import 'package:delta_trace_db/delta_trace_db.dart';
+
+         final node = FieldGreaterThanOrEqual('score', 80);
+         final result = node.evaluate({'score': 85}); // true
+
+         final node2 = FieldLessThanOrEqual('age', 30);
+         final result2 = node2.evaluate({'age': 25}); // true
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+         from delta_trace_db import FieldGreaterThanOrEqual, FieldLessThanOrEqual
+
+         node = FieldGreaterThanOrEqual('score', 80)
+         result = node.evaluate({'score': 85})  # True
+
+         node2 = FieldLessThanOrEqual('age', 30)
+         result2 = node2.evaluate({'age': 25})  # True
+

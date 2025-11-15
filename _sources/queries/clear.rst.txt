@@ -1,0 +1,153 @@
+======================================
+Clear & ClearAdd
+======================================
+
+**clear** removes all items in the collection, and **clearAdd** adds new data after **clear**.
+
+Overview
+----------------------------
+
+The :code:`clear` and :code:`clearAdd` operations are **destructive** operations:
+
+- :code:`clear` **removes all items** in the specified collection.
+- :code:`clearAdd` **removes all items** and then **inserts new data**.
+
+These operations are typically used when resetting a dataset, importing data,
+or ensuring that a collection matches a known set of items.
+
+.. warning::
+
+   These operations **permanently delete data** in the target collection.
+
+   It is strongly recommended to **back up your DB before executing**.
+
+   Be especially cautious in production or when multiple agents share the same database.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart (clear)
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+
+          // Clear the "users" collection
+          final clearQuery = RawQueryBuilder.clear(
+            target: 'users',
+            resetSerial: true, // Optional: reset auto-increment serial
+            mustAffectAtLeastOne:
+            false, // Should be false if you might be adding to an empty DB.
+          ).build();
+
+          final result = db.executeQuery(clearQuery);
+          print(result.toDict()); // {isSuccess: true, ...}
+        }
+
+   .. tab-item:: Dart (clearAdd)
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+
+          // Replace entire collection with new data
+          final clearAddQuery = RawQueryBuilder.clearAdd(
+            target: 'users',
+            rawAddData: [
+              {'id': -1, 'name': 'Taro'},
+              {'id': -1, 'name': 'Hanako'},
+            ],
+            serialKey: 'id',   // Assign unique sequential IDs
+            resetSerial: true, // Reset ID counter before assigning
+            returnData: true,  // Return newly inserted objects
+            mustAffectAtLeastOne: false, // Should be false if you might be adding to an empty DB.
+          ).build();
+
+          final result = db.executeQuery(clearAddQuery);
+          print(result.toDict());
+        }
+
+   .. tab-item:: Python (clear)
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, RawQueryBuilder
+
+        db = DeltaTraceDatabase()
+
+        # Clear the "users" collection
+        clear_query = RawQueryBuilder.clear(
+            target="users",
+            reset_serial=True,  # Optional: reset auto-increment serial
+            must_affect_at_least_one=False
+        ).build()
+
+        result = db.execute_query(clear_query)
+        print(result.to_dict())  # {"is_success": True, ...}
+
+   .. tab-item:: Python (clearAdd)
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, RawQueryBuilder
+
+        db = DeltaTraceDatabase()
+
+        # Replace entire collection with new data
+        clear_add_query = RawQueryBuilder.clear_add(
+            target="users",
+            raw_add_data=[
+                {"id": -1, "name": "Taro"},
+                {"id": -1, "name": "Hanako"},
+            ],
+            serial_key="id",                # Assign unique sequential IDs
+            reset_serial=True,              # Reset ID counter before assigning
+            return_data=True,               # Return newly inserted objects
+            must_affect_at_least_one=False, # False if adding to an empty DB
+        ).build()
+
+        result = db.execute_query(clear_add_query)
+        print(result.to_dict())
+
+Result
+----------------------------
+
+Both operations return a :code:`QueryResult`.
+
+Example output (clearAdd):
+
+.. code-block:: text
+
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: clearAdd,
+    result: [
+        {id: 0, name: Taro},
+        {id: 1, name: Hanako}
+    ], dbLength: 2, updateCount: 0, hitCount: 0, errorMessage: null}
+
+Notes
+----------------------------
+
+- When using DeltaTraceDatabase in Flutter front-end applications,
+  :code:`clearAdd` can be especially useful for state management.
+
+  If a UI listener is registered using :code:`db.addListener(target, ...)`,
+  then calling :code:`clearAdd` will trigger that listener, allowing the UI
+  to automatically update when the underlying data changes.
+
+  This means that the database itself can act as a state management framework.
+
+  See :doc:`../db_listeners` for implementation details.
+
+- :code:`serialKey` assigns unique integer IDs to inserted items.
+- :code:`resetSerial` resets the internal counter used for :code:`serialKey`.
+- :code:`mustAffectAtLeastOne` can enforce that the operation must change data.
+  If true and no items are affected, the query will be marked as **failed**.
+- :code:`cause` can store metadata useful for logging, auditing, or AI agent explainability.

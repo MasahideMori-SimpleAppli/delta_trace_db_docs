@@ -1,0 +1,68 @@
+.. _nodes:
+
+======================================
+Appendix: Nodes for Search
+======================================
+
+A **Node** is an object used to define search conditions in queries.
+
+Overview
+----------------------------
+Nodes represent logical or comparison expressions used to build complex query filters.
+
+There are two major types of nodes:
+
+- **LogicalNode** – Combines multiple conditions (AND / OR / NOT).
+- **ComparisonNode** – Compares field values or patterns.
+
+All nodes inherit from :code:`QueryNode`, which provides the base interface for evaluation and serialization.
+
+
+Logical Nodes
+----------------------------
+Logical nodes are used to combine multiple conditions into composite expressions.
+
+- **AndNode**
+  Evaluates to true only if all child nodes are true.
+
+- **OrNode**
+  Evaluates to true if any child node is true.
+
+- **NotNode**
+  Negates the result of the child node.
+
+
+Comparison Nodes
+----------------------------
+Comparison nodes are used to compare field values with constants or patterns.
+
+**Equality**
+   - :code:`FieldEquals`
+   - :code:`FieldNotEquals`
+
+**Relational (Greater/Less)**
+   - :code:`FieldGreaterThan`
+   - :code:`FieldGreaterThanOrEqual`
+   - :code:`FieldLessThan`
+   - :code:`FieldLessThanOrEqual`
+
+**Membership**
+   - :code:`FieldIn`
+   - :code:`FieldNotIn`
+   - :code:`FieldContains`
+
+**Pattern Matching**
+   - :code:`FieldMatchesRegex`
+   - :code:`FieldStartsWith`
+   - :code:`FieldEndsWith`
+
+Each node evaluates whether the specified field satisfies the corresponding condition.
+
+For implementation details and examples, see :ref:`comparison_nodes`.
+
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+
+   comparison_nodes

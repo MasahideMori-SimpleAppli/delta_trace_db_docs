@@ -1,0 +1,9 @@
+======================================
+Notice
+======================================
+
+Trademarks
+------------------------------
+“Dart” and “Flutter” are trademarks of Google LLC.
+
+“Python” is a trademark of the Python Software Foundation.

@@ -1,0 +1,284 @@
+======================================
+Add items
+======================================
+
+Add new items to a collection.
+
+Overview
+----------------------------
+
+The **add** operation inserts new data into a specific collection within the DeltaTraceDatabase instance.
+
+If a **serialKey** is specified, the database automatically assigns a unique serial value
+to that key (Incrementing an integer ID).
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+        import 'package:file_state_manager/file_state_manager.dart';
+
+        class User extends CloneableFile {
+          final int id;
+          final String name;
+          final int age;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+          final Map<String, dynamic> nestedObj;
+
+          User({
+            required this.id,
+            required this.name,
+            required this.age,
+            required this.createdAt,
+            required this.updatedAt,
+            required this.nestedObj,
+          });
+
+          static User fromDict(Map<String, dynamic> src) => User(
+            id: src['id'],
+            name: src['name'],
+            age: src['age'],
+            createdAt: DateTime.parse(src['createdAt']),
+            updatedAt: DateTime.parse(src['updatedAt']),
+            nestedObj: src['nestedObj'],
+          );
+
+          @override
+          Map<String, dynamic> toDict() => {
+            'id': id,
+            'name': name,
+            'age': age,
+            'createdAt': createdAt.toUtc().toIso8601String(),
+            'updatedAt': updatedAt.toUtc().toIso8601String(),
+            'nestedObj': {...nestedObj},
+          };
+
+          @override
+          User clone() {
+            return User.fromDict(toDict());
+          }
+        }
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          final now = DateTime.now();
+          List<User> users = [
+            User(
+              id: -1,
+              name: 'Taro',
+              age: 30,
+              createdAt: now,
+              updatedAt: now,
+              nestedObj: {"a": "a"},
+            ),
+            User(
+              id: -1,
+              name: 'Jiro',
+              age: 25,
+              createdAt: now,
+              updatedAt: now,
+              nestedObj: {"a": "b"},
+            ),
+          ];
+          // If you want the return value to be reflected immediately on the front end,
+          // set returnData = true to get data that properly reflects the serial key.
+          final query = QueryBuilder.add(
+            target: 'users',
+            addData: users,
+            serialKey: "id",
+            returnData: true,
+          ).build();
+          // Specifying the "User class" is only necessary if you want to easily revert to the original class.
+          final r = db.executeQuery<User>(query);
+          // If you want to check the return value, you can easily do so by using toDict, which serializes it.
+          print(r.toDict());
+          // You can easily convert from the Result object back to the original class.
+          // The value of r.result is deserialized using the function specified by convert.
+          List<User> results = r.convert(User.fromDict);
+        }
+
+   .. tab-item:: Dart(RawData)
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          final now = DateTime.now().toUtc().toIso8601String();
+          final users = [
+            {
+              "id": -1,
+              "name": 'Taro',
+              "age": 30,
+              "createdAt": now,
+              "updatedAt": now,
+              "nestedObj": {"a": "a"},
+            },
+            {
+              "id": -1,
+              "name": 'Jiro',
+              "age": 25,
+              "createdAt": now,
+              "updatedAt": now,
+              "nestedObj": {"a": "b"},
+            },
+          ];
+          // If you want the return value to be reflected immediately on the front end,
+          // set returnData = true to get data that properly reflects the serial key.
+          final query = RawQueryBuilder.add(
+            target: 'users',
+            rawAddData: users,
+            serialKey: "id",
+            returnData: true,
+          ).build();
+          final r = db.executeQuery(query);
+          // If you want to check the return value, you can easily do so by using toDict, which serializes it.
+          print(r.toDict());
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from dataclasses import dataclass
+        from datetime import datetime, timezone
+        from typing import Dict, Any
+        from file_state_manager import CloneableFile
+        from delta_trace_db import DeltaTraceDatabase, QueryBuilder
+
+
+        @dataclass
+        class User(CloneableFile):
+            id: int
+            name: str
+            age: int
+            created_at: datetime
+            updated_at: datetime
+            nested_obj: dict
+
+            @classmethod
+            def from_dict(cls, src: Dict[str, Any]) -> "User":
+                return User(
+                    id=src["id"],
+                    name=src["name"],
+                    age=src["age"],
+                    created_at=datetime.fromisoformat(src["createdAt"]).astimezone(timezone.utc),
+                    updated_at=datetime.fromisoformat(src["updatedAt"]).astimezone(timezone.utc),
+                    nested_obj=dict(src["nestedObj"]),
+                )
+
+            def to_dict(self) -> Dict[str, Any]:
+                return {
+                    "id": self.id,
+                    "name": self.name,
+                    "age": self.age,
+                    "createdAt": self.created_at.astimezone(timezone.utc).isoformat(),
+                    "updatedAt": self.updated_at.astimezone(timezone.utc).isoformat(),
+                    "nestedObj": dict(self.nested_obj),
+                }
+
+            def clone(self) -> "User":
+                return User.from_dict(self.to_dict())
+
+
+        def main():
+            db = DeltaTraceDatabase()
+            now = datetime.now(timezone.utc)
+
+            users = [
+                User(
+                    id=-1,
+                    name="Taro",
+                    age=30,
+                    created_at=now,
+                    updated_at=now,
+                    nested_obj={"a": "a"},
+                ),
+                User(
+                    id=-1,
+                    name="Jiro",
+                    age=25,
+                    created_at=now,
+                    updated_at=now,
+                    nested_obj={"a": "b"},
+                ),
+            ]
+
+            # If you want the return value to be reflected immediately on the front end,
+            # set return_data = True to get data that properly reflects the serial key.
+            query = (
+                QueryBuilder.add(
+                    target="users",
+                    add_data=users,
+                    serial_key="id",
+                    return_data=True,
+                )
+                .build()
+            )
+
+            # In the Python version, no type specification is required (duck typing)
+            r = db.execute_query(query)
+
+            # If you want to check the return value, you can easily do so by using toDict, which serializes it.
+            print(r.to_dict())
+
+            # You can easily convert from the Result object back to the original class.
+            # The value of r.result is deserialized using the function specified by convert.
+            results = r.convert(User.from_dict)
+
+
+        if __name__ == "__main__":
+            main()
+
+   .. tab-item:: Python(RawData)
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, RawQueryBuilder
+        from datetime import datetime, timezone
+
+        db = DeltaTraceDatabase()
+        now = datetime.now(timezone.utc).isoformat()
+
+        users = [
+            {"id": -1, "name": "Taro", "age": 30, "createdAt": now, "updatedAt": now, "nestedObj": {"a": "a"}},
+            {"id": -1, "name": "Jiro", "age": 25, "createdAt": now, "updatedAt": now, "nestedObj": {"a": "b"}},
+        ]
+
+        query = RawQueryBuilder.add(target='users', raw_add_data=users, serial_key="id", return_data=True).build()
+        r = db.execute_query(query)
+        print(r.to_dict())
+
+Result
+----------------------------
+
+The executeQuery / execute_query method returns a QueryResult object.
+
+If the **returnData / return_data** flag is true, the changed object will be stored in QueryResult.result.
+
+Example output:
+
+.. code-block:: text
+
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: add,
+    result: [
+        {id: 0, name: Taro, age: 30, createdAt: 2025-10-31T14:24:17.987205Z, updatedAt: 2025-10-31T14:24:17.987205Z, nestedObj: {a: a}},
+        {id: 1, name: Jiro, age: 25, createdAt: 2025-10-31T14:24:17.987205Z, updatedAt: 2025-10-31T14:24:17.987205Z, nestedObj: {a: b}}
+    ],
+    dbLength: 2, updateCount: 2, hitCount: 0, errorMessage: null}
+
+
+Notes
+----------------------------
+- The **serialKey / serial_key** must point to a numeric(Integer) field.
+- When omitted, objects are inserted as-is without automatic ID assignment.
+- Collections are automatically created if they do not exist.
+- For the sorting specifications of optional parameters, please check the :ref:`sort<sort>` section.

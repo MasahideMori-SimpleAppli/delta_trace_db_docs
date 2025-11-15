@@ -1,0 +1,17 @@
+======================================
+Glossary
+======================================
+
+Collection
+----------------------------
+A logical group of items that share the same structure or class type.
+
+Item
+----------------------------
+A single object stored in a collection.
+Each item represents one instance of a user-defined class and is persisted internally in the database.
+
+Query
+----------------------------
+This refers to the command given to the database.
+Queries are constructed using :code:`QueryBuilder` or :code:`RawQueryBuilder`.

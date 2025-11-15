@@ -1,0 +1,14 @@
+======================================
+CloneableFile or Raw Data
+======================================
+
+DeltaTraceDB internally manages data using a JSON-serializable Map (Dict),
+but you can also pass a class that inherits CloneableFile directly as data.
+
+
+Dart version: `[https://pub.dev/packages/file_state_manager] <https://pub.dev/packages/file_state_manager>`__
+
+Python version: `[https://pypi.org/project/file-state-manager] <https://pypi.org/project/file-state-manager/>`__
+
+Unless there are specific issues, I recommend using a data class that inherits CloneableFile,
+especially on the front end.

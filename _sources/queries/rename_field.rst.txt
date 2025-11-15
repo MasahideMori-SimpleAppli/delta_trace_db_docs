@@ -1,0 +1,129 @@
+======================================
+RenameField
+======================================
+
+Rename a field in all items of a collection.
+
+Overview
+----------------------------
+
+The **renameField** operation updates the field names in all items of a specified collection.
+
+- The field named **renameBefore** will be **renamed** to **renameAfter**.
+- The **values stored under the original field** will be preserved and moved to the new field name.
+- If a item does **not** contain the original field, that item is left unchanged.
+
+This is useful when refactoring data models, standardizing field names,
+or correcting naming inconsistencies that occurred during development.
+
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+
+          // Insert sample raw data
+          final rawUsers = [
+            {'id': 'u003', 'name': 'Hanako'},
+            {'id': 'u004', 'name': 'Taro'},
+          ];
+
+          final addQuery = RawQueryBuilder.add(
+            target: 'users',
+            rawAddData: rawUsers,
+          ).build();
+          db.executeQuery(addQuery);
+
+          // Create rename field query
+          final renameQuery = RawQueryBuilder.renameField(
+            target: 'users',
+            renameBefore: 'name',
+            renameAfter: 'userName',
+            returnData: true,
+          ).build();
+
+          final result = db.executeQuery(renameQuery);
+          print(result.toDict());
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, RawQueryBuilder
+
+        db = DeltaTraceDatabase()
+
+        # Insert sample raw data
+        raw_users = [
+            {"id": "u003", "name": "Hanako"},
+            {"id": "u004", "name": "Taro"},
+        ]
+
+        add_query = RawQueryBuilder.add(
+            target="users",
+            raw_add_data=raw_users,
+        ).build()
+
+        db.execute_query(add_query)
+
+        # Create rename field query
+        rename_query = RawQueryBuilder.rename_field(
+            target="users",
+            rename_before="name",
+            rename_after="user_name",
+            return_data=True,
+        ).build()
+
+        result = db.execute_query(rename_query)
+        print(result.to_dict())
+
+Result
+----------------------------
+
+This function returns a :code:`QueryResult`.
+
+Example output:
+
+.. code-block:: text
+
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: renameField,
+    result: [
+        {id: u003, userName: Hanako}, {id: u004, userName: Taro}
+    ], dbLength: 2, updateCount: 2, hitCount: 2, errorMessage: null}
+
+
+Notes
+----------------------------
+
+Notes
+----------------------------
+
+.. warning::
+
+   This operation **modifies all matching data** in the collection.
+   It cannot be undone unless you have a backup.
+
+- Only items containing :code:`renameBefore` are affected.
+- If :code:`mustAffectAtLeastOne = true` and no item contains the field,
+  the operation will **fail**.
+- :code:`returnData = true` returns the updated items, which may be useful for UI refreshing.
+- :code:`cause` can be used for logging or auditing in secure environments.
+- This query only operates on **top-level fields** of the object. Nested fields cannot be renamed.
+
+  .. note::
+
+     **Reason:** `renameField` directly modifies the internal structure of the database.
+     Allowing nested field renaming could lead to unpredictable behavior if intermediate objects
+     do not exist, contain unexpected types, or vary between items.
+     By restricting renaming to top-level fields, the operation remains safe and predictable,
+     avoiding potential inconsistencies in the database structure.

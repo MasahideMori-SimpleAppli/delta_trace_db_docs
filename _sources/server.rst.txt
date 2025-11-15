@@ -1,0 +1,96 @@
+======================================
+Server-Side Coding
+======================================
+
+Basic Operation (for Python)
+----------------------------
+
+It will be easier to understand if you check the sample project below:
+
+`https://github.com/MasahideMori-SimpleAppli/delta_trace_db_py_server_example <https://github.com/MasahideMori-SimpleAppli/delta_trace_db_py_server_example>`__
+
+Currently, only **Python** server-side samples are provided, but a similar system can be created in **Dart** as well.
+If you prefer to implement everything in Dart, please create equivalent server-side code in Dart.
+
+Server-side programming with DeltaTraceDB is very simple.
+
+1. **Authenticate the user** using JWT or any other method.
+2. **Recover the query** from the request JSON.
+
+Example:
+
+.. code-block:: python
+
+    from delta_trace_db import UtilQuery
+
+    query_json = await request.json()
+    query = UtilQuery.convert_from_json(query_json)
+
+3. **Execute the query** while setting database permissions based on the authenticated user's privileges.
+   Permissions are **whitelisted by collection**, so grant only the permissions you wish to allow.
+
+.. code-block:: python
+
+    collection_permissions = {
+        "users": Permission([
+            EnumQueryType.add,
+            EnumQueryType.getAll,
+            EnumQueryType.search
+        ])
+    }
+    result = delta_trace_db.execute_query_object(
+        query=query,
+        collection_permissions=collection_permissions
+    )
+
+.. note::
+
+   The ``Permission`` object is part of the serializable ``Actor`` class.
+   You can create an ``Actor`` instance for each user and use the
+   ``collection_permissions`` property within it to manage access rights more cleanly.
+
+   Note that execute_query_object is a method that automatically determines whether it is a ``QueryObject``,
+   ``TransactionQueryObject``, or ``Dict`` and processes it appropriately.
+
+.. warning::
+
+   On the server side, be sure to set Permission class that grant appropriate privileges to each user,
+   or implement a permission granting program.
+
+   Also, when using Permission classes, be sure to use the Permission classes that exist on the server side,
+   as the classes sent from the front end may have been tampered with.
+
+   For front-end convenience, if permissions are set to "None," the DB will allow all operations.
+
+4. It **stores the query**, handles any errors, and then returns the results to the front end.
+
+.. code-block:: python
+
+    # After the preservation process etc.
+    return result.to_dict()
+
+DeltaTraceDB uses **JSON** for its query structure, making it easy to store queries persistently.
+By saving the query data to disk, you can **resume operations from any state**, even after a crash.
+We recommend always saving queries to enable full traceability of all database operations.
+
+As shown in the sample, you can also convert the entire DB to JSON using delta_trace_db.to_dict().
+
+Basically, we recommend doing both of the following:
+
+- Regularly back up your entire database.
+- Always back up the queries.
+
+For more information on saving strategies, see :doc:`./best_practice`.
+
+Precautions for Use
+-------------------
+
+When implementing server-side code for DeltaTraceDB, keep the following in mind:
+
+- DeltaTraceDB is **single-threaded** and designed to run on **a single server instance**.
+- It operates as an **in-memory database**, so if multiple instances are launched in parallel, each one will maintain its own isolated in-memory database.
+
+For cloud environments, the simplest and most reliable configuration is to run **a single DeltaTraceDB instance** and use it as the shared database.
+
+Alternatively, for lightweight setups such as **cloud functions**, you can load and use a **user-specific database** from storage on demand whenever a request is made.
+Alternatively, it is also cost-effective and useful to manage a user-specific database on the front-end side and periodically save it to cloud storage.

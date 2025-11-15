@@ -1,0 +1,173 @@
+.. _sort:
+
+======================================
+Appendix: Sort
+======================================
+
+Specifies the sorting of the returned values from the DB.
+
+Overview
+----------------------------
+
+If you specify a SingleSort object or a MultiSort object as an argument to the query builder or raw query builder, the returned value, QueryResult.result, will be sorted.
+
+If you pass a MultiSort object, it will be a multi-dimensional sort.
+
+MultiSort objects can be created by combining SingleSort objects. The sorting priority is the order of the list.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+
+          final SingleSort ss1 = SingleSort(field: "price", reversed: false);
+          final SingleSort ss2 = SingleSort(field: "createAt", reversed: true);
+          final MultiSort ms = MultiSort([ss1, ss2]);
+          final DateTime now = DateTime.now();
+
+          // add items
+          final food = [
+            {
+              "id": -1,
+              "name": 'riceA',
+              "price": 200,
+              "createAt": now.subtract(const Duration(days: 1)).toUtc().toIso8601String(),
+            },
+            {
+              "id": -1,
+              "name": 'riceB',
+              "price": 150,
+              "createAt": now.toUtc().toIso8601String(),
+            },
+            {
+              "id": -1,
+              "name": 'noodleA',
+              "price": 150,
+              "createAt": now.subtract(const Duration(days: 2)).toUtc().toIso8601String(),
+            },
+            {
+              "id": -1,
+              "name": 'noodleB',
+              "price": 300,
+              "createAt": now.toUtc().toIso8601String(),
+            },
+            {
+              "id": -1,
+              "name": 'riceC',
+              "price": 150,
+              "createAt": now.subtract(const Duration(hours: 5)).toUtc().toIso8601String(),
+            },
+          ];
+          // add data
+          final q1 = RawQueryBuilder.add(
+            target: 'food',
+            rawAddData: food,
+            serialKey: "id",
+          ).build();
+          db.executeQuery(q1);
+
+          // search (use sort)
+          final q2 = RawQueryBuilder.search(target: "food", queryNode: FieldContains("name", "rice"), sortObj: ms).build();
+          final r = db.executeQuery(q2);
+
+          print("=== Sorted by price (asc), then createAt (desc) ===");
+          for (final item in r.result) {
+            print("${item['name']} | price=${item['price']} | createAt=${item['createAt']}");
+          }
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from datetime import datetime, timezone, timedelta
+        from delta_trace_db import (DeltaTraceDatabase, FieldContains, SingleSort, MultiSort, RawQueryBuilder)
+
+        db = DeltaTraceDatabase()
+
+        # Sort objects
+        ss1 = SingleSort(field="price", reversed_=False)
+        ss2 = SingleSort(field="createAt", reversed_=True)
+        ms = MultiSort([ss1, ss2])
+
+        now = datetime.now(timezone.utc)
+
+        # Add items
+        food = [
+            {
+                "id": -1,
+                "name": "riceA",
+                "price": 200,
+                "createAt": (now - timedelta(days=1)).isoformat(),
+            },
+            {
+                "id": -1,
+                "name": "riceB",
+                "price": 150,
+                "createAt": now.isoformat(),
+            },
+            {
+                "id": -1,
+                "name": "noodleA",
+                "price": 150,
+                "createAt": (now - timedelta(days=2)).isoformat(),
+            },
+            {
+                "id": -1,
+                "name": "noodleB",
+                "price": 300,
+                "createAt": now.isoformat(),
+            },
+            {
+                "id": -1,
+                "name": "riceC",
+                "price": 150,
+                "createAt": (now - timedelta(hours=5)).isoformat(),
+            },
+        ]
+
+        # Add data
+        q1 = RawQueryBuilder.add(
+            target="food",
+            raw_add_data=food,
+            serial_key="id",
+        ).build()
+        db.execute_query(q1)
+
+        # Search using sort
+        q2 = RawQueryBuilder.search(
+            target="food",
+            query_node=FieldContains("name", "rice"),
+            sort_obj=ms,
+        ).build()
+
+        r = db.execute_query(q2)
+
+        print("=== Sorted by price (asc), then createAt (desc) ===")
+        for item in r.result:
+            print(f"{item['name']} | price={item['price']} | createAt={item['createAt']}")
+
+Result
+----------------------------
+
+.. code-block:: text
+
+    === Sorted by price (asc), then createAt (desc) ===
+    riceB | price=150 | createAt=2025-11-01T17:30:43.846100Z
+    riceC | price=150 | createAt=2025-11-01T12:30:43.846100Z
+    riceA | price=200 | createAt=2025-10-31T17:30:43.846100Z
+
+Notes
+----------------------------
+
+- If you specify the optional **vType / v_type** argument to a SingleSort object, the data will be converted to the specified type during sort comparison and sorted using that.
+- Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.

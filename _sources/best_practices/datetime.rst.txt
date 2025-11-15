@@ -1,0 +1,65 @@
+======================================
+Handling Date and Time Safely
+======================================
+
+Overview
+--------
+
+DeltaTraceDB can store both:
+
+- **Naive datetimes** (values without timezone information)
+- **Timezone-aware datetimes** (e.g., UTC DateTime in Dart)
+
+However, comparisons between naive and timezone-aware values
+are **not considered equal** and will evaluate to **False** during query filtering.
+
+This affects search operations involving conditions like comparisons and ranges.
+
+Why This Matters
+----------------
+
+If your DB contains mixed datetime formats, queries such as:
+
+- :code:`FieldGreaterThan("createdAt", someTime)`
+- :code:`FieldEquals("updatedAt", someOtherTime)`
+
+may produce unexpected results.
+
+The system does this intentionally to avoid silently incorrect comparison behavior.
+
+Recommended Best Practices
+--------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Use Case
+     - Recommended Format
+   * - Almost all cases
+     - Store all times in **UTC**. The data is transformed when displayed on the front-end UI layer.
+   * - When you want to simplify the implementation or handle large amounts of data
+     - Store times as **UNIX time integers**.
+
+When comparing UNIX time (integer), this method is generally faster than other methods.
+
+Here is an example in Dart:
+
+.. code-block:: dart
+
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final query = RawQueryBuilder.search(
+      target: "logs",
+      queryNode: FieldGreaterThan("timestampMs", now - 86400000), // last 24h
+    ).build();
+
+Practical Notes
+---------------
+
+- Always pick **one** time representation and **stay consistent**.
+
+See Also
+--------
+
+For restoring older states where timestamp alignment matters:
+:doc:`./serialization`

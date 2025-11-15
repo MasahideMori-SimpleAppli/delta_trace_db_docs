@@ -1,0 +1,414 @@
+======================================
+Search or SearchOne
+======================================
+
+Retrieve items that match the specified condition.
+
+Overview
+----------------------------
+
+The **search** operation retrieves objects from a specific collection within a DeltaTraceDatabase instance
+that satisfy the given condition.
+
+You can obtain multiple items that meet the condition, or only one item using **searchOne**.
+
+In addition, paging operations are supported through **offset**, **startAfter**, and **endBefore** parameters.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+        import 'package:file_state_manager/file_state_manager.dart';
+
+        class User extends CloneableFile {
+          final int id;
+          final String name;
+          final int age;
+          final DateTime createdAt;
+
+          User({
+            required this.id,
+            required this.name,
+            required this.age,
+            required this.createdAt,
+          });
+
+          static User fromDict(Map<String, dynamic> src) => User(
+            id: src['id'],
+            name: src['name'],
+            age: src['age'],
+            createdAt: DateTime.parse(src['createdAt']),
+          );
+
+          @override
+          Map<String, dynamic> toDict() => {
+            'id': id,
+            'name': name,
+            'age': age,
+            'createdAt': createdAt.toUtc().toIso8601String(),
+          };
+
+          @override
+          User clone() {
+            return User.fromDict(toDict());
+          }
+        }
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          final now = DateTime.now();
+
+          // Add sample data
+          final addQuery = QueryBuilder.add(
+            target: 'users',
+            addData: [
+              User(id: -1, name: "Taro", age: 30, createdAt: now),
+              User(id: -1, name: "Jiro", age: 25, createdAt: now),
+              User(id: -1, name: "Saburo", age: 20, createdAt: now),
+            ],
+            serialKey: "id",
+            returnData: true,
+          ).build();
+          db.executeQuery(addQuery);
+
+          // Search for users whose name contains "ro"
+          final searchQuery = QueryBuilder.search(
+            target: 'users',
+            queryNode: FieldContains("name", "ro"),
+            sortObj: SingleSort(field: 'age', reversed: true), // Descending by age
+            limit: 1, // Only get one result
+          ).build();
+
+          final searchResult = db.executeQuery<User>(searchQuery);
+          final matchedUsers = searchResult.convert(User.fromDict);
+          print(matchedUsers.first.name); // → "Jiro"
+          print(searchResult.toDict());
+
+          // Paging to the next result
+          final pagingQuery = QueryBuilder.search(
+            target: 'users',
+            queryNode: FieldContains("name", "ro"),
+            sortObj: SingleSort(field: 'age', reversed: true),
+            limit: 1,
+            startAfter: searchResult.result.last, // Continue from the last result
+          ).build();
+
+          final nextPageSearchResult = db.executeQuery<User>(pagingQuery);
+          // It can be easily converted into a class.
+          final nextPageUsers = nextPageSearchResult.convert(User.fromDict);
+          print(nextPageUsers.first.name); // → "Taro"
+          print(nextPageSearchResult.toDict());
+
+          // Search only one item (faster)
+          final searchOneQuery = QueryBuilder.searchOne(
+            target: 'users',
+            queryNode: FieldEquals("name", "Taro"),
+          ).build();
+
+          final searchOneResult = db.executeQuery<User>(searchOneQuery);
+          print(searchOneResult.result.first["name"]); // → "Taro"
+          print(searchOneResult.toDict());
+        }
+
+   .. tab-item:: Dart(RawData)
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          final now = DateTime.now().toUtc().toIso8601String();
+
+          // Add sample data (raw map)
+          final addQuery = RawQueryBuilder.add(
+            target: 'users',
+            rawAddData: [
+              {'id': -1, 'name': 'Taro', 'age': 30, 'createdAt': now},
+              {'id': -1, 'name': 'Jiro', 'age': 25, 'createdAt': now},
+              {'id': -1, 'name': 'Saburo', 'age': 20, 'createdAt': now},
+            ],
+            serialKey: 'id',
+            returnData: true,
+          ).build();
+          db.executeQuery(addQuery);
+
+          // Search for users whose name contains "ro"
+          final searchQuery = RawQueryBuilder.search(
+            target: 'users',
+            queryNode: FieldContains('name', 'ro'),
+            sortObj: SingleSort(field: 'age', reversed: true), // Descending by age
+            limit: 1, // Only get one result
+          ).build();
+
+          final searchResult = db.executeQuery(searchQuery);
+          print(searchResult.result.first['name']); // → "Jiro"
+          print(searchResult.toDict());
+
+          // Paging to the next result
+          final pagingQuery = RawQueryBuilder.search(
+            target: 'users',
+            queryNode: FieldContains('name', 'ro'),
+            sortObj: SingleSort(field: 'age', reversed: true),
+            limit: 1,
+            startAfter: searchResult.result.last, // Continue from the last result
+          ).build();
+
+          final nextPageResult = db.executeQuery(pagingQuery);
+          print(nextPageResult.result.first['name']); // → "Taro"
+          print(nextPageResult.toDict());
+
+          // Search only one item (faster)
+          final searchOneQuery = RawQueryBuilder.searchOne(
+            target: 'users',
+            queryNode: FieldEquals('name', 'Taro'),
+          ).build();
+
+          final searchOneResult = db.executeQuery(searchOneQuery);
+          print(searchOneResult.result.first['name']); // → "Taro"
+          print(searchOneResult.toDict());
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from dataclasses import dataclass
+        from datetime import datetime, timezone
+        from typing import Dict, Any
+        from file_state_manager import CloneableFile
+        from delta_trace_db import (DeltaTraceDatabase, QueryBuilder, FieldContains, FieldEquals, SingleSort)
+
+
+        # Converted model class
+        @dataclass
+        class User(CloneableFile):
+            id: int
+            name: str
+            age: int
+            createdAt: datetime
+
+            @classmethod
+            def from_dict(cls, src: Dict[str, Any]) -> "User":
+                return User(
+                    id=src["id"],
+                    name=src["name"],
+                    age=src["age"],
+                    createdAt=datetime.fromisoformat(src["createdAt"]),
+                )
+
+            def to_dict(self) -> Dict[str, Any]:
+                return {
+                    "id": self.id,
+                    "name": self.name,
+                    "age": self.age,
+                    # Save as UTC ISO format string
+                    "createdAt": self.createdAt.astimezone(timezone.utc).isoformat(),
+                }
+
+            def clone(self) -> "User":
+                return User.from_dict(self.to_dict())
+
+
+        def main():
+            db = DeltaTraceDatabase()
+            now = datetime.now(timezone.utc)
+
+            # Add sample data
+            add_query = (
+                QueryBuilder.add(
+                    target="users",
+                    add_data=[
+                        User(id=-1, name="Taro", age=30, createdAt=now),
+                        User(id=-1, name="Jiro", age=25, createdAt=now),
+                        User(id=-1, name="Saburo", age=20, createdAt=now),
+                    ],
+                    serial_key="id",
+                    return_data=True,
+                ).build()
+            )
+
+            db.execute_query(add_query)
+
+            # Search for users whose name contains "ro"
+            search_query = (
+                QueryBuilder.search(
+                    target="users",
+                    query_node=FieldContains("name", "ro"),
+                    sort_obj=SingleSort(field="age", reversed_=True),  # Descending by age
+                    limit=1,  # Only get one result
+                ).build()
+            )
+
+            search_result = db.execute_query(search_query)
+            matched_users = [
+                User.from_dict(x) for x in search_result.convert(lambda v: v)
+            ]
+            print(matched_users[0].name)  # → "Jiro"
+            print(search_result.to_dict())
+
+            # Paging to the next result
+            paging_query = (
+                QueryBuilder.search(
+                    target="users",
+                    query_node=FieldContains("name", "ro"),
+                    sort_obj=SingleSort(field="age", reversed_=True),
+                    limit=1,
+                    start_after=search_result.result[-1],  # Continue from the last result
+                ).build()
+            )
+
+            next_page = db.execute_query(paging_query)
+            next_page_users = [
+                User.from_dict(x) for x in next_page.convert(lambda v: v)
+            ]
+            print(next_page_users[0].name)  # → "Taro"
+            print(next_page.to_dict())
+
+            # Search only one item (faster)
+            search_one_query = (
+                QueryBuilder.search_one(
+                    target="users",
+                    query_node=FieldEquals("name", "Taro"),
+                ).build()
+            )
+
+            search_one_result = db.execute_query(search_one_query)
+            print(search_one_result.result[0]["name"])  # → "Taro"
+            print(search_one_result.to_dict())
+
+
+        if __name__ == "__main__":
+            main()
+
+   .. tab-item:: Python(RawData)
+
+      .. code-block:: python
+
+        from datetime import datetime, timezone
+        from delta_trace_db import (
+            DeltaTraceDatabase,
+            RawQueryBuilder,
+            FieldContains,
+            FieldEquals,
+            SingleSort,
+        )
+
+        db = DeltaTraceDatabase()
+        now = datetime.now(timezone.utc).isoformat()
+
+        # Add sample data (raw map)
+        add_query = RawQueryBuilder.add(
+            target="users",
+            raw_add_data=[
+                {"id": -1, "name": "Taro", "age": 30, "created_at": now},
+                {"id": -1, "name": "Jiro", "age": 25, "created_at": now},
+                {"id": -1, "name": "Saburo", "age": 20, "created_at": now},
+            ],
+            serial_key="id",
+            return_data=True,
+        ).build()
+
+        db.execute_query(add_query)
+
+        # Search for users whose name contains "ro"
+        search_query = RawQueryBuilder.search(
+            target="users",
+            query_node=FieldContains("name", "ro"),
+            sort_obj=SingleSort(field="age", reversed_=True),  # Descending by age
+            limit=1,  # Only get one result
+        ).build()
+
+        search_result = db.execute_query(search_query)
+
+        print(search_result.result[0]["name"])  # → "Jiro"
+        print(search_result.to_dict())
+
+        # Paging to the next result
+        paging_query = RawQueryBuilder.search(
+            target="users",
+            query_node=FieldContains("name", "ro"),
+            sort_obj=SingleSort(field="age", reversed_=True),
+            limit=1,
+            start_after=search_result.result[-1],  # Continue from the last result
+        ).build()
+
+        next_page_result = db.execute_query(paging_query)
+
+        print(next_page_result.result[0]["name"])  # → "Taro"
+        print(next_page_result.to_dict())
+
+        # Search only one item (faster)
+        search_one_query = RawQueryBuilder.search_one(
+            target="users",
+            query_node=FieldEquals("name", "Taro"),
+        ).build()
+
+        search_one_result = db.execute_query(search_one_query)
+
+        print(search_one_result.result[0]["name"])  # → "Taro"
+        print(search_one_result.to_dict())
+
+Result
+----------------------------
+
+The **executeQuery / execute_query** method returns a **QueryResult** object.
+
+If the type is **search**, multiple matching objects will be stored in **result**.
+If the type is **searchOne**, the search stops as soon as one matching object is found,
+and the result will contain a single item.
+
+Example output:
+
+.. code-block:: text
+
+    * search
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: search,
+    result: [
+        {id: 0, name: Taro, age: 30, createdAt: 2025-11-03T14:09:45.561362Z}
+    ], dbLength: 3, updateCount: 0, hitCount: 3, errorMessage: null}
+
+    * search (next page)
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: search,
+    result: [
+        {id: 1, name: Jiro, age: 25, createdAt: 2025-11-03T14:09:45.561362Z}
+    ], dbLength: 3, updateCount: 0, hitCount: 3, errorMessage: null}
+
+    * searchOne
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: searchOne,
+    result: [
+        {id: 0, name: Taro, age: 30, createdAt: 2025-11-03T14:09:45.561362Z}
+    ], dbLength: 3, updateCount: 0, hitCount: 1, errorMessage: null}
+
+Notes
+----------------------------
+
+- The **queryNode** defines the condition for the search.
+  For details, see the :ref:`nodes<nodes>` section.
+- **sortObj** can be specified using :class:`SingleSort` or :class:`MultiSort`.
+  See the :ref:`sort<sort>` section for details.
+- Paging can be controlled using **offset**, **startAfter**, or **endBefore**:
+
+  - :code:`offset`
+    If specified, data from the specified offset onwards will be retrieved.
+
+  - :code:`startAfter`
+    Starts returning results after a specific object.
+    This is stable even if new items are added during the search.
+
+  - :code:`endBefore`
+    Returns results before a specific object.
+
+- **limit** restricts the number of returned results.
+- **searchOne** stops when the first matching item is found — useful for exact lookups.
+- **cause** can be specified for auditing or for tracking the initiator of a query.
+- Collections are automatically created if they do not exist.
+- Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.
+
+

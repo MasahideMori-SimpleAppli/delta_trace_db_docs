@@ -1,0 +1,75 @@
+======================================
+Introduction
+======================================
+
+Overview
+----------------------------
+
+**DeltaTraceDB** is an **in-memory NoSQL database** that stores data in units of **class-based lists**.
+
+This database allows you to:
+
+- Register class structures directly as database entities.
+- Perform **full-text searches** on the elements of registered classes.
+- Represent queries themselves as **classes**, containing metadata such as
+  *who*, *when*, *what*, *why*, and *from*.
+
+When serialized and saved, these query objects provide a **rich source of information** for:
+
+- Security audits
+- Usage analysis
+- Operational traceability
+
+This makes DeltaTraceDB especially valuable for projects with stringent compliance and data integrity requirements.
+
+Furthermore, by utilizing advanced features such as the ``TemporalTrace`` class within queries,
+DeltaTraceDB can also support applications involving **space-scale communication networks** or **relay servers**,
+where latency is significant even at the speed of light.
+
+Database Structure
+----------------------------
+
+The internal structure of DeltaTraceDB is organized as follows:
+
+- Each **collection** corresponds to a **list of serialized class instances**.
+- This design allows developers to work directly with data on a class-based basis, eliminating issues such as data inconsistency and data shaping.
+
+Example structure:
+
+.. code-block:: text
+
+    📦 Database (DeltaTraceDB)
+    ├── 🗂️ CollectionA (key: "collection_a")
+    │   ├── 📄 Item (ClassA)
+    │   │   ├── id: int
+    │   │   ├── name: String
+    │   │   └── timestamp: String
+    │   └── ...
+    ├── 🗂️ CollectionB (key: "collection_b")
+    │   ├── 📄 Item (ClassB)
+    │   │   ├── uid: String
+    │   │   └── data: Map<String, dynamic>
+    └── ...
+
+
+Processing Suited to This DB
+--------------------------------
+
+DeltaTraceDB is particularly suitable for:
+
+1. **Local server data management**
+2. **Application user data management**
+3. **App state management (e.g., Flutter apps)**
+
+On the other hand, it is **not suitable** for:
+
+1. **Server-side processing requiring large-scale parallel access**
+2. **Storing extremely large volumes of data**
+
+.. note::
+
+   DeltaTraceDB is **single-threaded** and designed to run in **memory**.
+   It cannot handle datasets larger than the available system memory,
+   and is therefore less suitable for high-scale or distributed environments.
+
+In short, DeltaTraceDB is the perfect database for small to medium-sized projects that can benefit from its simplicity and traceability.

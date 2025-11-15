@@ -1,0 +1,152 @@
+======================================
+Delete or DeleteOne
+======================================
+
+Delete the specified items from a collection.
+
+Overview
+----------------------------
+
+The **delete** operation removes data from a specific collection within a DeltaTraceDatabase instance.
+
+You can delete multiple items that match a condition, or only one item using **deleteOne**.
+
+If **returnData / return_data** is set to true, the deleted objects will be returned in the result.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+         import 'package:delta_trace_db/delta_trace_db.dart';
+
+         void main() {
+           final db = DeltaTraceDatabase();
+           final now = DateTime.now().toUtc().toIso8601String();
+
+           // Add sample data
+           final addQuery = RawQueryBuilder.add(
+             target: 'users',
+             rawAddData: [
+               {"id": -1, "name": 'Taro', "age": 30, "createdAt": now},
+               {"id": -1, "name": 'Jiro', "age": 25, "createdAt": now},
+               {"id": -1, "name": 'Saburo', "age": 20, "createdAt": now},
+             ],
+             serialKey: "id",
+             returnData: true,
+           ).build();
+           db.executeQuery(addQuery);
+
+           // Delete multiple items
+           final deleteQuery = QueryBuilder.delete(
+             target: 'users',
+             queryNode: FieldLessThan("age", 30),
+             returnData: true,
+           ).build();
+
+           final deleteResult = db.executeQuery(deleteQuery);
+           print(deleteResult.toDict());
+
+           // Delete only one item
+           final deleteOneQuery = QueryBuilder.deleteOne(
+             target: 'users',
+             queryNode: FieldEquals("name", "Taro"),
+             returnData: true,
+           ).build();
+
+           final deleteOneResult = db.executeQuery(deleteOneQuery);
+           print(deleteOneResult.toDict());
+         }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from datetime import datetime, timezone
+        from delta_trace_db import (
+            DeltaTraceDatabase,
+            RawQueryBuilder,
+            QueryBuilder,
+            FieldLessThan,
+            FieldEquals,
+        )
+
+        db = DeltaTraceDatabase()
+        now = datetime.now(timezone.utc).isoformat()
+
+        # Add sample data
+        add_query = RawQueryBuilder.add(
+            target="users",
+            raw_add_data=[
+                {"id": -1, "name": "Taro", "age": 30, "created_at": now},
+                {"id": -1, "name": "Jiro", "age": 25, "created_at": now},
+                {"id": -1, "name": "Saburo", "age": 20, "created_at": now},
+            ],
+            serial_key="id",
+            return_data=True,
+        ).build()
+
+        db.execute_query(add_query)
+
+        # Delete multiple items
+        delete_query = QueryBuilder.delete(
+            target="users",
+            query_node=FieldLessThan("age", 30),
+            return_data=True,
+        ).build()
+
+        delete_result = db.execute_query(delete_query)
+        print(delete_result.to_dict())
+
+        # Delete only one item
+        delete_one_query = QueryBuilder.delete_one(
+            target="users",
+            query_node=FieldEquals("name", "Taro"),
+            return_data=True,
+        ).build()
+
+        delete_one_result = db.execute_query(delete_one_query)
+        print(delete_one_result.to_dict())
+
+Result
+----------------------------
+
+The **executeQuery / execute_query** method returns a QueryResult object.
+
+If the **returnData / return_data** flag is true, the deleted objects will be stored in QueryResult.result.
+
+Example output:
+
+.. code-block:: text
+
+    * delete
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: delete,
+    result: [
+        {id: 1, name: Jiro, age: 25, createdAt: 2025-11-03T13:49:18.755995Z},
+        {id: 2, name: Saburo, age: 20, createdAt: 2025-11-03T13:49:18.755995Z}
+    ], dbLength: 1, updateCount: 2, hitCount: 2, errorMessage: null}
+
+    * deleteOne
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: deleteOne,
+    result: [
+        {id: 0, name: Taro, age: 30, createdAt: 2025-11-03T13:49:18.755995Z}
+    ], dbLength: 0, updateCount: 1, hitCount: 1, errorMessage: null}
+
+
+Notes
+----------------------------
+
+- Collections are automatically created if they do not exist.
+- The **queryNode** defines the condition for deletion.
+  For detailed syntax, see the :ref:`nodes<nodes>` section.
+- The **mustAffectAtLeastOne / must_affect_at_least_one** flag, if true,
+  will cause the operation to fail when no matching items are found.
+- If **returnData / return_data** is true, the deleted objects will be included in the result.
+- Sorting options can be specified using **sortObj** (see :ref:`sort<sort>` for details).
+- You can attach optional metadata such as **Cause** for auditing or trace logging.
+- Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.
+

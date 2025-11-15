@@ -1,0 +1,30 @@
+======================================
+Query Operations
+======================================
+
+This section describes all available query operations in **DeltaTraceDB**.
+
+Each operation provides an interface for manipulating or retrieving data from the in-memory database.
+You can use these queries on both the client and the server side.
+
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Available Queries
+
+   queries/cloneable_file
+   queries/add
+   queries/update
+   queries/delete
+   queries/search
+   queries/get_all
+   queries/conform_to_template
+   queries/rename_field
+   queries/count
+   queries/clear
+   queries/remove_collection
+   queries/transaction
+   queries/nodes
+   queries/sort
+   queries/meta_data

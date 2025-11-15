@@ -1,0 +1,132 @@
+======================================
+Remove Collection
+======================================
+
+Delete an entire collection from the database, including its structure.
+
+Overview
+----------------------------
+
+The :code:`removeCollection` operation is a **structural** and **destructive**
+operation. Unlike operations such as :code:`clear` or :code:`clearAdd`,
+which remove or replace **items**, this command deletes the **collection itself**.
+
+.. warning::
+
+   This operation **cannot be undone**.
+
+   Use this command only for administrative database maintenance, such as:
+       - Dropping obsolete collections
+       - Restructuring schema designs
+       - Resetting the database before migration
+
+   It is **not** intended for normal application flow and **should not be used** as part of
+   regular insert/update/delete operations.
+
+
+Characteristics
+----------------------------
+
+- The **entire collection** is deleted.
+- The operation **cannot be included inside a transaction query**.
+- **No UI listeners** or callbacks will be triggered.
+- If :code:`mustAffectAtLeastOne` is enabled, the query fails when the target does not exist.
+- Use only when database structure changes are required.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+
+          // Insert temporary data
+          final q1 = RawQueryBuilder.add(
+            target: "user",
+            rawAddData: [
+              {"id": -1, "name": "a"},
+              {"id": -1, "name": "b"},
+            ],
+            serialKey: "id",
+            returnData: true,
+          ).build();
+          final r1 = db.executeQuery(q1);
+
+          // Remove entire collection
+          final q2 = RawQueryBuilder.removeCollection(target: "user").build();
+          final r2 = db.executeQuery(q2);
+
+          print(r1.toDict());
+          print(r2.toDict());
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, RawQueryBuilder
+
+        db = DeltaTraceDatabase()
+
+        # Insert temporary data
+        q1 = (
+            RawQueryBuilder.add(
+                target="user",
+                raw_add_data=[
+                    {"id": -1, "name": "a"},
+                    {"id": -1, "name": "b"},
+                ],
+                serial_key="id",
+                return_data=True
+            )
+            .build()
+        )
+
+        r1 = db.execute_query(q1)
+
+        # Remove entire collection
+        q2 = RawQueryBuilder.remove_collection(
+            target="user",
+        ).build()
+
+        r2 = db.execute_query(q2)
+
+        print(r1.to_dict())
+        print(r2.to_dict())
+
+Result
+----------------------------
+
+The result is returned as a :code:`QueryResult`.
+
+Example output:
+
+.. code-block:: text
+
+    // r1
+    {className: QueryResult, version: 6, isSuccess: true, target: user, type: add,
+    result: [
+        {id: 0, name: a}, {id: 1, name: b}
+    ], dbLength: 2, updateCount: 2, hitCount: 0, errorMessage: null}
+
+    // r2
+    {className: QueryResult, version: 6, isSuccess: true, target: user, type: removeCollection,
+    result: [], dbLength: 0, updateCount: 1, hitCount: 0, errorMessage: null}
+
+Notes
+----------------------------
+
+- This operation **deletes the collection itself**, not just its items. Because of this, it **cannot** be included in a :code:`transaction` query.
+- UI listeners registered via :code:`db.addListener(target, ...)` **will not** be called.
+- It is recommended to design the database schema so that :code:`removeCollection`
+  **does not need to be used** during normal application runtime.
+- Set :code:`mustAffectAtLeastOne = true` only when ensuring the target **must exist**.
+- :code:`cause` can be used to store metadata for logging, auditing, or AI-explainability.
+

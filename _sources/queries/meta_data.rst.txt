@@ -1,0 +1,118 @@
+.. _query_appendix:
+
+======================================
+Appendix: Query Metadata
+======================================
+
+This section describes optional metadata classes used to enrich
+query information with traceability and context.
+
+These classes are **optional**, but recommended for environments
+requiring strong logging or security.
+
+--------------------------------------
+Cause
+--------------------------------------
+
+The :class:`Cause` class describes the context and reason of a query.
+It can include who executed it (:class:`Actor`), when it occurred
+(:class:`TemporalTrace`), and why it was performed.
+
+EnumActorType defines three types: human, ai, and system.
+In the future, it is possible that AI will collect and manage data on behalf of humans,
+so it may become important to distinguish whether or not a database has been operated by an AI.
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+          import 'package:delta_trace_db/delta_trace_db.dart';
+
+          final cause = Cause(
+            who: Actor(
+              EnumActorType.human,
+              "user_id",
+              collectionPermissions: {
+                "users": Permission([EnumQueryType.add, EnumQueryType.update]),
+              },
+            ),
+            when: TemporalTrace(
+              nodes: [
+                TimestampNode(
+                  timestamp: DateTime.now().toUtc(),
+                  location: "Frontend user app, ip address etc.",
+                ),
+              ],
+            ),
+            what: "Load dashboard data",
+            why: "User manually refreshed the screen",
+            from: "WebApp",
+          );
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from datetime import datetime, timezone
+        from delta_trace_db import Cause, Actor, TemporalTrace, EnumActorType, Permission, EnumQueryType, TimestampNode
+
+        cause = Cause(who=Actor(EnumActorType.human,
+                                actor_id="user_id",
+                                collection_permissions={
+                                    "users": Permission([EnumQueryType.add, EnumQueryType.update]),
+                                }, ),
+                      when=TemporalTrace(
+                          nodes=[
+                              TimestampNode(
+                                  timestamp=datetime.now(timezone.utc),
+                                  location="Frontend user app, ip address etc.",
+                              ),
+                          ],
+                      ),
+                      what="Load dashboard data",
+                      why="User manually refreshed the screen",
+                      from_="WebApp")
+
+The Cause object often works together with Actor, TemporalTrace, and Permission
+to provide full traceability and contextual metadata for each query.
+
+--------------------------------------
+Actor and Permission
+--------------------------------------
+
+The :class:`Actor` represents the user or system performing the query.
+
+The :class:`Permission` defines the actions allowed for the collection specified by the key.
+However, you should never trust this class sent from the front end. This value is used to check permissions on the front end without server access.
+On the server side, you should always check each user's permissions using server-side data.
+
+--------------------------------------
+TemporalTrace
+--------------------------------------
+
+The :class:`TemporalTrace` items the "time trail" of a query,
+allowing tracing of transmissions even across multiple systems.
+
+Each step is stored as a :class:`TimestampNode`.
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+       final trace = TemporalTrace(nodes: [
+           TimestampNode(timestamp: DateTime.now().toUtc(), location: 'Frontend'),
+           TimestampNode(timestamp: DateTime.now().toUtc(), location: 'Server')
+       ]);
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        trace = TemporalTrace(nodes=[
+            TimestampNode(timestamp=datetime.now(timezone.utc), location='Frontend'),
+            TimestampNode(timestamp=datetime.now(timezone.utc), location='Server')
+        ])

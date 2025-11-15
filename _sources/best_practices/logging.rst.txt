@@ -1,0 +1,37 @@
+Query Logging Strategy
+----------------------
+
+DeltaTraceDB itself does **not** handle query logging automatically.
+Instead, it is the responsibility of the **server-side application**
+to determine what information should be recorded for traceability,
+auditing, or debugging.
+
+Because each query is represented as a JSON-serializable object,
+logging can be implemented simply by saving the received query JSON
+before executing it.
+
+Typical logging strategies include:
+
+- **Full Logging**:
+  Save every query exactly as received.
+  Useful for debugging and complete historical traceability.
+
+- **Filtered Logging**:
+  Record only certain types of operations (e.g., writes only).
+  Useful for reducing storage size.
+
+- **Summarized Logging**:
+  Store metadata (timestamp, user ID, query type) but not the full
+  query payload.
+  Useful for production systems where performance and privacy matter.
+
+Regardless of the chosen strategy, we recommend the following:
+
+- **Always store write operations** (e.g., ``add``, ``update``, ``delete``)
+  so the entire database can be reconstructed.
+- **Optionally store read operations** depending on privacy policy
+  and observability needs.
+
+Since queries are just JSON objects, persistent logs can be written
+to files, cloud storage, or any logging backend with no schema
+conversion required.

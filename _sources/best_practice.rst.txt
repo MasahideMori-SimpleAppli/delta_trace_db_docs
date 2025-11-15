@@ -1,0 +1,44 @@
+======================================
+Best Practices
+======================================
+
+This section provides recommended patterns and practical guidance for using
+DeltaTraceDB safely and effectively in real applications.
+
+While the core usage of the database is intentionally simple, certain design
+choices — such as *how to store datetimes* or *how to serialize state* — can
+have long-term impact on maintainability and data consistency.
+
+The topics in this section focus on common pitfalls and production-oriented
+guidelines that help avoid data inconsistency, unexpected behavior, or
+performance issues.
+
+Handle dates and times appropriately
+--------------------------------------
+
+- **Working with Date and Time**:
+  Understanding the differences between timezone-aware and local datetimes,
+  preventing invalid comparisons, and recommended strategies for consistency.
+
+Persisting Data
+----------------------------
+
+- **Saving, Restoring, and Snapshots**:
+  How to serialize the entire database, restore it later, and use query logs
+  to reconstruct state and support “time travel” debugging.
+
+- **Rebuild Strategy with Query Logs**:
+  Taking advantage of the fact that all state changes are expressed as queries,
+  enabling full historical reconstruction and rollback.
+
+These recommendations are not required for basic use, but they are highly
+recommended for building stable, maintainable systems — especially those with
+long-lived data.
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Best Practice
+
+   best_practices/datetime
+   best_practices/serialization
+   best_practices/logging

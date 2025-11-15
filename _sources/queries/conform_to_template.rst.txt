@@ -1,0 +1,271 @@
+======================================
+ConformToTemplate
+======================================
+
+Reformat collection data to match a new template.
+
+Overview
+----------------------------
+
+The **conformToTemplate** operation adjusts all items in a specified collection
+so that they match a given template structure.
+
+- Fields **not present in the template** will be **removed**.
+- Fields **present only in the template** will be **added** with their **template values as defaults**.
+
+This is useful when upgrading your data model, changing field names,
+or adding new fields to previously saved data.
+
+.. note::
+
+    This query type is not necessarily required if you're using a class-based approach.
+    If you're using a class-based approach and you're versioning each data class,
+    you can generally migrate within the deserialize method (e.g. fromDict method).
+
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+        import 'package:file_state_manager/file_state_manager.dart';
+
+        // Original class (old structure)
+        class ClassA extends CloneableFile {
+          final String id;
+          final String name;
+
+          ClassA({required this.id, required this.name});
+
+          static ClassA fromDict(Map<String, dynamic> src) =>
+              ClassA(id: src['id'], name: src['name']);
+
+          @override
+          Map<String, dynamic> toDict() => {'id': id, 'name': name};
+
+          @override
+          ClassA clone() => fromDict(toDict());
+        }
+
+        // New class (new structure)
+        class ClassB extends CloneableFile {
+          final String id;
+          final String name;
+          final int age;
+
+          ClassB({required this.id, required this.name, required this.age});
+
+          static ClassB fromDict(Map<String, dynamic> src) => ClassB(
+              id: src['id'], name: src['name'], age: src['age']);
+
+          @override
+          Map<String, dynamic> toDict() =>
+              {'id': id, 'name': name, 'age': age};
+
+          @override
+          ClassB clone() => fromDict(toDict());
+        }
+
+        void main() {
+          final db = DeltaTraceDatabase();
+
+          // Add data with old structure (ClassA)
+          final users = [ClassA(id: 'u003', name: 'Hanako')];
+          final addQuery =
+          QueryBuilder.add(target: 'users', addData: users).build();
+          db.executeQuery<ClassA>(addQuery);
+
+          // Conform collection to new structure (ClassB)
+          final conformQuery = QueryBuilder.conformToTemplate(
+            target: 'users',
+            template: ClassB(id: '', name: '', age: -1).toDict(),
+          ).build();
+
+          final result = db.executeQuery<ClassB>(conformQuery);
+          // isSuccess: true
+          print(result.toDict());
+
+          // Check the conformed data directly
+          print(db.collection("users").raw.first);
+        }
+
+
+   .. tab-item:: Dart (RawData)
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+
+          // Add raw data (old structure)
+          final users = [
+            {'id': 'u003', 'name': 'Hanako'}
+          ];
+          final addQuery = RawQueryBuilder.add(
+            target: 'users',
+            rawAddData: users,
+          ).build();
+          db.executeQuery(addQuery);
+
+          // Conform to new structure
+          final conformQuery = RawQueryBuilder.conformToTemplate(
+            target: 'users',
+            template: {'id': '', 'name': '', 'age': -1},
+          ).build();
+
+          final result = db.executeQuery(conformQuery);
+          // isSuccess: true
+          print(result.toDict());
+
+          // Check the conformed data directly
+          print(db.collection("users").raw.first);
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from dataclasses import dataclass
+        from typing import Dict, Any
+        from file_state_manager import CloneableFile
+        from delta_trace_db import DeltaTraceDatabase, QueryBuilder
+
+
+        # === Original class (old structure) ===
+        @dataclass
+        class ClassA(CloneableFile):
+            id: str
+            name: str
+
+            @classmethod
+            def from_dict(cls, src: Dict[str, Any]) -> "ClassA":
+                return ClassA(id=src["id"], name=src["name"])
+
+            def to_dict(self) -> Dict[str, Any]:
+                return {"id": self.id, "name": self.name}
+
+            def clone(self) -> "ClassA":
+                return ClassA.from_dict(self.to_dict())
+
+
+        # === New class (new structure) ===
+        @dataclass
+        class ClassB(CloneableFile):
+            id: str
+            name: str
+            age: int
+
+            @classmethod
+            def from_dict(cls, src: Dict[str, Any]) -> "ClassB":
+                return ClassB(id=src["id"], name=src["name"], age=src["age"])
+
+            def to_dict(self) -> Dict[str, Any]:
+                return {"id": self.id, "name": self.name, "age": self.age}
+
+            def clone(self) -> "ClassB":
+                return ClassB.from_dict(self.to_dict())
+
+
+        # === Main logic ===
+        def main():
+            db = DeltaTraceDatabase()
+
+            # Add data with old structure (ClassA)
+            users = [ClassA(id="u003", name="Hanako")]
+
+            add_query = QueryBuilder.add(
+                target="users",
+                add_data=users
+            ).build()
+
+            db.execute_query(add_query)
+
+            # Conform collection to new structure (ClassB)
+            conform_query = QueryBuilder.conform_to_template(
+                target="users",
+                template=ClassB(id="", name="", age=-1).to_dict()
+            ).build()
+
+            result = db.execute_query(conform_query)
+            print(result.to_dict())
+
+            # Check conformed data directly
+            print(db.collection("users").raw[0])
+
+
+        if __name__ == "__main__":
+            main()
+
+   .. tab-item:: Python(RawData)
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, RawQueryBuilder
+
+        db = DeltaTraceDatabase()
+
+        # Add raw data (old structure)
+        users = [{"id": "u003", "name": "Hanako"}]
+
+        add_query = RawQueryBuilder.add(
+            target="users",
+            raw_add_data=users,
+        ).build()
+
+        db.execute_query(add_query)
+
+        # Conform to new structure
+        conform_query = RawQueryBuilder.conform_to_template(
+            target="users",
+            template={"id": "", "name": "", "age": -1},
+        ).build()
+
+        result = db.execute_query(conform_query)
+
+        # is_success: True
+        print(result.to_dict())
+
+        # Check the conformed data directly
+        print(db.collection("users").raw[0])
+
+Result
+----------------------------
+
+This function does not return the updated DB contents.
+
+Example output:
+
+.. code-block:: text
+
+    // result
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: conformToTemplate,
+    result: [], dbLength: 1, updateCount: 1, hitCount: 1, errorMessage: null}
+
+    // db.collection("users").raw.first
+    {id: u003, name: Hanako, age: -1}
+
+
+Notes
+----------------------------
+
+.. warning::
+
+   This operation modifies all items in the specified collection
+   and can permanently remove or overwrite existing fields.
+
+   Use this API with caution.
+   It is strongly recommended to **back up your DB**
+   before executing this operation.
+
+- Fields missing from the template are deleted.
+- New fields in the template are added with their template values.
+- :code:`mustAffectAtLeastOne` can enforce that at least one item must be affected.
+  If set to true and no data is changed, the operation will fail.
+- :code:`cause` can be used to log or audit the reason for schema change.

@@ -1,0 +1,188 @@
+======================================
+Update or UpdateOne
+======================================
+
+Rewrite the contents of the item.
+
+Overview
+----------------------------
+
+The **update** operation walks through a specific collection in a DeltaTraceDatabase instance and updates the internal data of items that match the search criteria.
+
+**update** updates all matched items, while **updateOne** updates the first matched item.
+
+This operation will only rewrite what you specify and leave unspecified content as is.
+
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          final now = DateTime.now().toUtc().toIso8601String();
+          final users = [
+            {
+              "id": -1,
+              "name": 'Taro',
+              "age": 30,
+              "createdAt": now,
+              "updatedAt": now,
+              "nestedObj": {"a": "a"},
+            },
+            {
+              "id": -1,
+              "name": 'Jiro',
+              "age": 25,
+              "createdAt": now,
+              "updatedAt": now,
+              "nestedObj": {"a": "b"},
+            },
+          ];
+
+          // Data add
+          final addQuery = RawQueryBuilder.add(
+            target: 'users',
+            rawAddData: users,
+            serialKey: "id",
+            returnData: true,
+          ).build();
+          final _ = db.executeQuery(addQuery);
+
+          // Data update
+          // If you want to get the updated object, set returnKey to true.
+          final updateQuery = RawQueryBuilder.update(
+            target: "users",
+            queryNode: FieldLessThan("id", 2),
+            overrideData: {
+              "updatedAt" : DateTime.now().add(Duration(minutes: 30)).toUtc().toIso8601String(),
+              "nestedObj": {"c": "d"},
+            },
+            returnData: true,
+          ).build();
+          final r1 = db.executeQuery(updateQuery);
+          // If you want to check the return value, you can easily do so by using toDict, which serializes it.
+          print(r1.toDict());
+
+          // Data update only 1 object
+          // If you only need to update the first occurrence of the search, updateOne will be faster.
+          final updateOneQuery = RawQueryBuilder.updateOne(
+            target: "users",
+            queryNode: FieldEquals("name", "Taro"),
+            overrideData: {
+              "updatedAt" : DateTime.now().add(Duration(minutes: 60)).toUtc().toIso8601String(),
+              "nestedObj": {"e": "f"},
+            },
+            returnData: true,
+          ).build();
+          final r2 = db.executeQuery(updateOneQuery);
+          print(r2.toDict());
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, RawQueryBuilder, FieldLessThan, FieldEquals
+        from datetime import datetime, timezone, timedelta
+
+        db = DeltaTraceDatabase()
+        now = datetime.now(timezone.utc).isoformat()
+
+        users = [
+            {
+                "id": -1,
+                "name": "Taro",
+                "age": 30,
+                "created_at": now,
+                "updated_at": now,
+                "nested_obj": {"a": "a"},
+            },
+            {
+                "id": -1,
+                "name": "Jiro",
+                "age": 25,
+                "created_at": now,
+                "updated_at": now,
+                "nested_obj": {"a": "b"},
+            },
+        ]
+
+        # Data add
+        add_query = RawQueryBuilder.add(
+            target="users",
+            raw_add_data=users,
+            serial_key="id",
+            return_data=True,
+        ).build()
+
+        _ = db.execute_query(add_query)
+
+        # Data update
+        update_query = RawQueryBuilder.update(
+            target="users",
+            query_node=FieldLessThan("id", 2),
+            override_data={
+                "updated_at": (datetime.now(timezone.utc) + timedelta(minutes=30)).isoformat(),
+                "nested_obj": {"c": "d"},
+            },
+            return_data=True,
+        ).build()
+
+        r1 = db.execute_query(update_query)
+        print(r1.to_dict())
+
+        # Data update only 1 object (update_one)
+        update_one_query = RawQueryBuilder.update_one(
+            target="users",
+            query_node=FieldEquals("name", "Taro"),
+            override_data={
+                "updated_at": (datetime.now(timezone.utc) + timedelta(minutes=60)).isoformat(),
+                "nested_obj": {"e": "f"},
+            },
+            return_data=True,
+        ).build()
+
+        r2 = db.execute_query(update_one_query)
+        print(r2.to_dict())
+
+Result
+----------------------------
+
+The **executeQuery / execute_query** method returns a QueryResult object.
+
+If the **returnData / return_data** flag is true, the changed object will be stored in QueryResult.result.
+
+Example output:
+
+.. code-block:: text
+
+    * r1
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: update,
+    result: [
+        {id: 0, name: Taro, age: 30, createdAt: 2025-11-02T12:14:09.512494Z, updatedAt: 2025-11-02T12:44:09.530628Z, nestedObj: {c: d}},
+        {id: 1, name: Jiro, age: 25, createdAt: 2025-11-02T12:14:09.512494Z, updatedAt: 2025-11-02T12:44:09.530628Z, nestedObj: {c: d}}
+    ], dbLength: 2, updateCount: 2, hitCount: 2, errorMessage: null}
+
+    * r2
+    {className: QueryResult, version: 6, isSuccess: true, target: users, type: updateOne,
+    result: [
+        {id: 0, name: Taro, age: 30, createdAt: 2025-11-02T12:14:09.512494Z, updatedAt: 2025-11-02T13:14:09.536665Z, nestedObj: {e: f}}
+    ], dbLength: 2, updateCount: 1, hitCount: 1, errorMessage: null}
+
+
+Notes
+----------------------------
+
+- Collections are automatically created if they do not exist.
+- If the optional argument **mustAffectAtLeastOne / must_affect_at_least_one** is true and there are no target, **QueryResult.isSuccess / QueryResult.is_success** will be False.
+- For detailed search specifications, check the :ref:`nodes<nodes>` section.
+- For the sorting specifications of optional parameters, please check the :ref:`sort<sort>` section.
+- Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.

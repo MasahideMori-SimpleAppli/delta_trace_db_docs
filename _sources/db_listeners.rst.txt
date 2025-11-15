@@ -1,0 +1,239 @@
+DB Listeners
+============
+
+DeltaTraceDB provides a very lightweight listener mechanism that allows
+applications (such as UIs) to react when a specific collection is modified.
+The listener simply calls the registered callback whenever the collection's
+content changes. There is no network synchronization or remote event
+propagation involved.
+
+When to Use
+-----------
+
+Use listeners when the UI or logic needs to update **immediately** after DB
+modification.
+
+Typical use:
+
+- Frontend UI auto-update
+- Observer-style reactive state refresh
+
+This is **not** intended for:
+
+- Remote synchronization
+- Multi-device real-time updates
+
+(These are outside the scope of this DB package.)
+
+
+API Summary
+-----------
+
+.. code-block:: dart
+
+   void addListener(String target, void Function() cb, {String? name})
+   void removeListener(String target, void Function() cb, {String? name})
+
+
+Parameters
+----------
+
+=================  =====================================================
+Parameter          Description
+=================  =====================================================
+target             Name of the collection to listen to
+cb                 Function to call when the collection changes
+name               (Optional) Identifier for precise registration/removal
+=================  =====================================================
+
+
+Basic Usage (UI)
+----------------
+
+.. tab-set::
+
+   .. tab-item:: Dart (Flutter)
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+        import 'package:flutter/material.dart';
+
+        final db = DeltaTraceDatabase();
+
+        void main() {
+          // Add a background color entry as the initial state
+          db.executeQuery(
+            RawQueryBuilder.clearAdd(
+              target: 'appPreferences',
+              rawAddData: [
+                {'bgColor': '#FFFFFF'},
+              ],
+              resetSerial: true,
+              mustAffectAtLeastOne:
+                  false, // Should be false if you might be adding to an empty DB.
+            ).build(),
+          );
+
+          runApp(const MaterialApp(home: SamplePage()));
+        }
+
+        class SamplePage extends StatefulWidget {
+          const SamplePage({super.key});
+
+          @override
+          State<SamplePage> createState() => _SamplePageState();
+        }
+
+        class _SamplePageState extends State<SamplePage> {
+          @override
+          void initState() {
+            super.initState();
+            db.addListener("users", _onDbChanged);
+            db.addListener("appPreferences", _onDbChanged);
+          }
+
+          void _onDbChanged() {
+            setState(() {}); // refresh UI
+          }
+
+          @override
+          void dispose() {
+            db.removeListener("users", _onDbChanged);
+            db.removeListener("appPreferences", _onDbChanged);
+            super.dispose();
+          }
+
+          // Get the current background color from the DB
+          Color _getBackgroundColor() {
+            final result = db
+                .executeQuery(RawQueryBuilder.getAll(target: "appPreferences").build())
+                .result;
+            if (result.isEmpty) return Colors.white;
+            final hex = result.first['bgColor'] as String;
+            return Color(int.parse(hex.replaceFirst('#', '0xff')));
+          }
+
+          // Get the current users
+          // You can change the limit and add paging options as needed.
+          // Read the getAll chapter for more details.
+          List<Map<String, dynamic>> _getUsers() {
+            final result = db
+                .executeQuery(RawQueryBuilder.getAll(target: "users").build())
+                .result;
+            return result;
+          }
+
+          // Add a user
+          void _addUser() {
+            final id = _getUsers().length + 1;
+
+            final addQuery = RawQueryBuilder.add(
+              target: 'users',
+              rawAddData: [
+                {'id': -1, 'name': 'User $id'},
+              ],
+              serialKey: "id",
+              returnData: true,
+            ).build();
+
+            db.executeQuery(addQuery);
+          }
+
+          // Switch background color
+          void _toggleBackgroundColor() {
+            final currentColor = _getBackgroundColor();
+            final nextColor = currentColor == Colors.white ? '#FFDDDD' : '#FFFFFF';
+
+            final clearAddQuery = RawQueryBuilder.clearAdd(
+              target: 'appPreferences',
+              rawAddData: [
+                {'bgColor': nextColor},
+              ],
+              resetSerial: true,
+              mustAffectAtLeastOne: false,
+            ).build();
+
+            db.executeQuery(clearAddQuery);
+          }
+
+          @override
+          Widget build(BuildContext context) {
+            final users = _getUsers();
+
+            return Scaffold(
+              backgroundColor: _getBackgroundColor(),
+              appBar: AppBar(title: const Text("DB Listener Sample")),
+              body: Column(
+                children: [
+                  Container(
+                    color: Colors.blue[50],
+                    height: 64,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton.icon(
+                          onPressed: _addUser,
+                          icon: const Icon(Icons.add),
+                          label: const Text("Add User"),
+                        ),
+                        const SizedBox(width: 16),
+                        TextButton.icon(
+                          onPressed: _toggleBackgroundColor,
+                          icon: const Icon(Icons.color_lens),
+                          label: const Text("Change Background"),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      children: users.map((user) {
+                        return ListTile(
+                          title: Text(user['name']),
+                          subtitle: Text("id: ${user['id']}"),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        }
+
+
+Using Named Listeners
+---------------------
+
+Useful when managing multiple listeners cleanly.
+
+.. code-block:: dart
+
+   db.addListener("logs", _refreshLogs, name: "logView");
+
+   // later
+   db.removeListener("logs", _refreshLogs, name: "logView");
+
+
+Important Notes
+---------------
+
+- Listeners **do not persist across deserialization**.
+  You must call `addListener()` again after loading the DB.
+
+- Only **local changes trigger callbacks**.
+  No network messaging or distributed event tracking is involved.
+
+- Callbacks should be **fast**. Long operations should be moved to separate tasks.
+
+- When you execute a :doc:`TransactionQuery <./queries/transaction>`, a callback occurs only once for each collection that is operated on.
+
+
+Summary
+-------
+
+- Listeners provide a simple callback on local collection changes.
+- Ideal for UI auto-refresh or lightweight event hooks.
+- Must be manually registered and removed.
+- No remote or real-time synchronization is included.

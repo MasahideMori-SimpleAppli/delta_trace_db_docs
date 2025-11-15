@@ -1,0 +1,251 @@
+======================================
+Transaction Queries
+======================================
+
+Execute multiple queries as a **single atomic operation**.
+
+Overview
+----------------------------
+
+A :code:`TransactionQuery` groups multiple queries.
+This ensures that a set of related updates either **all succeed together or have no effect**.
+If **any** query in the transaction fails:
+
+- The **entire database is rolled back** to its previous state.
+- :code:`isSuccess` in the result will be **false**.
+- No partial changes will remain.
+
+This is useful when multiple updates must succeed **together** to maintain
+data integrity.
+
+.. warning::
+
+   Transaction queries work by temporarily **buffering affected collections in memory**.
+   If you perform large operations inside a transaction, the memory usage will increase.
+
+   Also note that some special operations (such as :code:`removeCollection`) **cannot**
+   be included in a transaction query.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:file_state_manager/file_state_manager.dart';
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+
+          // Prepare sample users
+          List<Map<String, dynamic>> users = [
+            {"id": 1, "name": 'Taro', "age": 31},
+            {"id": 2, "name": 'Jiro', "age": 28},
+            {"id": 3, "name": 'Saburo', "age": 25},
+          ];
+
+          // Add sample data into two collections
+          db.executeQuery(
+            RawQueryBuilder.add(target: 'users1', rawAddData: users).build(),
+          );
+          db.executeQuery(
+            RawQueryBuilder.add(target: 'users2', rawAddData: users).build(),
+          );
+
+          // Failed transaction
+          final TransactionQuery tq1 = TransactionQuery(
+            queries: [
+              RawQueryBuilder.update(
+                target: 'users1',
+                // ❌ Type mismatch inserted intentionally
+                queryNode: FieldEquals("id", "3"),
+                overrideData: {"id": "5"},
+                returnData: true,
+                mustAffectAtLeastOne: true,
+              ).build(),
+              RawQueryBuilder.clear(target: 'users2').build(),
+            ],
+          );
+
+          // The DB will be rolled back. Nothing changes.
+          QueryExecutionResult r = db.executeQueryObject(tq1);
+          print(r.toDict());
+
+          // Successful transaction
+          final TransactionQuery tq2 = TransactionQuery(
+            queries: [
+              RawQueryBuilder.update(
+                target: 'users1',
+                queryNode: FieldEquals("id", 3),
+                overrideData: {"id": 5},
+                returnData: true,
+                mustAffectAtLeastOne: true,
+              ).build(),
+              RawQueryBuilder.clear(target: 'users2').build(),
+            ],
+          );
+
+          QueryExecutionResult r2 = db.executeQueryObject(tq2);
+          print(r2.toDict());
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from delta_trace_db import (
+            DeltaTraceDatabase,
+            RawQueryBuilder,
+            FieldEquals,
+            TransactionQuery,
+        )
+
+        db = DeltaTraceDatabase()
+
+        # Prepare sample users
+        users = [
+            {"id": 1, "name": "Taro", "age": 31},
+            {"id": 2, "name": "Jiro", "age": 28},
+            {"id": 3, "name": "Saburo", "age": 25},
+        ]
+
+        # Add sample data into two collections
+        db.execute_query(RawQueryBuilder.add(target="users1", raw_add_data=users).build())
+        db.execute_query(RawQueryBuilder.add(target="users2", raw_add_data=users).build())
+
+        # Failed transaction
+        tq1 = TransactionQuery(
+            queries=[
+                RawQueryBuilder.update(
+                    target="users1",
+                    # ❌ Type mismatch inserted intentionally
+                    query_node=FieldEquals("id", "3"),
+                    override_data={"id": "5"},
+                    return_data=True,
+                    must_affect_at_least_one=True,
+                ).build(),
+                RawQueryBuilder.clear(target="users2").build(),
+            ]
+        )
+
+        # The DB will be rolled back. Nothing changes.
+        r = db.execute_query_object(tq1)
+        print(r.to_dict())
+
+        # Successful transaction
+        tq2 = TransactionQuery(
+            queries=[
+                RawQueryBuilder.update(
+                    target="users1",
+                    query_node=FieldEquals("id", 3),
+                    override_data={"id": 5},
+                    return_data=True,
+                    must_affect_at_least_one=True,
+                ).build(),
+                RawQueryBuilder.clear(target="users2").build(),
+            ]
+        )
+
+        r2 = db.execute_query_object(tq2)
+        print(r2.to_dict())
+
+Result
+----------------------------
+
+A transaction execution always returns a :code:`QueryExecutionResult`,
+containing the success flag and the results of each individual query.
+
+Example output:
+
+.. code-block:: text
+
+    // r1
+    {className: TransactionQueryResult, version: 2, isSuccess: false,
+    results: [], errorMessage: Transaction failed}
+
+    // r2
+    {className: TransactionQueryResult, version: 2, isSuccess: true,
+    results: [
+
+        // query 1 result.
+        {className: QueryResult, version: 6, isSuccess: true,
+        target: users1, type: update,
+        result: [
+            {id: 5, name: Saburo, age: 25}
+        ], dbLength: 3, updateCount: 1, hitCount: 1, errorMessage: null},
+
+        // query 2 result.
+        {className: QueryResult, version: 6, isSuccess: true,
+        target: users2, type: clear,
+        result: [], dbLength: 0, updateCount: 3, hitCount: 3, errorMessage: null}
+
+    ], errorMessage: null}
+
+If :code:`isSuccess` is :code:`false`, the entire database is restored to its state
+**before** executing the transaction.
+
+
+Benefits
+--------
+
+Using transactions in this database provides several practical benefits:
+
+- **Simplified frontend state coordination**:
+  Because a set of related reads-and-writes is expressed as one logical unit,
+  it becomes much easier to keep UI state in sync with backend data updates.
+
+- **Reduced round-trips to the backend**:
+  The client can combine several reads and writes into one request.
+  This is especially valuable when network latency affects UI responsiveness.
+
+- **Atomic multi-collection operations**:
+  Multiple queries, potentially across different collections, are grouped and executed as a single operation.
+  Either all sub-operations succeed or none of them are applied.
+
+
+Relationship to DB Listeners
+----------------------------
+
+When a transaction successfully commits, all affected collections are updated
+together. At that point, listeners registered via :code:`db.addListener(...)` are
+triggered **once per affected collection**.
+
+This means:
+
+- If the transaction modifies only **one** collection, the UI refresh occurs **once**.
+- If the transaction modifies **multiple** collections, then **each** collection's
+  listener is triggered **once**, resulting in multiple UI refreshes if your UI
+  listens to multiple collections.
+
+In other words, transactions do **not** collapse all UI updates into a single
+global refresh. Instead, they ensure that:
+
+1. **No intermediate state is ever observed** — listeners are triggered only
+   after the transaction fully succeeds.
+2. **Each collection is refreshed exactly once**, even if multiple queries inside
+   the transaction affected the same collection.
+3. **Failed transactions do not trigger any listeners**, because no changes are
+   committed.
+
+This design provides a balance between correctness and efficiency:
+
+- The UI is always updated to a **consistent final state**, and
+- Unnecessary repeated UI refreshes for the same collection are avoided.
+
+For more information, see :doc:`../db_listeners`.
+
+Notes
+----------------------------
+
+- All queries inside the transaction must be normal queries (:code:`add`, :code:`update`, :code:`clear`, etc.).
+- Operations that modify **database structure**, such as :code:`removeCollection`,
+  **cannot** be used inside a transaction.
+- When a transaction fails, **every collection involved is fully reverted**.
+- UI listeners registered via :code:`db.addListener` are triggered **only if** the transaction succeeds.
+- Because collections are buffered in memory during execution,
+  **it is recommended to avoid very large transactions**.
+- Queries inside a :code:`TransactionQuery` are executed **in order**.　If a query modifies field names or structure, subsequent queries will see the modified data.
