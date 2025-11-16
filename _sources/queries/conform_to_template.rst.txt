@@ -251,6 +251,12 @@ Example output:
     // db.collection("users").raw.first
     {id: u003, name: Hanako, age: -1}
 
+API
+----------------------------
+- Dart: `[QueryBuilder.conformToTemplate] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.conformToTemplate.html>`__
+- Dart(RawData): `[RawQueryBuilder.conformToTemplate] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.conformToTemplate.html>`__
+- Python: :py:meth:`[QueryBuilder.conform_to_template] <delta_trace_db.query.query_builder.QueryBuilder.conform_to_template>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.conform_to_template] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.conform_to_template>`
 
 Notes
 ----------------------------

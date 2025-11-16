@@ -1,0 +1,23 @@
+delta\_trace\_db.query.nodes.comparison\_node
+=============================================
+
+.. automodule:: delta_trace_db.query.nodes.comparison_node
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      FieldContains
+      FieldEndsWith
+      FieldEquals
+      FieldGreaterThan
+      FieldGreaterThanOrEqual
+      FieldIn
+      FieldLessThan
+      FieldLessThanOrEqual
+      FieldMatchesRegex
+      FieldNotEquals
+      FieldNotIn
+      FieldStartsWith
+   

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>delta_trace_db.query.raw_query_builder &#8212; DeltaTraceDB Docs 0.0.37 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="../../_static/documentation_options.js?v=aa2ad26f"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="delta_trace_db.query.sort" href="delta_trace_db.query.sort.html" />
+    <link rel="prev" title="delta_trace_db.query.query_result" href="delta_trace_db.query.query_result.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-delta_trace_db.query.raw_query_builder">
+<span id="delta-trace-db-query-raw-query-builder"></span><h1>delta_trace_db.query.raw_query_builder<a class="headerlink" href="#module-delta_trace_db.query.raw_query_builder" title="Link to this heading">¶</a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder" title="delta_trace_db.query.raw_query_builder.RawQueryBuilder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RawQueryBuilder</span></code></a>(target, type_[, ...])</p></td>
+<td><p>(en) A builder class for easily constructing queries.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">delta_trace_db.query.raw_query_builder.</span></span><span class="sig-name descname"><span class="pre">RawQueryBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.enum_query_type.html#delta_trace_db.query.enum_query_type.EnumQueryType" title="delta_trace_db.query.enum_query_type.EnumQueryType"><span class="pre">EnumQueryType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_add_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><span class="pre">QueryNode</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><span class="pre">AbstractSort</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serial_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_serial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="delta_trace_db.query.query_builder.html#delta_trace_db.query.query_builder.QueryBuilder" title="delta_trace_db.query.query_builder.QueryBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryBuilder</span></code></a></p>
+<p>(en) A builder class for easily constructing queries.
+In addition to constructors for creating each query,
+there are methods for dynamically changing the paging parameters.
+For information about the parameters of this class, see the individual class methods.</p>
+<p>(ja) クエリを簡単に組み立てるためのビルダークラスです。
+各クエリを作成するためのコンストラクタの他に、
+ページング用のパラメータを動的に変更するためのメソッドがあります。
+本クラスのパラメータについては、個別のクラスメソッドを参照してください。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.add">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_add_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serial_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.add" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Adds an item to the specified collection.
+If the specified collection does not already exist,
+it will be created automatically.</p>
+<p>(ja) 指定されたコレクションに要素を追加します。
+指定されたコレクションがまだ存在しない場合はコレクションが自動で作成されます。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>raw_add_data</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – Data specified when performing an add operation.</p></li>
+<li><p><strong>return_data</strong> (<em>bool</em>) – If true, return the changed objs.
+If serialKey is set, the object will be returned with
+the serial number added.</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>serial_key</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – If not null, the add query will assign a unique serial
+number (integer value) to the specified key.
+This value is unique per collection.
+Note that only variables directly under the class can be specified as
+keys, not nested fields.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="delta_trace_db.query.query.html#delta_trace_db.query.query.Query" title="delta_trace_db.query.query.Query"><span class="pre">Query</span></a></span></span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.build" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Commit the content and convert it into a query object.</p>
+<p>(ja) 内容を確定してクエリーオブジェクトに変換します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.clear">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_serial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.clear" title="Link to this definition">¶</a></dt>
+<dd><p>(en) This query empties the contents of the specified collection.</p>
+<p>(ja) このクエリは指定したコレクションの内容を空にします。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>reset_serial</strong> (<em>bool</em>) – If true, resets the managed serial number to 0 on
+a clear or clearAdd query.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.clear_add">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clear_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_add_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serial_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset_serial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.clear_add" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Clears the specified collection and then add data.</p>
+<p>(ja) 指定されたコレクションをclearした後、dataをAddします。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>raw_add_data</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – Data specified when performing an add operation.</p></li>
+<li><p><strong>return_data</strong> (<em>bool</em>) – If true, return the changed objs.
+If serialKey is set, the object will be returned with
+the serial number added.</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>serial_key</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – If not null, the add query will assign a unique serial
+number (integer value) to the specified key.
+This value is unique per collection.
+Note that only variables directly under the class can be specified as
+keys, not nested fields.</p></li>
+<li><p><strong>reset_serial</strong> (<em>bool</em>) – If true, resets the managed serial number to 0 on
+a clear or clearAdd query.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.conform_to_template">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">conform_to_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.conform_to_template" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Formats the contents of the specified collection to match the
+specified template.
+Fields not present in the template will be removed,
+and fields that are only present in the template will be added
+with the template’s value as their initial value.</p>
+<p>(ja) 指定されたコレクションの内容を、指定したテンプレートに一致するように整形します。
+テンプレートに存在しないフィールドは削除され、テンプレートにのみ存在するフィールドは、
+テンプレートの値を初期値として追加されます。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>template</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Specify this when changing the structure of the DB class.
+Fields that do not exist in the existing structure but exist in the
+template will be added with the template value as the initial value.
+Fields that do not exist in the template will be deleted.
+Usually, you pass a dictionary created by converting CloneableFile to
+Dict (call toDict).</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.count">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.count" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Gets the number of elements in the specified collection.</p>
+<p>(ja) 指定されたコレクションの要素数を取得します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.delete">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><span class="pre">QueryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><span class="pre">AbstractSort</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.delete" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Deletes all objects in the specified collection that match
+the specified criteria.</p>
+<p>(ja) 指定されたコレクションのうち、条件にマッチするオブジェクトを全て削除します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>query_node</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><em>QueryNode</em></a>) – This is the node object used for the search.
+You can build queries by combining the various nodes defined in
+comparison_node.dart.</p></li>
+<li><p><strong>return_data</strong> (<em>bool</em>) – If true, return the changed objs.
+If serialKey is set, the object will be returned with
+the serial number added.</p></li>
+<li><p><strong>sort_obj</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><em>AbstractSort</em></a><em>]</em>) – <p>An object for sorting the return values.</p>
+<ul>
+<li><p>SingleSort or MultiSort can be used.</p></li>
+<li><p>Optional. If omitted, results will be returned in the order they were added to the database.</p></li>
+</ul>
+</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.delete_one">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><span class="pre">QueryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.delete_one" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Deletes only one object that matches the specified criteria from
+the specified collection.</p>
+<p>(ja) 指定されたコレクションのうち、条件にマッチするオブジェクトを１件だけ削除します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>query_node</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><em>QueryNode</em></a>) – This is the node object used for the search.
+You can build queries by combining the various nodes defined in
+comparison_node.dart.</p></li>
+<li><p><strong>return_data</strong> (<em>bool</em>) – If true, return the changed objs.
+If serialKey is set, the object will be returned with
+the serial number added.</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.get_all">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><span class="pre">AbstractSort</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.get_all" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Gets all items in the specified collection.
+If a limit(limit, offset, startAfter, endBefore, limit) is set,
+items from the specified location and quantity will be retrieved from
+all items.</p>
+<p>(ja) 指定されたコレクションの全てのアイテムを取得します。
+制限(limit, offset, startAfter, endBefore, limit)をかけた場合は、
+全てのアイテムから指定の位置と量のアイテムを取得します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>sort_obj</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><em>AbstractSort</em></a><em>]</em>) – <p>An object for sorting the return values.</p>
+<ul>
+<li><p>SingleSort or MultiSort can be used.</p></li>
+<li><p>Optional. If omitted, results will be returned in the order they were added to the database.</p></li>
+</ul>
+</p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Offset for front-end paging support.
+If specified, data from the specified offset onwards will be retrieved.</p></li>
+<li><p><strong>start_after</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – If you pass in a serialized version of a search result
+object, the search will return results from objects after that object,
+and if an offset is specified, it will be ignored.
+This does not work if there are multiple identical objects because it
+compares the object values, and is slightly slower than specifying an
+offset, but it works fine even if new objects are added during the search.</p></li>
+<li><p><strong>end_before</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – If you pass in a serialized version of a search result
+object, the search will return results from the object before that one,
+and any offset or startAfter specified will be ignored.
+This does not work if there are multiple identical objects because it
+compares the object values, and is slightly slower than specifying an
+offset, but it works fine even if new objects are added during the search.</p></li>
+<li><p><strong>limit</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – <p>The maximum number of search results.</p>
+<ul>
+<li><p>With offset/startAfter: returns up to [limit] items after the specified position.</p></li>
+<li><p>With endBefore: returns up to [limit] items before the specified position.</p></li>
+<li><p>If no offset/startAfter/endBefore is specified, the first [limit] items in addition order are returned.</p></li>
+</ul>
+</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.remove_collection">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.remove_collection" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Deletes the specified collection.
+This query is special because it deletes the collection itself.
+Therefore, it cannot be included as part of a transaction query.
+Additionally, any callbacks associated with the target collection will
+not be called when executed.
+This is a maintenance function for administrators who need to change
+the database structure.
+Typically, the database should be designed so that it never needs to be
+called.</p>
+<p>(ja) 指定されたコレクションを削除します。
+このクエリは特殊で、コレクションそのものが削除されるため
+トランザクションクエリの一部として含めることはできません。
+また、実行時には対象のコレクションに紐付いたコールバックも呼ばれません。
+これはDBの構造変更が必要な管理者のためのメンテナンス機能であり、
+通常はこれを呼び出さないでも問題ない設計にしてください。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.rename_field">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rename_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rename_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.rename_field" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Renames a specific field in the specified collection.</p>
+<p>(ja) 指定されたコレクションの特定のフィールドの名前を変更します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>rename_before</strong> (<em>str</em>) – The old variable name when querying for a rename.</p></li>
+<li><p><strong>rename_after</strong> (<em>str</em>) – The new name of the variable when querying for a rename.</p></li>
+<li><p><strong>return_data</strong> (<em>bool</em>) – If true, return the changed objs.
+If serialKey is set, the object will be returned with
+the serial number added.</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.search">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><span class="pre">QueryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><span class="pre">AbstractSort</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.search" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Gets objects from the specified collection that match
+the specified criteria.</p>
+<p>(ja) 指定されたコレクションから、条件にマッチするオブジェクトを取得します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>query_node</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><em>QueryNode</em></a>) – This is the node object used for the search.
+You can build queries by combining the various nodes defined in
+comparison_node.dart.</p></li>
+<li><p><strong>sort_obj</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><em>AbstractSort</em></a><em>]</em>) – <p>An object for sorting the return values.</p>
+<ul>
+<li><p>SingleSort or MultiSort can be used.</p></li>
+<li><p>Optional. If omitted, results will be returned in the order they were added to the database.</p></li>
+</ul>
+</p></li>
+<li><p><strong>offset</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Offset for front-end paging support.
+If specified, data from the specified offset onwards will be retrieved.</p></li>
+<li><p><strong>start_after</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – If you pass in a serialized version of a search result
+object, the search will return results from objects after that object,
+and if an offset is specified, it will be ignored.
+This does not work if there are multiple identical objects because it
+compares the object values, and is slightly slower than specifying an
+offset, but it works fine even if new objects are added during the search.</p></li>
+<li><p><strong>end_before</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – If you pass in a serialized version of a search result
+object, the search will return results from the object before that one,
+and any offset or startAfter specified will be ignored.
+This does not work if there are multiple identical objects because it
+compares the object values, and is slightly slower than specifying an
+offset, but it works fine even if new objects are added during the search.</p></li>
+<li><p><strong>limit</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – <p>The maximum number of search results.</p>
+<ul>
+<li><p>With offset/startAfter: returns up to [limit] items after the specified position.</p></li>
+<li><p>With endBefore: returns up to [limit] items before the specified position.</p></li>
+<li><p>If no offset/startAfter/endBefore is specified, the first [limit] items in addition order are returned.</p></li>
+</ul>
+</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.search_one">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">search_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><span class="pre">QueryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.search_one" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Gets objects from the specified collection that match
+the specified criteria.
+It is faster than a “search query” when searching for a single item
+because the search stops once a hit is found.</p>
+<p>(ja) 指定されたコレクションから、条件にマッチするオブジェクトを取得します。
+1件のヒットがあった時点で探索を打ち切るため、
+単一のアイテムを検索する場合はsearchよりも高速に動作します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>query_node</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><em>QueryNode</em></a>) – This is the node object used for the search.
+You can build queries by combining the various nodes defined in
+comparison_node.dart.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.set_end_before">
+<span class="sig-name descname"><span class="pre">set_end_before</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_end_before</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.set_end_before" title="Link to this definition">¶</a></dt>
+<dd><p>(en) This method can be used if you want to change only the search position.</p>
+<p>(ja) 検索位置だけを変更したい場合に利用できるメソッドです。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_end_before</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – If you pass in a serialized version of a search result
+object, the search will return results from the object before that one,
+and any offset or startAfter specified will be ignored.
+This does not work if there are multiple identical objects because it
+compares the object values, and is slightly slower than specifying an
+offset, but it works fine even if new objects are added during the search.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.set_limit">
+<span class="sig-name descname"><span class="pre">set_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.set_limit" title="Link to this definition">¶</a></dt>
+<dd><p>(en) This method can be used if you want to change only the limit.</p>
+<p>(ja) limitだけを変更したい場合に利用できるメソッドです。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_limit</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – <p>The maximum number of search results.</p>
+<ul class="simple">
+<li><p>With offset/startAfter: returns up to [limit] items after the specified position.</p></li>
+<li><p>With endBefore: returns up to [limit] items before the specified position.</p></li>
+<li><p>If no offset/startAfter/endBefore is specified, the first [limit] items in addition order are returned.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.set_offset">
+<span class="sig-name descname"><span class="pre">set_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.set_offset" title="Link to this definition">¶</a></dt>
+<dd><p>(en) This method can be used if you want to change only the search position.</p>
+<p>(ja) 検索位置だけを変更したい場合に利用できるメソッドです。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_offset</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Offset for front-end paging support.
+If specified, data from the specified offset onwards will be retrieved.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.set_start_after">
+<span class="sig-name descname"><span class="pre">set_start_after</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_start_after</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.set_start_after" title="Link to this definition">¶</a></dt>
+<dd><p>(en) This method can be used if you want to change only the search position.</p>
+<p>(ja) 検索位置だけを変更したい場合に利用できるメソッドです。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_start_after</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – If you pass in a serialized version of a search result
+object, the search will return results from objects after that object,
+and if an offset is specified, it will be ignored.
+This does not work if there are multiple identical objects because it
+compares the object values, and is slightly slower than specifying an
+offset, but it works fine even if new objects are added during the search.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.update">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><span class="pre">QueryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">override_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><span class="pre">AbstractSort</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.update" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Overwrites the parameters of all objects in the specified collection
+that match the conditions.
+Parameters not specified for overwriting remain unchanged.</p>
+<p>(ja) 指定されたコレクションのうち、条件にマッチする全てのオブジェクトのパラメータを
+上書きします。上書き対象に指定していないパラメータは変化しません。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>query_node</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><em>QueryNode</em></a>) – This is the node object used for the search.
+You can build queries by combining the various nodes defined in
+comparison_node.dart.</p></li>
+<li><p><strong>override_data</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – This is not a serialized version of the full class,
+but a dictionary containing only the parameters you want to update.
+The parameters directly below will be updated.
+For example, if the original data is {“a”: 0, “b”: {“c”: 1}},
+and you update it by data of {“b”: {“d”: 2}},
+the result will be {“a”: 0, “b”: {“d”: 2}}.</p></li>
+<li><p><strong>return_data</strong> (<em>bool</em>) – If true, return the changed objs.
+If serialKey is set, the object will be returned with
+the serial number added.</p></li>
+<li><p><strong>sort_obj</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><em>AbstractSort</em></a><em>]</em>) – <p>An object for sorting the return values.</p>
+<ul>
+<li><p>SingleSort or MultiSort can be used.</p></li>
+<li><p>Optional. If omitted, results will be returned in the order they were added to the database.</p></li>
+</ul>
+</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.raw_query_builder.RawQueryBuilder.update_one">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><span class="pre">QueryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">override_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">must_affect_at_least_one</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cause</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><span class="pre">Cause</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.raw_query_builder.RawQueryBuilder.update_one" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Overwrites the parameters of one object in the specified collection
+that matches the conditions. Parameters not specified for overwriting
+remain unchanged.</p>
+<p>(ja) 指定されたコレクションのうち、条件にマッチする１つのオブジェクトのパラメータを
+上書きします。上書き対象に指定していないパラメータは変化しません。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> (<em>str</em>) – The collection name in DB.</p></li>
+<li><p><strong>query_node</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.query_node.html#delta_trace_db.query.nodes.query_node.QueryNode" title="delta_trace_db.query.nodes.query_node.QueryNode"><em>QueryNode</em></a>) – This is the node object used for the search.
+You can build queries by combining the various nodes defined in
+comparison_node.dart.</p></li>
+<li><p><strong>override_data</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – This is not a serialized version of the full class,
+but a dictionary containing only the parameters you want to update.
+The parameters directly below will be updated.
+For example, if the original data is {“a”: 0, “b”: {“c”: 1}},
+and you update it by data of {“b”: {“d”: 2}},
+the result will be {“a”: 0, “b”: {“d”: 2}}.</p></li>
+<li><p><strong>return_data</strong> (<em>bool</em>) – If true, return the changed objs.
+If serialKey is set, the object will be returned with
+the serial number added.</p></li>
+<li><p><strong>must_affect_at_least_one</strong> (<em>bool</em>) – If true, the operation will be marked as
+failed if it affects 0 objects.
+If the operation is treated as a failure, the isSuccess flag of the
+returned QueryResult will be set to false.</p></li>
+<li><p><strong>cause</strong> (<em>Optional</em><em>[</em><a class="reference internal" href="delta_trace_db.query.cause.cause.html#delta_trace_db.query.cause.cause.Cause" title="delta_trace_db.query.cause.cause.Cause"><em>Cause</em></a><em>]</em>) – Optional metadata for auditing or logging.
+Useful in high-security environments or for autonomous AI programs
+to record the reason or initiator of a query.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">DeltaTraceDB Docs</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../queries.html">Query Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../db_listeners.html">DB Listeners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">Server-Side Coding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../best_practice.html">Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../delta_trace_db.html">Python version API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../delta_trace_db.html#delta-trace-db-package">delta_trace_db package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../notice.html">Notice</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../delta_trace_db.html">Python version API Reference</a><ul>
+  <li><a href="delta_trace_db.query.html">delta_trace_db.query</a><ul>
+      <li>Previous: <a href="delta_trace_db.query.query_result.html" title="previous chapter">delta_trace_db.query.query_result</a></li>
+      <li>Next: <a href="delta_trace_db.query.sort.html" title="next chapter">delta_trace_db.query.sort</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Masahide Mori.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../../_sources/api/generated/delta_trace_db.query.raw_query_builder.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

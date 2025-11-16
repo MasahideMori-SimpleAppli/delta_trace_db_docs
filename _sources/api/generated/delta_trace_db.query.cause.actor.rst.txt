@@ -1,0 +1,18 @@
+delta\_trace\_db.query.cause.actor
+==================================
+
+.. automodule:: delta_trace_db.query.cause.actor
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      deep_collection_equals
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Actor
+   

@@ -19,6 +19,11 @@ Supported Versions
 - **Python**: `[https://pypi.org/project/delta-trace-db/] <https://pypi.org/project/delta-trace-db/>`__
   A Python library for managing and interacting with DeltaTraceDB databases.
 
+If you use it on both the frontend and backend, please make sure the version numbers are the same.
+
+The version number is based on x.y.z (.postNum), and the x.y.z part must be the same version.
+If there is a postNum part, please use the latest one.
+
 Maintenance Tool
 ----------------
 
@@ -38,4 +43,5 @@ If you need to manually adjust the database contents for maintenance or inspecti
    server
    best_practice
    glossary
+   api/delta_trace_db
    notice

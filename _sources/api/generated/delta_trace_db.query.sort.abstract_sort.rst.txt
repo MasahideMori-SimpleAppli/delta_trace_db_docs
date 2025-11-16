@@ -1,0 +1,12 @@
+delta\_trace\_db.query.sort.abstract\_sort
+==========================================
+
+.. automodule:: delta_trace_db.query.sort.abstract_sort
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AbstractSort
+   

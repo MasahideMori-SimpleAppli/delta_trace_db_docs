@@ -1,0 +1,17 @@
+delta\_trace\_db.query.cause
+============================
+
+.. automodule:: delta_trace_db.query.cause
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   actor
+   cause
+   enum_actor_type
+   permission
+   temporal_trace

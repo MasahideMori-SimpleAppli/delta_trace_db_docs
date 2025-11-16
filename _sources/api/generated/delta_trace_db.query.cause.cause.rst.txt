@@ -1,0 +1,12 @@
+delta\_trace\_db.query.cause.cause
+==================================
+
+.. automodule:: delta_trace_db.query.cause.cause
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Cause
+   

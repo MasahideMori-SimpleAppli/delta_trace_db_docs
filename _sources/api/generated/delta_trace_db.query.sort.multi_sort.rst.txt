@@ -1,0 +1,12 @@
+delta\_trace\_db.query.sort.multi\_sort
+=======================================
+
+.. automodule:: delta_trace_db.query.sort.multi_sort
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      MultiSort
+   

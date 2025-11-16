@@ -35,3 +35,10 @@ Regardless of the chosen strategy, we recommend the following:
 Since queries are just JSON objects, persistent logs can be written
 to files, cloud storage, or any logging backend with no schema
 conversion required.
+
+API
+----------------------------
+- Dart: `[Query] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/Query-class.html>`__
+- Dart: `[Cause] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/Cause-class.html>`__
+- Python: :py:meth:`[Query] <delta_trace_db.query.query>`
+- Python: :py:meth:`[Cause] <delta_trace_db.query.cause.cause>`

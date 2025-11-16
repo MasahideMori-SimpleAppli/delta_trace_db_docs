@@ -5,6 +5,7 @@ CloneableFile or Raw Data
 DeltaTraceDB internally manages data using a JSON-serializable Map (Dict),
 but you can also pass a class that inherits CloneableFile directly as data.
 
+CloneableFile is an abstract class found in the following package:
 
 Dart version: `[https://pub.dev/packages/file_state_manager] <https://pub.dev/packages/file_state_manager>`__
 

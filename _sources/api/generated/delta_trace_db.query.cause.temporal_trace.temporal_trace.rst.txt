@@ -1,0 +1,12 @@
+delta\_trace\_db.query.cause.temporal\_trace.temporal\_trace
+============================================================
+
+.. automodule:: delta_trace_db.query.cause.temporal_trace.temporal_trace
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TemporalTrace
+   

@@ -1,0 +1,14 @@
+delta\_trace\_db.query.cause.temporal\_trace
+============================================
+
+.. automodule:: delta_trace_db.query.cause.temporal_trace
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   temporal_trace
+   timestamp_node

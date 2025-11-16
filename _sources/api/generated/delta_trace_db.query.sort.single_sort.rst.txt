@@ -1,0 +1,12 @@
+delta\_trace\_db.query.sort.single\_sort
+========================================
+
+.. automodule:: delta_trace_db.query.sort.single_sort
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      SingleSort
+   

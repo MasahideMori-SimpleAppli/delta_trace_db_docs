@@ -136,6 +136,16 @@ Example output:
         {id: 0, name: Taro, age: 30, createdAt: 2025-11-03T13:49:18.755995Z}
     ], dbLength: 0, updateCount: 1, hitCount: 1, errorMessage: null}
 
+API
+----------------------------
+- Dart: `[QueryBuilder.delete] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.delete.html>`__
+- Dart: `[QueryBuilder.deleteOne] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.deleteOne.html>`__
+- Dart(RawData): `[RawQueryBuilder.delete] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.delete.html>`__
+- Dart(RawData): `[RawQueryBuilder.deleteOne] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.deleteOne.html>`__
+- Python: :py:meth:`[QueryBuilder.delete] <delta_trace_db.query.query_builder.QueryBuilder.delete>`
+- Python: :py:meth:`[QueryBuilder.delete_one] <delta_trace_db.query.query_builder.QueryBuilder.delete_one>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.delete] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.delete>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.delete_one] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.delete_one>`
 
 Notes
 ----------------------------

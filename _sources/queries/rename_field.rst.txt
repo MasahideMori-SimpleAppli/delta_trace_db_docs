@@ -102,8 +102,12 @@ Example output:
     ], dbLength: 2, updateCount: 2, hitCount: 2, errorMessage: null}
 
 
-Notes
+API
 ----------------------------
+- Dart: `[QueryBuilder.renameField] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.renameField.html>`__
+- Dart(RawData): `[RawQueryBuilder.renameField] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.renameField.html>`__
+- Python: :py:meth:`[QueryBuilder.rename_field] <delta_trace_db.query.query_builder.QueryBuilder.rename_field>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.rename_field] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.rename_field>`
 
 Notes
 ----------------------------

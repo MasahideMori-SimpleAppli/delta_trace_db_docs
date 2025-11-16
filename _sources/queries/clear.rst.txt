@@ -132,6 +132,17 @@ Example output (clearAdd):
         {id: 1, name: Hanako}
     ], dbLength: 2, updateCount: 0, hitCount: 0, errorMessage: null}
 
+API
+----------------------------
+- Dart: `[QueryBuilder.clear] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.clear.html>`__
+- Dart: `[QueryBuilder.clearAdd] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.clearAdd.html>`__
+- Dart(RawData): `[RawQueryBuilder.clear] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.clear.html>`__
+- Dart(RawData): `[RawQueryBuilder.clearAdd] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.clearAdd.html>`__
+- Python: :py:meth:`[QueryBuilder.clear] <delta_trace_db.query.query_builder.QueryBuilder.clear>`
+- Python: :py:meth:`[QueryBuilder.clear_add] <delta_trace_db.query.query_builder.QueryBuilder.clear_add>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.clear] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.clear>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.clear_add] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.clear_add>`
+
 Notes
 ----------------------------
 

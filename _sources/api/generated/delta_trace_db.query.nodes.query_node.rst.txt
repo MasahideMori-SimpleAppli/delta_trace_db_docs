@@ -1,0 +1,12 @@
+delta\_trace\_db.query.nodes.query\_node
+========================================
+
+.. automodule:: delta_trace_db.query.nodes.query_node
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      QueryNode
+   

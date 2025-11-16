@@ -238,6 +238,11 @@ This design provides a balance between correctness and efficiency:
 
 For more information, see :doc:`../db_listeners`.
 
+API
+----------------------------
+- Dart: `[TransactionQuery] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/TransactionQuery-class.html>`__
+- Python: :py:meth:`[TransactionQuery] <delta_trace_db.query.transaction_query>`
+
 Notes
 ----------------------------
 

@@ -63,3 +63,10 @@ See Also
 
 For restoring older states where timestamp alignment matters:
 :doc:`./serialization`
+
+API
+----------------------------
+- Dart: `[QueryNode] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryNode-class.html>`__
+- Dart: `[SingleSort] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/SingleSort-class.html>`__
+- Python: :py:meth:`[ComparisonNode] <delta_trace_db.query.nodes.comparison_node>`
+- Python: :py:meth:`[SingleSort] <delta_trace_db.query.sort.single_sort>`

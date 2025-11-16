@@ -94,3 +94,14 @@ For cloud environments, the simplest and most reliable configuration is to run *
 
 Alternatively, for lightweight setups such as **cloud functions**, you can load and use a **user-specific database** from storage on demand whenever a request is made.
 Alternatively, it is also cost-effective and useful to manage a user-specific database on the front-end side and periodically save it to cloud storage.
+
+API
+----------------------------
+- Dart: `[DeltaTraceDatabase] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/DeltaTraceDatabase-class.html>`__
+- Dart: `[Query] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/Query-class.html>`__
+- Dart: `[Actor] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/Actor-class.html>`__
+- Dart: `[Permission] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/Permission-class.html>`__
+- Python: :py:meth:`[DeltaTraceDatabase] <delta_trace_db.db.delta_trace_db_core>`
+- Python: :py:meth:`[Query] <delta_trace_db.query.query>`
+- Python: :py:meth:`[Actor] <delta_trace_db.query.cause.actor>`
+- Python: :py:meth:`[Permission] <delta_trace_db.query.cause.permission>`

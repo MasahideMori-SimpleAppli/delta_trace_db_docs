@@ -1,0 +1,12 @@
+delta\_trace\_db.query.query\_execution\_result
+===============================================
+
+.. automodule:: delta_trace_db.query.query_execution_result
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      QueryExecutionResult
+   

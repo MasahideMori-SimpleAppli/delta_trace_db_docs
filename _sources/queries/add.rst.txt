@@ -275,6 +275,13 @@ Example output:
     ],
     dbLength: 2, updateCount: 2, hitCount: 0, errorMessage: null}
 
+API
+----------------------------
+- Dart: `[QueryBuilder.add] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.add.html>`__
+- Dart(RawData): `[RawQueryBuilder.add] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.add.html>`__
+- Python: :py:meth:`[QueryBuilder.add] <delta_trace_db.query.query_builder.QueryBuilder.add>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.add] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.add>`
+
 
 Notes
 ----------------------------

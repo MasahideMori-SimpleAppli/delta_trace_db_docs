@@ -1,0 +1,12 @@
+delta\_trace\_db.query.transaction\_query\_result
+=================================================
+
+.. automodule:: delta_trace_db.query.transaction_query_result
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TransactionQueryResult
+   

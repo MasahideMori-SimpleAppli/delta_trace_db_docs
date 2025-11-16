@@ -120,6 +120,13 @@ Example output:
     {className: QueryResult, version: 6, isSuccess: true, target: user, type: removeCollection,
     result: [], dbLength: 0, updateCount: 1, hitCount: 0, errorMessage: null}
 
+API
+----------------------------
+- Dart: `[QueryBuilder.removeCollection] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.removeCollection.html>`__
+- Dart(RawData): `[RawQueryBuilder.removeCollection] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.removeCollection.html>`__
+- Python: :py:meth:`[QueryBuilder.remove_collection] <delta_trace_db.query.query_builder.QueryBuilder.remove_collection>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.remove_collection] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.remove_collection>`
+
 Notes
 ----------------------------
 

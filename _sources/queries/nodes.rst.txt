@@ -66,3 +66,9 @@ For implementation details and examples, see :ref:`comparison_nodes`.
    :hidden:
 
    comparison_nodes
+
+API
+----------------------------
+- Dart: `[QueryNode] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryNode-class.html>`__
+- Python: :py:meth:`[LogicalNode] <delta_trace_db.query.nodes.logical_node>`
+- Python: :py:meth:`[ComparisonNode] <delta_trace_db.query.nodes.comparison_node>`

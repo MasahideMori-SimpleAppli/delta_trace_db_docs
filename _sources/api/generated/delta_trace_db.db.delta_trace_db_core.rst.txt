@@ -1,0 +1,12 @@
+delta\_trace\_db.db.delta\_trace\_db\_core
+==========================================
+
+.. automodule:: delta_trace_db.db.delta_trace_db_core
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      DeltaTraceDatabase
+   

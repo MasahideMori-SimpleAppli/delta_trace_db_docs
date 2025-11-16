@@ -116,3 +116,8 @@ Each step is stored as a :class:`TimestampNode`.
             TimestampNode(timestamp=datetime.now(timezone.utc), location='Frontend'),
             TimestampNode(timestamp=datetime.now(timezone.utc), location='Server')
         ])
+
+API
+----------------------------
+- Dart: `[Cause] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/Cause-class.html>`__
+- Python: :py:meth:`[Cause] <delta_trace_db.query.cause.cause>`

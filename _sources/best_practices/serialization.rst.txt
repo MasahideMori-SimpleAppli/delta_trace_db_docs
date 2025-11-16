@@ -101,6 +101,15 @@ Queries may optionally include a :code:`Cause` object describing:
 
 If populated, this makes debugging and audit trails much easier.
 
+API
+----------------------------
+- Dart: `[DeltaTraceDatabase] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/DeltaTraceDatabase-class.html>`__
+- Dart: `[Query] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/Query-class.html>`__
+- Dart: `[Cause] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/Cause-class.html>`__
+- Python: :py:meth:`[DeltaTraceDatabase] <delta_trace_db.db.delta_trace_db_core>`
+- Python: :py:meth:`[Query] <delta_trace_db.query.query>`
+- Python: :py:meth:`[Cause] <delta_trace_db.query.cause.cause>`
+
 Notes
 -----
 

@@ -232,6 +232,12 @@ Example output:
         {age: 10}, {age: 11}, {age: 12}, {age: 13}, {age: 14}, {age: 15}, {age: 16}, {age: 17}, {age: 18}, {age: 19}
     ], dbLength: 100, updateCount: 0, hitCount: 100, errorMessage: null}
 
+API
+----------------------------
+- Dart: `[QueryBuilder.getAll] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.getAll.html>`__
+- Dart(RawData): `[RawQueryBuilder.getAll] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.getAll.html>`__
+- Python: :py:meth:`[QueryBuilder.get_all] <delta_trace_db.query.query_builder.QueryBuilder.get_all>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.get_all] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.get_all>`
 
 Notes
 ----------------------------

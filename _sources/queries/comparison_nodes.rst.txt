@@ -85,3 +85,7 @@ Examples
          node2 = FieldLessThanOrEqual('age', 30)
          result2 = node2.evaluate({'age': 25})  # True
 
+API
+----------------------------
+- Dart: `[QueryNode] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryNode-class.html>`__
+- Python: :py:meth:`[ComparisonNode] <delta_trace_db.query.nodes.comparison_node>`

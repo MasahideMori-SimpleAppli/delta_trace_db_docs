@@ -177,6 +177,16 @@ Example output:
         {id: 0, name: Taro, age: 30, createdAt: 2025-11-02T12:14:09.512494Z, updatedAt: 2025-11-02T13:14:09.536665Z, nestedObj: {e: f}}
     ], dbLength: 2, updateCount: 1, hitCount: 1, errorMessage: null}
 
+API
+----------------------------
+- Dart: `[QueryBuilder.update] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.update.html>`__
+- Dart: `[QueryBuilder.updateOne] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.updateOne.html>`__
+- Dart(RawData): `[RawQueryBuilder.update] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.update.html>`__
+- Dart(RawData): `[RawQueryBuilder.updateOne] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.updateOne.html>`__
+- Python: :py:meth:`[QueryBuilder.update] <delta_trace_db.query.query_builder.QueryBuilder.update>`
+- Python: :py:meth:`[QueryBuilder.update_one] <delta_trace_db.query.query_builder.QueryBuilder.update_one>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.update] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.update>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.update_one] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.update_one>`
 
 Notes
 ----------------------------

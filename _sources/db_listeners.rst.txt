@@ -237,3 +237,8 @@ Summary
 - Ideal for UI auto-refresh or lightweight event hooks.
 - Must be manually registered and removed.
 - No remote or real-time synchronization is included.
+
+API
+----------------------------
+- Dart: `[DeltaTraceDatabase] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/DeltaTraceDatabase-class.html>`__
+- Python: :py:meth:`[DeltaTraceDatabase] <delta_trace_db.db.delta_trace_db_core>`

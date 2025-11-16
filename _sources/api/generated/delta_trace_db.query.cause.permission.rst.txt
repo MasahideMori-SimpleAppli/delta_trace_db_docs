@@ -1,0 +1,12 @@
+delta\_trace\_db.query.cause.permission
+=======================================
+
+.. automodule:: delta_trace_db.query.cause.permission
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Permission
+   

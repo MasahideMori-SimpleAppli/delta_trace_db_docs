@@ -1,0 +1,18 @@
+delta\_trace\_db.query.cause.temporal\_trace.timestamp\_node
+============================================================
+
+.. automodule:: delta_trace_db.query.cause.temporal_trace.timestamp_node
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      to_utc_iso
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TimestampNode
+   

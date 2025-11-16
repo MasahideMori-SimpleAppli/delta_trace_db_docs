@@ -1,0 +1,12 @@
+delta\_trace\_db.query.raw\_query\_builder
+==========================================
+
+.. automodule:: delta_trace_db.query.raw_query_builder
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      RawQueryBuilder
+   
