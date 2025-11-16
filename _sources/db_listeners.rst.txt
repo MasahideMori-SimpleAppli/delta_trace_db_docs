@@ -94,7 +94,9 @@ Basic Usage (UI)
           }
 
           void _onDbChanged() {
-            setState(() {}); // refresh UI
+            if(mounted) {
+              setState(() {}); // refresh UI
+            }
           }
 
           @override

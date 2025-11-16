@@ -130,7 +130,9 @@ Dart (Flutter)</label><div class="sd-tab-content docutils">
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">_onDbChanged</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">setState</span><span class="p">(()</span><span class="w"> </span><span class="p">{});</span><span class="w"> </span><span class="c1">// refresh UI</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="n">mounted</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">setState</span><span class="p">(()</span><span class="w"> </span><span class="p">{});</span><span class="w"> </span><span class="c1">// refresh UI</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 
 <span class="w">  </span><span class="nd">@override</span>
