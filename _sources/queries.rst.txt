@@ -25,6 +25,7 @@ You can use these queries on both the client and the server side.
    queries/clear
    queries/remove_collection
    queries/transaction
+   queries/send_to_server
    queries/nodes
    queries/sort
    queries/meta_data
