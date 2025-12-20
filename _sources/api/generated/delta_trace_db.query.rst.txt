@@ -12,6 +12,7 @@
 
    cause
    enum_query_type
+   merge_query_params
    nodes
    query
    query_builder

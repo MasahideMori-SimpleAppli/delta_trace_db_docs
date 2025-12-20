@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Appendix: Send to server &#8212; DeltaTraceDB Docs 0.0.37 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="../_static/documentation_options.js?v=aa2ad26f"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Appendix: Nodes for Search" href="nodes.html" />
+    <link rel="prev" title="Transaction Queries" href="transaction.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="appendix-send-to-server">
+<h1>Appendix: Send to server<a class="headerlink" href="#appendix-send-to-server" title="Link to this heading">¶</a></h1>
+<p>This section explains how to send queries to a remote server.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>DeltaTraceDB’s Query and TransactionQuery are both classes with serialization capabilities.
+By calling the <strong>toDict / to_dict</strong> method, they can be converted into a dictionary, allowing data to be passed directly to the backend server.</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Dart (Query)</label><div class="sd-tab-content docutils">
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:delta_trace_db/delta_trace_db.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:file_state_manager/file_state_manager.dart&#39;</span><span class="p">;</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">User</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">CloneableFile</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">DateTime</span><span class="w"> </span><span class="n">createdAt</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">DateTime</span><span class="w"> </span><span class="n">updatedAt</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">nestedObj</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">User</span><span class="p">({</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">id</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">age</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">createdAt</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">updatedAt</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">nestedObj</span><span class="p">,</span>
+<span class="w">  </span><span class="p">});</span>
+
+<span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="n">fromDict</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">User</span><span class="p">(</span>
+<span class="w">    </span><span class="nl">id:</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
+<span class="w">    </span><span class="nl">name:</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+<span class="w">    </span><span class="nl">age:</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">],</span>
+<span class="w">    </span><span class="nl">createdAt:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;createdAt&#39;</span><span class="p">]),</span>
+<span class="w">    </span><span class="nl">updatedAt:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;updatedAt&#39;</span><span class="p">]),</span>
+<span class="w">    </span><span class="nl">nestedObj:</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;nestedObj&#39;</span><span class="p">],</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">toDict</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">id</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">name</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;age&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">age</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;createdAt&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">createdAt</span><span class="p">.</span><span class="n">toUtc</span><span class="p">().</span><span class="n">toIso8601String</span><span class="p">(),</span>
+<span class="w">    </span><span class="s1">&#39;updatedAt&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">updatedAt</span><span class="p">.</span><span class="n">toUtc</span><span class="p">().</span><span class="n">toIso8601String</span><span class="p">(),</span>
+<span class="w">    </span><span class="s1">&#39;nestedObj&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">{...</span><span class="n">nestedObj</span><span class="p">},</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">User</span><span class="w"> </span><span class="n">clone</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">User</span><span class="p">.</span><span class="n">fromDict</span><span class="p">(</span><span class="n">toDict</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DeltaTraceDatabase</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">now</span><span class="p">();</span>
+<span class="w">  </span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="n">User</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">id:</span><span class="w"> </span><span class="o">-</span><span class="m">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;Taro&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">age:</span><span class="w"> </span><span class="m">30</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">createdAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">updatedAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">nestedObj:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;a&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="n">User</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">id:</span><span class="w"> </span><span class="o">-</span><span class="m">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;Jiro&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">age:</span><span class="w"> </span><span class="m">25</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">createdAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">updatedAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">nestedObj:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;b&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">  </span><span class="p">];</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QueryBuilder</span><span class="p">.</span><span class="n">add</span><span class="p">(</span>
+<span class="w">    </span><span class="nl">target:</span><span class="w"> </span><span class="s1">&#39;users&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">addData:</span><span class="w"> </span><span class="n">users</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">serialKey:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">returnData:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="p">).</span><span class="n">build</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// serialize</span>
+<span class="w">  </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">toDict</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Send it (q obj) to your backend with your favorite library.</span>
+<span class="w">  </span><span class="c1">//</span>
+
+<span class="w">  </span><span class="c1">// in backend</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">QueryExecutionResult</span><span class="w"> </span><span class="n">qer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQueryObject</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qer</span><span class="p">.</span><span class="n">toDict</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// in frontend (returned data)</span>
+<span class="w">  </span><span class="c1">// deserialize</span>
+<span class="w">  </span><span class="n">QueryResult</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QueryResult</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">.</span><span class="n">fromDict</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="w">  </span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">resultUsers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">convert</span><span class="p">(</span><span class="n">User</span><span class="p">.</span><span class="n">fromDict</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">resultUsers</span><span class="p">){</span>
+<span class="w">    </span><span class="n">print</span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">toDict</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Dart (TransactionQuery)</label><div class="sd-tab-content docutils">
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:delta_trace_db/delta_trace_db.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:file_state_manager/file_state_manager.dart&#39;</span><span class="p">;</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">User</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">CloneableFile</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">age</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">DateTime</span><span class="w"> </span><span class="n">createdAt</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">DateTime</span><span class="w"> </span><span class="n">updatedAt</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">nestedObj</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">User</span><span class="p">({</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">id</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">age</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">createdAt</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">updatedAt</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">nestedObj</span><span class="p">,</span>
+<span class="w">  </span><span class="p">});</span>
+
+<span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="n">User</span><span class="w"> </span><span class="n">fromDict</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">User</span><span class="p">(</span>
+<span class="w">    </span><span class="nl">id:</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
+<span class="w">    </span><span class="nl">name:</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+<span class="w">    </span><span class="nl">age:</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">],</span>
+<span class="w">    </span><span class="nl">createdAt:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;createdAt&#39;</span><span class="p">]),</span>
+<span class="w">    </span><span class="nl">updatedAt:</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;updatedAt&#39;</span><span class="p">]),</span>
+<span class="w">    </span><span class="nl">nestedObj:</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;nestedObj&#39;</span><span class="p">],</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">toDict</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s1">&#39;id&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">id</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;name&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">name</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;age&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">age</span><span class="p">,</span>
+<span class="w">    </span><span class="s1">&#39;createdAt&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">createdAt</span><span class="p">.</span><span class="n">toUtc</span><span class="p">().</span><span class="n">toIso8601String</span><span class="p">(),</span>
+<span class="w">    </span><span class="s1">&#39;updatedAt&#39;</span><span class="o">:</span><span class="w"> </span><span class="n">updatedAt</span><span class="p">.</span><span class="n">toUtc</span><span class="p">().</span><span class="n">toIso8601String</span><span class="p">(),</span>
+<span class="w">    </span><span class="s1">&#39;nestedObj&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">{...</span><span class="n">nestedObj</span><span class="p">},</span>
+<span class="w">  </span><span class="p">};</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">User</span><span class="w"> </span><span class="n">clone</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">User</span><span class="p">.</span><span class="n">fromDict</span><span class="p">(</span><span class="n">toDict</span><span class="p">());</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DeltaTraceDatabase</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">now</span><span class="p">();</span>
+<span class="w">  </span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">users1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="n">User</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">id:</span><span class="w"> </span><span class="o">-</span><span class="m">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;Taro&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">age:</span><span class="w"> </span><span class="m">30</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">createdAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">updatedAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">nestedObj:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;a&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="n">User</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">id:</span><span class="w"> </span><span class="o">-</span><span class="m">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;Jiro&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">age:</span><span class="w"> </span><span class="m">25</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">createdAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">updatedAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">nestedObj:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;b&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">  </span><span class="p">];</span>
+<span class="w">  </span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="n">users2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="n">User</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">id:</span><span class="w"> </span><span class="o">-</span><span class="m">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">name:</span><span class="w"> </span><span class="s1">&#39;Saburo&#39;</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">age:</span><span class="w"> </span><span class="m">23</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">createdAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">updatedAt:</span><span class="w"> </span><span class="n">now</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">nestedObj:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;c&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">  </span><span class="p">];</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TransactionQuery</span><span class="p">(</span>
+<span class="w">    </span><span class="nl">queries:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="n">QueryBuilder</span><span class="p">.</span><span class="n">add</span><span class="p">(</span>
+<span class="w">        </span><span class="nl">target:</span><span class="w"> </span><span class="s1">&#39;users&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">addData:</span><span class="w"> </span><span class="n">users1</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">serialKey:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">returnData:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="p">).</span><span class="n">build</span><span class="p">(),</span>
+<span class="w">      </span><span class="n">QueryBuilder</span><span class="p">.</span><span class="n">add</span><span class="p">(</span>
+<span class="w">        </span><span class="nl">target:</span><span class="w"> </span><span class="s1">&#39;users&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">addData:</span><span class="w"> </span><span class="n">users2</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">serialKey:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nl">returnData:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="p">).</span><span class="n">build</span><span class="p">(),</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// serialize</span>
+<span class="w">  </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">toDict</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">//</span>
+<span class="w">  </span><span class="c1">// Send it (q obj) to your backend with your favorite library.</span>
+<span class="w">  </span><span class="c1">//</span>
+
+<span class="w">  </span><span class="c1">// in backend</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">QueryExecutionResult</span><span class="w"> </span><span class="n">qer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQueryObject</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qer</span><span class="p">.</span><span class="n">toDict</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// in frontend (returned data)</span>
+<span class="w">  </span><span class="c1">// deserialize</span>
+<span class="w">  </span><span class="n">TransactionQueryResult</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TransactionQueryResult</span><span class="p">.</span><span class="n">fromDict</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">QueryResult</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="n">User</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">convert</span><span class="p">(</span><span class="n">User</span><span class="p">.</span><span class="n">fromDict</span><span class="p">).</span><span class="n">cast</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">()){</span>
+<span class="w">      </span><span class="n">print</span><span class="p">(</span><span class="n">j</span><span class="p">.</span><span class="n">toDict</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="result">
+<h2>Result<a class="headerlink" href="#result" title="Link to this heading">¶</a></h2>
+<p>Example output (TransactionQuery):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{id: 0, name: Taro, age: 30, createdAt: 2025-11-28T11:48:38.259937Z, updatedAt: 2025-11-28T11:48:38.259937Z, nestedObj: {a: a}}
+{id: 1, name: Jiro, age: 25, createdAt: 2025-11-28T11:48:38.259937Z, updatedAt: 2025-11-28T11:48:38.259937Z, nestedObj: {a: b}}
+{id: 2, name: Saburo, age: 23, createdAt: 2025-11-28T11:48:38.259937Z, updatedAt: 2025-11-28T11:48:38.259937Z, nestedObj: {a: c}}
+</pre></div>
+</div>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The return type will be <strong>QueryResult</strong> if the query passed is a Query, and <strong>TransactionQueryResult</strong> if the query passed is a TransactionQuery.</p></li>
+</ul>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryResult-class.html">[QueryResult]</a></p></li>
+<li><p><a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/TransactionQueryResult-class.html">[TransactionQueryResult]</a></p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeltaTraceDB Docs</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../queries.html">Query Operations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cloneable_file.html">CloneableFile or Raw Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="add.html">Add items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update.html">Update or UpdateOne</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delete.html">Delete or DeleteOne</a></li>
+<li class="toctree-l2"><a class="reference internal" href="search.html">Search or SearchOne</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_all.html">GetAll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conform_to_template.html">ConformToTemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rename_field.html">RenameField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transaction.html">Transaction Queries</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Appendix: Send to server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nodes.html">Appendix: Nodes for Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sort.html">Appendix: Sort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meta_data.html">Appendix: Query Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../db_listeners.html">DB Listeners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">Server-Side Coding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best_practice.html">Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/delta_trace_db.html">Python version API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notice.html">Notice</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../queries.html">Query Operations</a><ul>
+      <li>Previous: <a href="transaction.html" title="previous chapter">Transaction Queries</a></li>
+      <li>Next: <a href="nodes.html" title="next chapter">Appendix: Nodes for Search</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Masahide Mori.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/queries/send_to_server.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

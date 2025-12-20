@@ -196,6 +196,13 @@ riceA | price=200 | createAt=2025-10-31T17:30:43.846100Z
 </pre></div>
 </div>
 </section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>If you specify the optional <strong>vType / v_type</strong> argument to a SingleSort object, the data will be converted to the specified type during sort comparison and sorted using that.</p></li>
+<li><p>Nested fields in objects can be accessed using <strong>dot notation</strong>. For example, to access {“a”: {“b”: “c”}}, use <code class="code docutils literal notranslate"><span class="pre">&quot;a.b&quot;</span></code> as the field name.</p></li>
+</ul>
+</section>
 <section id="api">
 <h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -203,13 +210,6 @@ riceA | price=200 | createAt=2025-10-31T17:30:43.846100Z
 <li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/MultiSort-class.html">[MultiSort]</a></p></li>
 <li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.sort.single_sort.html#module-delta_trace_db.query.sort.single_sort" title="delta_trace_db.query.sort.single_sort"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[SingleSort]</span></code></a></p></li>
 <li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.sort.multi_sort.html#module-delta_trace_db.query.sort.multi_sort" title="delta_trace_db.query.sort.multi_sort"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[MultiSort]</span></code></a></p></li>
-</ul>
-</section>
-<section id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>If you specify the optional <strong>vType / v_type</strong> argument to a SingleSort object, the data will be converted to the specified type during sort comparison and sorted using that.</p></li>
-<li><p>Nested fields in objects can be accessed using <strong>dot notation</strong>. For example, to access {“a”: {“b”: “c”}}, use <code class="code docutils literal notranslate"><span class="pre">&quot;a.b&quot;</span></code> as the field name.</p></li>
 </ul>
 </section>
 </section>
@@ -256,8 +256,9 @@ riceA | price=200 | createAt=2025-10-31T17:30:43.846100Z
 <li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transaction.html">Transaction Queries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Send to server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Appendix: Send to server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nodes.html">Appendix: Nodes for Search</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Appendix: Sort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="meta_data.html">Appendix: Query Metadata</a></li>

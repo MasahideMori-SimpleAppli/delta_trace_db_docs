@@ -23,7 +23,7 @@ data integrity.
    Transaction queries work by temporarily **buffering affected collections in memory**.
    If you perform large operations inside a transaction, the memory usage will increase.
 
-   Also note that some special operations (such as :code:`removeCollection`) **cannot**
+   Also note that some special operations (:code:`removeCollection`, :code:`merge`) **cannot**
    be included in a transaction query.
 
 Usage
@@ -238,19 +238,19 @@ This design provides a balance between correctness and efficiency:
 
 For more information, see :doc:`../db_listeners`.
 
-API
-----------------------------
-- Dart: `[TransactionQuery] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/TransactionQuery-class.html>`__
-- Python: :py:meth:`[TransactionQuery] <delta_trace_db.query.transaction_query>`
-
 Notes
 ----------------------------
 
 - All queries inside the transaction must be normal queries (:code:`add`, :code:`update`, :code:`clear`, etc.).
-- Operations that modify **database structure**, such as :code:`removeCollection`,
+- Operations that modify **database structure** (:code:`removeCollection`, :code:`merge`),
   **cannot** be used inside a transaction.
 - When a transaction fails, **every collection involved is fully reverted**.
 - UI listeners registered via :code:`db.addListener` are triggered **only if** the transaction succeeds.
 - Because collections are buffered in memory during execution,
   **it is recommended to avoid very large transactions**.
 - Queries inside a :code:`TransactionQuery` are executed **in order**.　If a query modifies field names or structure, subsequent queries will see the modified data.
+
+API
+----------------------------
+- Dart: `[TransactionQuery] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/TransactionQuery-class.html>`__
+- Python: :py:meth:`[TransactionQuery] <delta_trace_db.query.transaction_query>`

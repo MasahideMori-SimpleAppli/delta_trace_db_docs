@@ -135,6 +135,13 @@ Count = 3
 <li><p>Because this query only reads data, <code class="code docutils literal notranslate"><span class="pre">updateCount</span></code> is always <strong>0</strong>.</p></li>
 </ul>
 </section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Recommended for measuring collection size or validating data volume.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">cause</span></code> can be used for auditing or operational logging.</p></li>
+</ul>
+</section>
 <section id="api">
 <h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -142,13 +149,6 @@ Count = 3
 <li><p>Dart(RawData): <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.count.html">[RawQueryBuilder.count]</a></p></li>
 <li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.query_builder.html#delta_trace_db.query.query_builder.QueryBuilder.count" title="delta_trace_db.query.query_builder.QueryBuilder.count"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[QueryBuilder.count]</span></code></a></p></li>
 <li><p>Python(RawData): <a class="reference internal" href="../api/generated/delta_trace_db.query.raw_query_builder.html#delta_trace_db.query.raw_query_builder.RawQueryBuilder.count" title="delta_trace_db.query.raw_query_builder.RawQueryBuilder.count"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[RawQueryBuilder.count]</span></code></a></p></li>
-</ul>
-</section>
-<section id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>Recommended for measuring collection size or validating data volume.</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">cause</span></code> can be used for auditing or operational logging.</p></li>
 </ul>
 </section>
 </section>
@@ -195,8 +195,9 @@ Count = 3
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Count</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transaction.html">Transaction Queries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Send to server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Appendix: Send to server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nodes.html">Appendix: Nodes for Search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sort.html">Appendix: Sort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="meta_data.html">Appendix: Query Metadata</a></li>

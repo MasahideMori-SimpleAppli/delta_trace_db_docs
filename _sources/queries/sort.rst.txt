@@ -166,15 +166,15 @@ Result
     riceC | price=150 | createAt=2025-11-01T12:30:43.846100Z
     riceA | price=200 | createAt=2025-10-31T17:30:43.846100Z
 
+Notes
+----------------------------
+
+- If you specify the optional **vType / v_type** argument to a SingleSort object, the data will be converted to the specified type during sort comparison and sorted using that.
+- Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.
+
 API
 ----------------------------
 - Dart: `[SingleSort] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/SingleSort-class.html>`__
 - Dart: `[MultiSort] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/MultiSort-class.html>`__
 - Python: :py:meth:`[SingleSort] <delta_trace_db.query.sort.single_sort>`
 - Python: :py:meth:`[MultiSort] <delta_trace_db.query.sort.multi_sort>`
-
-Notes
-----------------------------
-
-- If you specify the optional **vType / v_type** argument to a SingleSort object, the data will be converted to the specified type during sort comparison and sorted using that.
-- Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.

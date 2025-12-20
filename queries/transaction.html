@@ -16,8 +16,8 @@
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Send to server" href="send_to_server.html" />
-    <link rel="prev" title="Remove Collection" href="remove_collection.html" />
+    <link rel="next" title="Appendix: Send to server" href="send_to_server.html" />
+    <link rel="prev" title="Merge" href="merge.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -54,7 +54,7 @@ data integrity.</p>
 <p class="admonition-title">Warning</p>
 <p>Transaction queries work by temporarily <strong>buffering affected collections in memory</strong>.
 If you perform large operations inside a transaction, the memory usage will increase.</p>
-<p>Also note that some special operations (such as <code class="code docutils literal notranslate"><span class="pre">removeCollection</span></code>) <strong>cannot</strong>
+<p>Also note that some special operations (<code class="code docutils literal notranslate"><span class="pre">removeCollection</span></code>, <code class="code docutils literal notranslate"><span class="pre">merge</span></code>) <strong>cannot</strong>
 be included in a transaction query.</p>
 </div>
 </section>
@@ -262,24 +262,24 @@ committed.</p></li>
 </ul>
 <p>For more information, see <a class="reference internal" href="../db_listeners.html"><span class="doc">DB Listeners</span></a>.</p>
 </section>
-<section id="api">
-<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/TransactionQuery-class.html">[TransactionQuery]</a></p></li>
-<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.transaction_query.html#module-delta_trace_db.query.transaction_query" title="delta_trace_db.query.transaction_query"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[TransactionQuery]</span></code></a></p></li>
-</ul>
-</section>
 <section id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>All queries inside the transaction must be normal queries (<code class="code docutils literal notranslate"><span class="pre">add</span></code>, <code class="code docutils literal notranslate"><span class="pre">update</span></code>, <code class="code docutils literal notranslate"><span class="pre">clear</span></code>, etc.).</p></li>
-<li><p>Operations that modify <strong>database structure</strong>, such as <code class="code docutils literal notranslate"><span class="pre">removeCollection</span></code>,
+<li><p>Operations that modify <strong>database structure</strong> (<code class="code docutils literal notranslate"><span class="pre">removeCollection</span></code>, <code class="code docutils literal notranslate"><span class="pre">merge</span></code>),
 <strong>cannot</strong> be used inside a transaction.</p></li>
 <li><p>When a transaction fails, <strong>every collection involved is fully reverted</strong>.</p></li>
 <li><p>UI listeners registered via <code class="code docutils literal notranslate"><span class="pre">db.addListener</span></code> are triggered <strong>only if</strong> the transaction succeeds.</p></li>
 <li><p>Because collections are buffered in memory during execution,
 <strong>it is recommended to avoid very large transactions</strong>.</p></li>
 <li><p>Queries inside a <code class="code docutils literal notranslate"><span class="pre">TransactionQuery</span></code> are executed <strong>in order</strong>.　If a query modifies field names or structure, subsequent queries will see the modified data.</p></li>
+</ul>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/TransactionQuery-class.html">[TransactionQuery]</a></p></li>
+<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.transaction_query.html#module-delta_trace_db.query.transaction_query" title="delta_trace_db.query.transaction_query"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[TransactionQuery]</span></code></a></p></li>
 </ul>
 </section>
 </section>
@@ -326,8 +326,9 @@ committed.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Transaction Queries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Send to server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Appendix: Send to server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nodes.html">Appendix: Nodes for Search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sort.html">Appendix: Sort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="meta_data.html">Appendix: Query Metadata</a></li>
@@ -346,8 +347,8 @@ committed.</p></li>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="../queries.html">Query Operations</a><ul>
-      <li>Previous: <a href="remove_collection.html" title="previous chapter">Remove Collection</a></li>
-      <li>Next: <a href="send_to_server.html" title="next chapter">Send to server</a></li>
+      <li>Previous: <a href="merge.html" title="previous chapter">Merge</a></li>
+      <li>Next: <a href="send_to_server.html" title="next chapter">Appendix: Send to server</a></li>
   </ul></li>
   </ul></li>
 </ul>

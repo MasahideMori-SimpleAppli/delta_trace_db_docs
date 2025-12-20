@@ -115,7 +115,7 @@ Therefore, by saving these queries in chronological order, it becomes possible t
 <section id="recommended-workflow">
 <h2>Recommended Workflow<a class="headerlink" href="#recommended-workflow" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
-<li><p>Periodically save a full DB snapshot using <code class="code docutils literal notranslate"><span class="pre">toDict()</span></code>.</p></li>
+<li><p>Periodically save a full DB snapshot using <code class="code docutils literal notranslate"><span class="pre">toDict()/to_dict()</span></code>.</p></li>
 <li><p>Continuously log all <code class="code docutils literal notranslate"><span class="pre">Query</span></code> objects applied after that snapshot.</p></li>
 <li><p>To restore to any past moment:
 - Load the closest snapshot.
@@ -134,6 +134,13 @@ Therefore, by saving these queries in chronological order, it becomes possible t
 </ul>
 <p>If populated, this makes debugging and audit trails much easier.</p>
 </section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The serialized DB data is a JSON object and does not include non-JSONizable objects such as callback functions.</p></li>
+<li><p>Query logs may grow; old logs can be archived after new snapshots.</p></li>
+</ul>
+</section>
 <section id="api">
 <h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -143,13 +150,6 @@ Therefore, by saving these queries in chronological order, it becomes possible t
 <li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.db.delta_trace_db_core.html#module-delta_trace_db.db.delta_trace_db_core" title="delta_trace_db.db.delta_trace_db_core"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[DeltaTraceDatabase]</span></code></a></p></li>
 <li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.query.html#module-delta_trace_db.query.query" title="delta_trace_db.query.query"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[Query]</span></code></a></p></li>
 <li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.cause.cause.html#module-delta_trace_db.query.cause.cause" title="delta_trace_db.query.cause.cause"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[Cause]</span></code></a></p></li>
-</ul>
-</section>
-<section id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>The serialized DB data is a JSON object and does not include non-JSONizable objects such as callback functions.</p></li>
-<li><p>Query logs may grow; old logs can be archived after new snapshots.</p></li>
 </ul>
 </section>
 </section>

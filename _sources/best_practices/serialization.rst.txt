@@ -82,7 +82,7 @@ Why This Works
 Recommended Workflow
 --------------------
 
-1. Periodically save a full DB snapshot using :code:`toDict()`.
+1. Periodically save a full DB snapshot using :code:`toDict()/to_dict()`.
 2. Continuously log all :code:`Query` objects applied after that snapshot.
 3. To restore to any past moment:
    - Load the closest snapshot.
@@ -101,6 +101,12 @@ Queries may optionally include a :code:`Cause` object describing:
 
 If populated, this makes debugging and audit trails much easier.
 
+Notes
+-----
+
+- The serialized DB data is a JSON object and does not include non-JSONizable objects such as callback functions.
+- Query logs may grow; old logs can be archived after new snapshots.
+
 API
 ----------------------------
 - Dart: `[DeltaTraceDatabase] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/DeltaTraceDatabase-class.html>`__
@@ -109,9 +115,3 @@ API
 - Python: :py:meth:`[DeltaTraceDatabase] <delta_trace_db.db.delta_trace_db_core>`
 - Python: :py:meth:`[Query] <delta_trace_db.query.query>`
 - Python: :py:meth:`[Cause] <delta_trace_db.query.cause.cause>`
-
-Notes
------
-
-- The serialized DB data is a JSON object and does not include non-JSONizable objects such as callback functions.
-- Query logs may grow; old logs can be archived after new snapshots.

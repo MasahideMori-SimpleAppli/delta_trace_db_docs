@@ -54,8 +54,9 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="delta_trace_db.query.util_query.UtilQuery.check_permissions">
 <em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.query.html#delta_trace_db.query.query.Query" title="delta_trace_db.query.query.Query"><span class="pre">Query</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_permissions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="delta_trace_db.query.cause.permission.html#delta_trace_db.query.cause.permission.Permission" title="delta_trace_db.query.cause.permission.Permission"><span class="pre">Permission</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_query.UtilQuery.check_permissions" title="Link to this definition">¶</a></dt>
-<dd><p>(en) Restores a Query or TransactionQuery class from a JSON dict.</p>
-<p>(ja) JSONのdictから、QueryまたはTransactionQueryクラスを復元します。</p>
+<dd><p>(en) Checks the collection operation permissions for the target query and
+returns true if there are no problems.</p>
+<p>(ja) 対象クエリに関するコレクションの操作権限をチェックし、問題なければtrueを返します。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

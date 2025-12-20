@@ -16,7 +16,7 @@
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Transaction Queries" href="transaction.html" />
+    <link rel="next" title="Merge" href="merge.html" />
     <link rel="prev" title="Clear &amp; ClearAdd" href="clear.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -154,15 +154,6 @@ result: [], dbLength: 0, updateCount: 1, hitCount: 0, errorMessage: null}
 </pre></div>
 </div>
 </section>
-<section id="api">
-<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.removeCollection.html">[QueryBuilder.removeCollection]</a></p></li>
-<li><p>Dart(RawData): <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.removeCollection.html">[RawQueryBuilder.removeCollection]</a></p></li>
-<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.query_builder.html#delta_trace_db.query.query_builder.QueryBuilder.remove_collection" title="delta_trace_db.query.query_builder.QueryBuilder.remove_collection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[QueryBuilder.remove_collection]</span></code></a></p></li>
-<li><p>Python(RawData): <a class="reference internal" href="../api/generated/delta_trace_db.query.raw_query_builder.html#delta_trace_db.query.raw_query_builder.RawQueryBuilder.remove_collection" title="delta_trace_db.query.raw_query_builder.RawQueryBuilder.remove_collection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[RawQueryBuilder.remove_collection]</span></code></a></p></li>
-</ul>
-</section>
 <section id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -172,6 +163,15 @@ result: [], dbLength: 0, updateCount: 1, hitCount: 0, errorMessage: null}
 <strong>does not need to be used</strong> during normal application runtime.</p></li>
 <li><p>Set <code class="code docutils literal notranslate"><span class="pre">mustAffectAtLeastOne</span> <span class="pre">=</span> <span class="pre">true</span></code> only when ensuring the target <strong>must exist</strong>.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">cause</span></code> can be used to store metadata for logging, auditing, or AI-explainability.</p></li>
+</ul>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.removeCollection.html">[QueryBuilder.removeCollection]</a></p></li>
+<li><p>Dart(RawData): <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.removeCollection.html">[RawQueryBuilder.removeCollection]</a></p></li>
+<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.query_builder.html#delta_trace_db.query.query_builder.QueryBuilder.remove_collection" title="delta_trace_db.query.query_builder.QueryBuilder.remove_collection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[QueryBuilder.remove_collection]</span></code></a></p></li>
+<li><p>Python(RawData): <a class="reference internal" href="../api/generated/delta_trace_db.query.raw_query_builder.html#delta_trace_db.query.raw_query_builder.RawQueryBuilder.remove_collection" title="delta_trace_db.query.raw_query_builder.RawQueryBuilder.remove_collection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[RawQueryBuilder.remove_collection]</span></code></a></p></li>
 </ul>
 </section>
 </section>
@@ -218,8 +218,9 @@ result: [], dbLength: 0, updateCount: 1, hitCount: 0, errorMessage: null}
 <li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Remove Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transaction.html">Transaction Queries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Send to server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Appendix: Send to server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nodes.html">Appendix: Nodes for Search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sort.html">Appendix: Sort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="meta_data.html">Appendix: Query Metadata</a></li>
@@ -239,7 +240,7 @@ result: [], dbLength: 0, updateCount: 1, hitCount: 0, errorMessage: null}
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="../queries.html">Query Operations</a><ul>
       <li>Previous: <a href="clear.html" title="previous chapter">Clear &amp; ClearAdd</a></li>
-      <li>Next: <a href="transaction.html" title="next chapter">Transaction Queries</a></li>
+      <li>Next: <a href="merge.html" title="next chapter">Merge</a></li>
   </ul></li>
   </ul></li>
 </ul>

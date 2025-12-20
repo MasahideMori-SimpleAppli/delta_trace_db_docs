@@ -386,17 +386,6 @@ Example output:
         {id: 0, name: Taro, age: 30, createdAt: 2025-11-03T14:09:45.561362Z}
     ], dbLength: 3, updateCount: 0, hitCount: 1, errorMessage: null}
 
-API
-----------------------------
-- Dart: `[QueryBuilder.search] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.search.html>`__
-- Dart: `[QueryBuilder.searchOne] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.searchOne.html>`__
-- Dart(RawData): `[RawQueryBuilder.search] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.search.html>`__
-- Dart(RawData): `[RawQueryBuilder.searchOne] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.searchOne.html>`__
-- Python: :py:meth:`[QueryBuilder.search] <delta_trace_db.query.query_builder.QueryBuilder.search>`
-- Python: :py:meth:`[QueryBuilder.search_one] <delta_trace_db.query.query_builder.QueryBuilder.search_one>`
-- Python(RawData): :py:meth:`[RawQueryBuilder.search] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.search>`
-- Python(RawData): :py:meth:`[RawQueryBuilder.search_one] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.search_one>`
-
 Notes
 ----------------------------
 
@@ -422,4 +411,13 @@ Notes
 - Collections are automatically created if they do not exist.
 - Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.
 
-
+API
+----------------------------
+- Dart: `[QueryBuilder.search] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.search.html>`__
+- Dart: `[QueryBuilder.searchOne] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.searchOne.html>`__
+- Dart(RawData): `[RawQueryBuilder.search] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.search.html>`__
+- Dart(RawData): `[RawQueryBuilder.searchOne] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.searchOne.html>`__
+- Python: :py:meth:`[QueryBuilder.search] <delta_trace_db.query.query_builder.QueryBuilder.search>`
+- Python: :py:meth:`[QueryBuilder.search_one] <delta_trace_db.query.query_builder.QueryBuilder.search_one>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.search] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.search>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.search_one] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.search_one>`

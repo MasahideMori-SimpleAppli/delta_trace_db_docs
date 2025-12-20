@@ -177,6 +177,15 @@ Example output:
         {id: 0, name: Taro, age: 30, createdAt: 2025-11-02T12:14:09.512494Z, updatedAt: 2025-11-02T13:14:09.536665Z, nestedObj: {e: f}}
     ], dbLength: 2, updateCount: 1, hitCount: 1, errorMessage: null}
 
+Notes
+----------------------------
+
+- Collections are automatically created if they do not exist.
+- If the optional argument **mustAffectAtLeastOne / must_affect_at_least_one** is true and there are no target, **QueryResult.isSuccess / QueryResult.is_success** will be False.
+- For detailed search specifications, check the :ref:`nodes<nodes>` section.
+- For the sorting specifications of optional parameters, please check the :ref:`sort<sort>` section.
+- Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.
+
 API
 ----------------------------
 - Dart: `[QueryBuilder.update] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.update.html>`__
@@ -187,12 +196,3 @@ API
 - Python: :py:meth:`[QueryBuilder.update_one] <delta_trace_db.query.query_builder.QueryBuilder.update_one>`
 - Python(RawData): :py:meth:`[RawQueryBuilder.update] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.update>`
 - Python(RawData): :py:meth:`[RawQueryBuilder.update_one] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.update_one>`
-
-Notes
-----------------------------
-
-- Collections are automatically created if they do not exist.
-- If the optional argument **mustAffectAtLeastOne / must_affect_at_least_one** is true and there are no target, **QueryResult.isSuccess / QueryResult.is_success** will be False.
-- For detailed search specifications, check the :ref:`nodes<nodes>` section.
-- For the sorting specifications of optional parameters, please check the :ref:`sort<sort>` section.
-- Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.

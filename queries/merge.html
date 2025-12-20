@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Merge &#8212; DeltaTraceDB Docs 0.0.37 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="../_static/documentation_options.js?v=aa2ad26f"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Transaction Queries" href="transaction.html" />
+    <link rel="prev" title="Remove Collection" href="remove_collection.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="merge">
+<h1>Merge<a class="headerlink" href="#merge" title="Link to this heading">¶</a></h1>
+<p>Merge multiple collections into a new collection based on a relation key.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>The <strong>merge</strong> operation combines data from a base collection and one or more
+source collections into a new output collection.</p>
+<p>Each item in the base collection is matched against source collections using
+a relation key. Matched source data can then be referenced using a DSL
+(Domain Specific Language) to construct the output records.</p>
+<p>The merge query is <strong>non-destructive</strong>:
+original collections are never modified.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Merge is a special query and cannot be included in a TransactionQuery.
+This query is primarily intended for administrative maintenance purposes.</p>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Dart</label><div class="sd-tab-content docutils">
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:delta_trace_db/delta_trace_db.dart&#39;</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DeltaTraceDatabase</span><span class="p">();</span>
+
+<span class="w">  </span><span class="c1">// Add base collection</span>
+<span class="w">  </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span>
+<span class="w">    </span><span class="n">RawQueryBuilder</span><span class="p">.</span><span class="n">add</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">target:</span><span class="w"> </span><span class="s2">&quot;baseUsers&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">rawAddData:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;groupId&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;g1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;age&quot;</span><span class="o">:</span><span class="w"> </span><span class="m">30</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;groupId&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;g2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;age&quot;</span><span class="o">:</span><span class="w"> </span><span class="m">25</span><span class="p">},</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nl">serialKey:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">).</span><span class="n">build</span><span class="p">(),</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Add source collection</span>
+<span class="w">  </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span>
+<span class="w">    </span><span class="n">RawQueryBuilder</span><span class="p">.</span><span class="n">add</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">target:</span><span class="w"> </span><span class="s2">&quot;userDetail&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">rawAddData:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;userId&quot;</span><span class="o">:</span><span class="w"> </span><span class="m">0</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;email&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;address&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;city&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Tokyo&quot;</span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;userId&quot;</span><span class="o">:</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;email&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bob@example.com&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;address&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="s2">&quot;city&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Osaka&quot;</span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">    </span><span class="p">).</span><span class="n">build</span><span class="p">(),</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MergeQueryParams</span><span class="p">(</span>
+<span class="w">    </span><span class="nl">base:</span><span class="w"> </span><span class="s2">&quot;baseUsers&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="k">source</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;userDetail&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nl">relationKey:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">sourceKeys:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;userId&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="nl">output:</span><span class="w"> </span><span class="s2">&quot;mergedUsers&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">dslTmp:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;base.id&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;base.name&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;email&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0.email&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;city&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;0.address.city&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;publicProfile&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;popped.base[groupId,age]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;emails&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;[0.email]&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;active&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;bool(true)&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nl">serialBase:</span><span class="w"> </span><span class="s2">&quot;baseUsers&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span>
+<span class="w">    </span><span class="n">QueryBuilder</span><span class="p">.</span><span class="n">merge</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">mergeQueryParams:</span><span class="w"> </span><span class="n">params</span><span class="p">,</span>
+<span class="w">    </span><span class="p">).</span><span class="n">build</span><span class="p">(),</span>
+<span class="w">  </span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// All of the collections are merged,</span>
+<span class="w">  </span><span class="c1">// so the returned value does not contain the new collection.</span>
+<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">toDict</span><span class="p">());</span>
+
+<span class="w">  </span><span class="c1">// new collection values</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">collection</span><span class="p">(</span><span class="s2">&quot;mergedUsers&quot;</span><span class="p">).</span><span class="n">raw</span><span class="p">){</span>
+<span class="w">    </span><span class="n">print</span><span class="p">(</span><span class="n">item</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Python</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">delta_trace_db</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DeltaTraceDatabase</span><span class="p">,</span>
+    <span class="n">RawQueryBuilder</span><span class="p">,</span>
+    <span class="n">QueryBuilder</span><span class="p">,</span>
+    <span class="n">MergeQueryParams</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">DeltaTraceDatabase</span><span class="p">()</span>
+
+<span class="c1"># Add base collection</span>
+<span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span>
+    <span class="n">RawQueryBuilder</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="s2">&quot;baseUsers&quot;</span><span class="p">,</span>
+        <span class="n">raw_add_data</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;groupId&quot;</span><span class="p">:</span> <span class="s2">&quot;g1&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="s2">&quot;groupId&quot;</span><span class="p">:</span> <span class="s2">&quot;g2&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">},</span>
+        <span class="p">],</span>
+        <span class="n">serial_key</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># Add source collection</span>
+<span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span>
+    <span class="n">RawQueryBuilder</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="s2">&quot;userDetail&quot;</span><span class="p">,</span>
+        <span class="n">raw_add_data</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;userId&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;alice@example.com&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;city&quot;</span><span class="p">:</span> <span class="s2">&quot;Tokyo&quot;</span><span class="p">},</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;userId&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;bob@example.com&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;city&quot;</span><span class="p">:</span> <span class="s2">&quot;Osaka&quot;</span><span class="p">},</span>
+            <span class="p">},</span>
+        <span class="p">],</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="n">MergeQueryParams</span><span class="p">(</span>
+    <span class="n">base</span><span class="o">=</span><span class="s2">&quot;baseUsers&quot;</span><span class="p">,</span>
+    <span class="n">source</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;userDetail&quot;</span><span class="p">],</span>
+    <span class="n">relation_key</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+    <span class="n">source_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;userId&quot;</span><span class="p">],</span>
+    <span class="n">output</span><span class="o">=</span><span class="s2">&quot;mergedUsers&quot;</span><span class="p">,</span>
+    <span class="n">dsl_tmp</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;base.id&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;base.name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;0.email&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;city&quot;</span><span class="p">:</span> <span class="s2">&quot;0.address.city&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;publicProfile&quot;</span><span class="p">:</span> <span class="s2">&quot;popped.base[groupId,age]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;emails&quot;</span><span class="p">:</span> <span class="s2">&quot;[0.email]&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="s2">&quot;bool(true)&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">serial_base</span><span class="o">=</span><span class="s2">&quot;baseUsers&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span>
+    <span class="n">QueryBuilder</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">merge_query_params</span><span class="o">=</span><span class="n">params</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># All of the collections are merged,</span>
+<span class="c1"># so the returned value does not contain the new collection.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+<span class="c1"># new collection values</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">collection</span><span class="p">(</span><span class="s2">&quot;mergedUsers&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">raw</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="result">
+<h2>Result<a class="headerlink" href="#result" title="Link to this heading">¶</a></h2>
+<p>The <strong>executeQuery / execute_query</strong> method returns a QueryResult object.</p>
+<p>The merged collection is stored under the name specified by <strong>output</strong>.</p>
+<p>Example output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># QueryResult
+{className: QueryResult, version: 6, isSuccess: true, target: baseUsers, type: merge,
+result: [], dbLength: 2, updateCount: 2, hitCount: 0, errorMessage: null}
+
+# mergedUsers data
+{id: 0, name: Alice, email: alice@example.com, city: Tokyo, publicProfile: {id: 0, name: Alice}, emails: [alice@example.com], active: true}
+{id: 1, name: Bob, email: bob@example.com, city: Osaka, publicProfile: {id: 1, name: Bob}, emails: [bob@example.com], active: true}
+</pre></div>
+</div>
+</section>
+<section id="dsl-overview">
+<h2>DSL Overview<a class="headerlink" href="#dsl-overview" title="Link to this heading">¶</a></h2>
+<p>The <strong>dslTmp / dsl_tmp</strong> field defines how output records are constructed.</p>
+<p>Supported expressions include:</p>
+<ul>
+<li><p><strong>base.xxx</strong>
+Reference fields from the base collection.</p></li>
+<li><p><strong>N.xxx</strong>
+Reference fields from the N-th source collection (0-based).</p></li>
+<li><p><strong>Literal expressions</strong>
+<code class="code docutils literal notranslate"><span class="pre">int(1)</span></code>, <code class="code docutils literal notranslate"><span class="pre">float(1.5)</span></code>, <code class="code docutils literal notranslate"><span class="pre">bool(true)</span></code>, <code class="code docutils literal notranslate"><span class="pre">str(text)</span></code></p></li>
+<li><p><strong>Array wrap</strong>
+Wrap a single expression result into an array.</p>
+<p>Example:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">[0.email]</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">[base.id]</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only <strong>a single expression</strong> can be wrapped in an array.</p>
+<p>The following patterns are <strong>NOT allowed</strong>:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">[base.id,</span> <span class="pre">0.email]</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">[0.email,</span> <span class="pre">1.email]</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">[int(1),</span> <span class="pre">int(2)]</span></code></p></li>
+</ul>
+<p>Array wrap is <strong>not</strong> a general array literal syntax.
+It is provided only as a convenience for converting a single value
+into a one-element array.</p>
+</div>
+</li>
+<li><p><strong>popped.base[…]</strong>
+Create a deep copy of the base object with specified fields removed.</p></li>
+<li><p><strong>popped.N[…]</strong>
+Create a deep copy of the N-th source collection (0-based) object with specified fields removed.</p></li>
+</ul>
+<p>If a source record is not found, all references to that source return <strong>null</strong>.</p>
+</section>
+<section id="permissions">
+<h2>Permissions<a class="headerlink" href="#permissions" title="Link to this heading">¶</a></h2>
+<p>Merge queries access multiple collections and therefore require special
+permission handling.</p>
+<p>Unlike most queries, which operate on a single target collection, a merge
+query may access the following collections:</p>
+<ul class="simple">
+<li><p><strong>base</strong> collection (read)</p></li>
+<li><p><strong>source</strong> collections (read, multiple)</p></li>
+<li><p><strong>serialBase</strong> collection (read, optional)</p></li>
+<li><p><strong>output</strong> collection (merge)</p></li>
+</ul>
+<p>The permission requirements are as follows:</p>
+<ul class="simple">
+<li><p>For <strong>base</strong>, <strong>source</strong>, and <strong>serialBase</strong> collections,
+either <code class="docutils literal notranslate"><span class="pre">search</span></code> or <code class="docutils literal notranslate"><span class="pre">searchOne</span></code> permission is required.</p></li>
+<li><p>For the <strong>output</strong> collection, <code class="docutils literal notranslate"><span class="pre">merge</span></code> permission is required.</p></li>
+</ul>
+<p>If any required permission is missing, the merge operation will fail.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Merge queries are primarily intended for administrative maintenance purposes.
+In typical usage, they are executed with full permissions
+(i.e. <code class="docutils literal notranslate"><span class="pre">collectionPermissions</span> <span class="pre">=</span> <span class="pre">null</span></code>), and explicit permission
+configuration for merge queries is uncommon.</p>
+<p>For an overview of server-side permission handling and execution flow,
+see <a class="reference internal" href="../server.html#server-side-coding"><span class="std std-ref">Server-Side Coding</span></a>.</p>
+</div>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The merge operation never modifies existing collections.</p></li>
+<li><p>The output collection is created automatically if it does not exist.</p></li>
+<li><p>Each base item matches <strong>at most one</strong> item from each source collection.</p></li>
+<li><p>Source items are aligned by index with the <strong>source</strong> list.</p></li>
+<li><p>If <strong>serialBase / serial_base</strong> is specified, the serial number is inherited
+from that collection.</p></li>
+<li><p>If <strong>serialKey / serial_key</strong> is specified, a new serial sequence is created.</p></li>
+<li><p>Invalid DSL expressions cause the merge query to fail with <strong>isSuccess = false</strong>.</p></li>
+<li><p>Nested fields can be accessed using dot notation
+(e.g. <code class="code docutils literal notranslate"><span class="pre">&quot;address.city&quot;</span></code>).</p></li>
+</ul>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.merge.html">[QueryBuilder.merge]</a></p></li>
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/MergeQueryParams-class.html">[MergeQueryParams]</a></p></li>
+<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.query_builder.html#delta_trace_db.query.query_builder.QueryBuilder.merge" title="delta_trace_db.query.query_builder.QueryBuilder.merge"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[QueryBuilder.merge]</span></code></a></p></li>
+<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.merge_query_params.html#delta_trace_db.query.merge_query_params.MergeQueryParams" title="delta_trace_db.query.merge_query_params.MergeQueryParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">[MergeQueryParams]</span></code></a></p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeltaTraceDB Docs</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../queries.html">Query Operations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cloneable_file.html">CloneableFile or Raw Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="add.html">Add items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update.html">Update or UpdateOne</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delete.html">Delete or DeleteOne</a></li>
+<li class="toctree-l2"><a class="reference internal" href="search.html">Search or SearchOne</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_all.html">GetAll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conform_to_template.html">ConformToTemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rename_field.html">RenameField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transaction.html">Transaction Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Appendix: Send to server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nodes.html">Appendix: Nodes for Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sort.html">Appendix: Sort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meta_data.html">Appendix: Query Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../db_listeners.html">DB Listeners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">Server-Side Coding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best_practice.html">Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/delta_trace_db.html">Python version API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notice.html">Notice</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../queries.html">Query Operations</a><ul>
+      <li>Previous: <a href="remove_collection.html" title="previous chapter">Remove Collection</a></li>
+      <li>Next: <a href="transaction.html" title="next chapter">Transaction Queries</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Masahide Mori.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/queries/merge.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

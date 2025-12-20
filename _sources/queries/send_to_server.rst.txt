@@ -1,0 +1,252 @@
+======================================
+Appendix: Send to server
+======================================
+
+This section explains how to send queries to a remote server.
+
+Overview
+----------------------------
+
+DeltaTraceDB's Query and TransactionQuery are both classes with serialization capabilities.
+By calling the **toDict / to_dict** method, they can be converted into a dictionary, allowing data to be passed directly to the backend server.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart (Query)
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+        import 'package:file_state_manager/file_state_manager.dart';
+
+        class User extends CloneableFile {
+          final int id;
+          final String name;
+          final int age;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+          final Map<String, dynamic> nestedObj;
+
+          User({
+            required this.id,
+            required this.name,
+            required this.age,
+            required this.createdAt,
+            required this.updatedAt,
+            required this.nestedObj,
+          });
+
+          static User fromDict(Map<String, dynamic> src) => User(
+            id: src['id'],
+            name: src['name'],
+            age: src['age'],
+            createdAt: DateTime.parse(src['createdAt']),
+            updatedAt: DateTime.parse(src['updatedAt']),
+            nestedObj: src['nestedObj'],
+          );
+
+          @override
+          Map<String, dynamic> toDict() => {
+            'id': id,
+            'name': name,
+            'age': age,
+            'createdAt': createdAt.toUtc().toIso8601String(),
+            'updatedAt': updatedAt.toUtc().toIso8601String(),
+            'nestedObj': {...nestedObj},
+          };
+
+          @override
+          User clone() {
+            return User.fromDict(toDict());
+          }
+        }
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          final now = DateTime.now();
+          List<User> users = [
+            User(
+              id: -1,
+              name: 'Taro',
+              age: 30,
+              createdAt: now,
+              updatedAt: now,
+              nestedObj: {"a": "a"},
+            ),
+            User(
+              id: -1,
+              name: 'Jiro',
+              age: 25,
+              createdAt: now,
+              updatedAt: now,
+              nestedObj: {"a": "b"},
+            ),
+          ];
+          final query = QueryBuilder.add(
+            target: 'users',
+            addData: users,
+            serialKey: "id",
+            returnData: true,
+          ).build();
+
+          // serialize
+          Map<String, dynamic> q = query.toDict();
+
+          //
+          // Send it (q obj) to your backend with your favorite library.
+          //
+
+          // in backend
+          final QueryExecutionResult qer = db.executeQueryObject(q);
+          Map<String, dynamic> result = qer.toDict();
+
+          // in frontend (returned data)
+          // deserialize
+          QueryResult<User> r = QueryResult<User>.fromDict(result);
+          List<User> resultUsers = r.convert(User.fromDict);
+          for(var i in resultUsers){
+            print(i.toDict());
+          }
+        }
+
+   .. tab-item:: Dart (TransactionQuery)
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+        import 'package:file_state_manager/file_state_manager.dart';
+
+        class User extends CloneableFile {
+          final int id;
+          final String name;
+          final int age;
+          final DateTime createdAt;
+          final DateTime updatedAt;
+          final Map<String, dynamic> nestedObj;
+
+          User({
+            required this.id,
+            required this.name,
+            required this.age,
+            required this.createdAt,
+            required this.updatedAt,
+            required this.nestedObj,
+          });
+
+          static User fromDict(Map<String, dynamic> src) => User(
+            id: src['id'],
+            name: src['name'],
+            age: src['age'],
+            createdAt: DateTime.parse(src['createdAt']),
+            updatedAt: DateTime.parse(src['updatedAt']),
+            nestedObj: src['nestedObj'],
+          );
+
+          @override
+          Map<String, dynamic> toDict() => {
+            'id': id,
+            'name': name,
+            'age': age,
+            'createdAt': createdAt.toUtc().toIso8601String(),
+            'updatedAt': updatedAt.toUtc().toIso8601String(),
+            'nestedObj': {...nestedObj},
+          };
+
+          @override
+          User clone() {
+            return User.fromDict(toDict());
+          }
+        }
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          final now = DateTime.now();
+          List<User> users1 = [
+            User(
+              id: -1,
+              name: 'Taro',
+              age: 30,
+              createdAt: now,
+              updatedAt: now,
+              nestedObj: {"a": "a"},
+            ),
+            User(
+              id: -1,
+              name: 'Jiro',
+              age: 25,
+              createdAt: now,
+              updatedAt: now,
+              nestedObj: {"a": "b"},
+            ),
+          ];
+          List<User> users2 = [
+            User(
+              id: -1,
+              name: 'Saburo',
+              age: 23,
+              createdAt: now,
+              updatedAt: now,
+              nestedObj: {"a": "c"},
+            ),
+          ];
+          final query = TransactionQuery(
+            queries: [
+              QueryBuilder.add(
+                target: 'users',
+                addData: users1,
+                serialKey: "id",
+                returnData: true,
+              ).build(),
+              QueryBuilder.add(
+                target: 'users',
+                addData: users2,
+                serialKey: "id",
+                returnData: true,
+              ).build(),
+            ],
+          );
+
+          // serialize
+          Map<String, dynamic> q = query.toDict();
+
+          //
+          // Send it (q obj) to your backend with your favorite library.
+          //
+
+          // in backend
+          final QueryExecutionResult qer = db.executeQueryObject(q);
+          Map<String, dynamic> result = qer.toDict();
+
+          // in frontend (returned data)
+          // deserialize
+          TransactionQueryResult r = TransactionQueryResult.fromDict(result);
+          for (QueryResult i in r.results) {
+            for(User j in i.convert(User.fromDict).cast<User>()){
+              print(j.toDict());
+            }
+          }
+        }
+
+
+Result
+----------------------------
+
+Example output (TransactionQuery):
+
+.. code-block:: text
+
+    {id: 0, name: Taro, age: 30, createdAt: 2025-11-28T11:48:38.259937Z, updatedAt: 2025-11-28T11:48:38.259937Z, nestedObj: {a: a}}
+    {id: 1, name: Jiro, age: 25, createdAt: 2025-11-28T11:48:38.259937Z, updatedAt: 2025-11-28T11:48:38.259937Z, nestedObj: {a: b}}
+    {id: 2, name: Saburo, age: 23, createdAt: 2025-11-28T11:48:38.259937Z, updatedAt: 2025-11-28T11:48:38.259937Z, nestedObj: {a: c}}
+
+Notes
+----------------------------
+- The return type will be **QueryResult** if the query passed is a Query, and **TransactionQueryResult** if the query passed is a TransactionQuery.
+
+API
+----------------------------
+- `[QueryResult] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryResult-class.html>`__
+- `[TransactionQueryResult] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/TransactionQueryResult-class.html>`__

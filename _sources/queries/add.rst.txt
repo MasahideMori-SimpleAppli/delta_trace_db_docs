@@ -275,17 +275,16 @@ Example output:
     ],
     dbLength: 2, updateCount: 2, hitCount: 0, errorMessage: null}
 
-API
-----------------------------
-- Dart: `[QueryBuilder.add] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.add.html>`__
-- Dart(RawData): `[RawQueryBuilder.add] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.add.html>`__
-- Python: :py:meth:`[QueryBuilder.add] <delta_trace_db.query.query_builder.QueryBuilder.add>`
-- Python(RawData): :py:meth:`[RawQueryBuilder.add] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.add>`
-
-
 Notes
 ----------------------------
 - The **serialKey / serial_key** must point to a numeric(Integer) field.
 - When omitted, objects are inserted as-is without automatic ID assignment.
 - Collections are automatically created if they do not exist.
 - For the sorting specifications of optional parameters, please check the :ref:`sort<sort>` section.
+
+API
+----------------------------
+- Dart: `[QueryBuilder.add] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.add.html>`__
+- Dart(RawData): `[RawQueryBuilder.add] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.add.html>`__
+- Python: :py:meth:`[QueryBuilder.add] <delta_trace_db.query.query_builder.QueryBuilder.add>`
+- Python(RawData): :py:meth:`[RawQueryBuilder.add] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.add>`

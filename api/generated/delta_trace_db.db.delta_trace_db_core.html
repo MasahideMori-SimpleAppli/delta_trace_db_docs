@@ -241,12 +241,16 @@ Server side, verify that the call is legitimate
 before making this call.
 During a transaction, after all operations are completed successfully,
 if there is a listener callback for each collection, it will be invoked.
-If there is a failure, nothing will be done.</p>
+If there is a failure, nothing will be done.
+removeCollection and merge queries cannot be executed and will return an
+error message if they are included in a transaction.</p>
 <p>(ja) トランザクションクエリを実行します。
 サーバーサイドでは、この呼び出しの前に正規の呼び出しであるかどうかの
 検証(JWTのチェックや呼び出し元ユーザーの権限のチェック)を行ってください。
 トランザクション時は、全ての処理が正常に完了後、各コレクションに
-リスナーのコールバックがあれば起動し、失敗の場合はなにもしません。</p>
+リスナーのコールバックがあれば起動し、失敗の場合はなにもしません。
+removeCollection及びmergeクエリは実行できず、
+トランザクションに含まれる場合はエラーメッセージが返されます。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -350,7 +354,7 @@ to_dictを連鎖的に呼び出すようにしてください。</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="delta_trace_db.db.delta_trace_db_core.DeltaTraceDatabase.version">
-<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'15'</span></em><a class="headerlink" href="#delta_trace_db.db.delta_trace_db_core.DeltaTraceDatabase.version" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'16'</span></em><a class="headerlink" href="#delta_trace_db.db.delta_trace_db_core.DeltaTraceDatabase.version" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

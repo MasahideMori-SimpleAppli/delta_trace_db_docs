@@ -1,0 +1,294 @@
+======================================
+Merge
+======================================
+
+Merge multiple collections into a new collection based on a relation key.
+
+Overview
+----------------------------
+
+The **merge** operation combines data from a base collection and one or more
+source collections into a new output collection.
+
+Each item in the base collection is matched against source collections using
+a relation key. Matched source data can then be referenced using a DSL
+(Domain Specific Language) to construct the output records.
+
+The merge query is **non-destructive**:
+original collections are never modified.
+
+.. note::
+
+   Merge is a special query and cannot be included in a TransactionQuery.
+   This query is primarily intended for administrative maintenance purposes.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+         import 'package:delta_trace_db/delta_trace_db.dart';
+
+         void main() {
+           final db = DeltaTraceDatabase();
+
+           // Add base collection
+           db.executeQuery(
+             RawQueryBuilder.add(
+               target: "baseUsers",
+               rawAddData: [
+                 {"id": -1, "name": "Alice", "groupId": "g1", "age": 30},
+                 {"id": -1, "name": "Bob", "groupId": "g2", "age": 25},
+               ],
+               serialKey: "id",
+             ).build(),
+           );
+
+           // Add source collection
+           db.executeQuery(
+             RawQueryBuilder.add(
+               target: "userDetail",
+               rawAddData: [
+                 {
+                   "userId": 0,
+                   "email": "alice@example.com",
+                   "address": {"city": "Tokyo"},
+                 },
+                 {
+                   "userId": 1,
+                   "email": "bob@example.com",
+                   "address": {"city": "Osaka"},
+                 },
+               ],
+             ).build(),
+           );
+
+           final params = MergeQueryParams(
+             base: "baseUsers",
+             source: ["userDetail"],
+             relationKey: "id",
+             sourceKeys: ["userId"],
+             output: "mergedUsers",
+             dslTmp: {
+               "id": "base.id",
+               "name": "base.name",
+               "email": "0.email",
+               "city": "0.address.city",
+               "publicProfile": "popped.base[groupId,age]",
+               "emails": "[0.email]",
+               "active": "bool(true)",
+             },
+             serialBase: "baseUsers",
+           );
+
+           final result = db.executeQuery(
+             QueryBuilder.merge(
+               mergeQueryParams: params,
+             ).build(),
+           );
+
+           // All of the collections are merged,
+           // so the returned value does not contain the new collection.
+           print(result.toDict());
+
+           // new collection values
+           for(Map<String, dynamic> item in db.collection("mergedUsers").raw){
+             print(item);
+           }
+         }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+         from delta_trace_db import (
+             DeltaTraceDatabase,
+             RawQueryBuilder,
+             QueryBuilder,
+             MergeQueryParams,
+         )
+
+         db = DeltaTraceDatabase()
+
+         # Add base collection
+         db.execute_query(
+             RawQueryBuilder.add(
+                 target="baseUsers",
+                 raw_add_data=[
+                     {"id": -1, "name": "Alice", "groupId": "g1", "age": 30},
+                     {"id": -1, "name": "Bob", "groupId": "g2", "age": 25},
+                 ],
+                 serial_key="id",
+             ).build()
+         )
+
+         # Add source collection
+         db.execute_query(
+             RawQueryBuilder.add(
+                 target="userDetail",
+                 raw_add_data=[
+                     {
+                         "userId": 0,
+                         "email": "alice@example.com",
+                         "address": {"city": "Tokyo"},
+                     },
+                     {
+                         "userId": 1,
+                         "email": "bob@example.com",
+                         "address": {"city": "Osaka"},
+                     },
+                 ],
+             ).build()
+         )
+
+         params = MergeQueryParams(
+             base="baseUsers",
+             source=["userDetail"],
+             relation_key="id",
+             source_keys=["userId"],
+             output="mergedUsers",
+             dsl_tmp={
+                 "id": "base.id",
+                 "name": "base.name",
+                 "email": "0.email",
+                 "city": "0.address.city",
+                 "publicProfile": "popped.base[groupId,age]",
+                 "emails": "[0.email]",
+                 "active": "bool(true)",
+             },
+             serial_base="baseUsers",
+         )
+
+         result = db.execute_query(
+             QueryBuilder.merge(
+                 merge_query_params=params
+             ).build()
+         )
+
+         # All of the collections are merged,
+         # so the returned value does not contain the new collection.
+         print(result.to_dict())
+
+         # new collection values
+         for i in db.collection("mergedUsers").raw:
+             print(i)
+
+Result
+----------------------------
+
+The **executeQuery / execute_query** method returns a QueryResult object.
+
+The merged collection is stored under the name specified by **output**.
+
+Example output:
+
+.. code-block:: text
+
+    # QueryResult
+    {className: QueryResult, version: 6, isSuccess: true, target: baseUsers, type: merge,
+    result: [], dbLength: 2, updateCount: 2, hitCount: 0, errorMessage: null}
+
+    # mergedUsers data
+    {id: 0, name: Alice, email: alice@example.com, city: Tokyo, publicProfile: {id: 0, name: Alice}, emails: [alice@example.com], active: true}
+    {id: 1, name: Bob, email: bob@example.com, city: Osaka, publicProfile: {id: 1, name: Bob}, emails: [bob@example.com], active: true}
+
+DSL Overview
+----------------------------
+
+The **dslTmp / dsl_tmp** field defines how output records are constructed.
+
+Supported expressions include:
+
+- **base.xxx**
+  Reference fields from the base collection.
+- **N.xxx**
+  Reference fields from the N-th source collection (0-based).
+- **Literal expressions**
+  :code:`int(1)`, :code:`float(1.5)`, :code:`bool(true)`, :code:`str(text)`
+- **Array wrap**
+  Wrap a single expression result into an array.
+
+  Example:
+
+  - :code:`[0.email]`
+  - :code:`[base.id]`
+
+  .. note::
+
+     Only **a single expression** can be wrapped in an array.
+
+     The following patterns are **NOT allowed**:
+
+     - :code:`[base.id, 0.email]`
+     - :code:`[0.email, 1.email]`
+     - :code:`[int(1), int(2)]`
+
+     Array wrap is **not** a general array literal syntax.
+     It is provided only as a convenience for converting a single value
+     into a one-element array.
+　
+- **popped.base[...]**
+  Create a deep copy of the base object with specified fields removed.
+- **popped.N[...]**
+  Create a deep copy of the N-th source collection (0-based) object with specified fields removed.
+
+If a source record is not found, all references to that source return **null**.
+
+Permissions
+----------------------------
+
+Merge queries access multiple collections and therefore require special
+permission handling.
+
+Unlike most queries, which operate on a single target collection, a merge
+query may access the following collections:
+
+- **base** collection (read)
+- **source** collections (read, multiple)
+- **serialBase** collection (read, optional)
+- **output** collection (merge)
+
+The permission requirements are as follows:
+
+- For **base**, **source**, and **serialBase** collections,
+  either ``search`` or ``searchOne`` permission is required.
+- For the **output** collection, ``merge`` permission is required.
+
+If any required permission is missing, the merge operation will fail.
+
+.. note::
+
+   Merge queries are primarily intended for administrative maintenance purposes.
+   In typical usage, they are executed with full permissions
+   (i.e. ``collectionPermissions = null``), and explicit permission
+   configuration for merge queries is uncommon.
+
+   For an overview of server-side permission handling and execution flow,
+   see :ref:`Server-Side Coding <server-side-coding>`.
+
+
+Notes
+----------------------------
+
+- The merge operation never modifies existing collections.
+- The output collection is created automatically if it does not exist.
+- Each base item matches **at most one** item from each source collection.
+- Source items are aligned by index with the **source** list.
+- If **serialBase / serial_base** is specified, the serial number is inherited
+  from that collection.
+- If **serialKey / serial_key** is specified, a new serial sequence is created.
+- Invalid DSL expressions cause the merge query to fail with **isSuccess = false**.
+- Nested fields can be accessed using dot notation
+  (e.g. :code:`"address.city"`).
+
+API
+----------------------------
+
+- Dart: `[QueryBuilder.merge] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.merge.html>`__
+- Dart: `[MergeQueryParams] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/MergeQueryParams-class.html>`__
+- Python: :py:meth:`[QueryBuilder.merge] <delta_trace_db.query.query_builder.QueryBuilder.merge>`
+- Python: :py:class:`[MergeQueryParams] <delta_trace_db.query.merge_query_params.MergeQueryParams>`

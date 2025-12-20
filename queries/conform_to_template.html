@@ -283,15 +283,6 @@ result: [], dbLength: 1, updateCount: 1, hitCount: 1, errorMessage: null}
 </pre></div>
 </div>
 </section>
-<section id="api">
-<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.conformToTemplate.html">[QueryBuilder.conformToTemplate]</a></p></li>
-<li><p>Dart(RawData): <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.conformToTemplate.html">[RawQueryBuilder.conformToTemplate]</a></p></li>
-<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.query_builder.html#delta_trace_db.query.query_builder.QueryBuilder.conform_to_template" title="delta_trace_db.query.query_builder.QueryBuilder.conform_to_template"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[QueryBuilder.conform_to_template]</span></code></a></p></li>
-<li><p>Python(RawData): <a class="reference internal" href="../api/generated/delta_trace_db.query.raw_query_builder.html#delta_trace_db.query.raw_query_builder.RawQueryBuilder.conform_to_template" title="delta_trace_db.query.raw_query_builder.RawQueryBuilder.conform_to_template"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[RawQueryBuilder.conform_to_template]</span></code></a></p></li>
-</ul>
-</section>
 <section id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
 <div class="admonition warning">
@@ -308,6 +299,15 @@ before executing this operation.</p>
 <li><p><code class="code docutils literal notranslate"><span class="pre">mustAffectAtLeastOne</span></code> can enforce that at least one item must be affected.
 If set to true and no data is changed, the operation will fail.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">cause</span></code> can be used to log or audit the reason for schema change.</p></li>
+</ul>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.conformToTemplate.html">[QueryBuilder.conformToTemplate]</a></p></li>
+<li><p>Dart(RawData): <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.conformToTemplate.html">[RawQueryBuilder.conformToTemplate]</a></p></li>
+<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.query_builder.html#delta_trace_db.query.query_builder.QueryBuilder.conform_to_template" title="delta_trace_db.query.query_builder.QueryBuilder.conform_to_template"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[QueryBuilder.conform_to_template]</span></code></a></p></li>
+<li><p>Python(RawData): <a class="reference internal" href="../api/generated/delta_trace_db.query.raw_query_builder.html#delta_trace_db.query.raw_query_builder.RawQueryBuilder.conform_to_template" title="delta_trace_db.query.raw_query_builder.RawQueryBuilder.conform_to_template"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[RawQueryBuilder.conform_to_template]</span></code></a></p></li>
 </ul>
 </section>
 </section>
@@ -354,8 +354,9 @@ If set to true and no data is changed, the operation will fail.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transaction.html">Transaction Queries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Send to server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Appendix: Send to server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nodes.html">Appendix: Nodes for Search</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sort.html">Appendix: Sort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="meta_data.html">Appendix: Query Metadata</a></li>

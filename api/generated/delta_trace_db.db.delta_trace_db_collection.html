@@ -216,6 +216,21 @@ initialized with the values from the template.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.db.delta_trace_db_collection.Collection.from_data">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serial_num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.db.delta_trace_db_collection.Collection.from_data" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Constructor for creating an object by adding data directly.</p>
+<p>(ja) 直接データを追加してオブジェクトを生成するためのクラスメソッド。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – The Collection items.</p></li>
+<li><p><strong>serial_num</strong> (<em>int</em>) – The serial number to be managed, starting with 0.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="delta_trace_db.db.delta_trace_db_collection.Collection.from_dict">
 <em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#delta_trace_db.db.delta_trace_db_collection.Collection" title="delta_trace_db.db.delta_trace_db_collection.Collection"><span class="pre">Collection</span></a></span></span><a class="headerlink" href="#delta_trace_db.db.delta_trace_db_collection.Collection.from_dict" title="Link to this definition">¶</a></dt>
 <dd><p>(en) Restore this object from the dictionary.
@@ -245,6 +260,13 @@ you can easily create paging through all items.</p>
 <dd class="field-odd"><p><strong>q</strong> (<a class="reference internal" href="delta_trace_db.query.query.html#delta_trace_db.query.query.Query" title="delta_trace_db.query.query.Query"><em>Query</em></a>) – The query.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.db.delta_trace_db_collection.Collection.get_serial_num">
+<span class="sig-name descname"><span class="pre">get_serial_num</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#delta_trace_db.db.delta_trace_db_collection.Collection.get_serial_num" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Gets the value of the currently managed serial number.</p>
+<p>(ja) 現在管理中のシリアルナンバーの値を取得します。</p>
 </dd></dl>
 
 <dl class="py property">
@@ -372,7 +394,7 @@ the result will be {“a”: 0, “b”: {“d”: 2}}.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="delta_trace_db.db.delta_trace_db_collection.Collection.version">
-<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'16'</span></em><a class="headerlink" href="#delta_trace_db.db.delta_trace_db_collection.Collection.version" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'17'</span></em><a class="headerlink" href="#delta_trace_db.db.delta_trace_db_collection.Collection.version" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

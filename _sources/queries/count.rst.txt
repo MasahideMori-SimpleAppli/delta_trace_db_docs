@@ -101,15 +101,15 @@ Example output:
 - The **count result** is stored in :code:`hitCount`.
 - Because this query only reads data, :code:`updateCount` is always **0**.
 
+Notes
+----------------------------
+
+- Recommended for measuring collection size or validating data volume.
+- :code:`cause` can be used for auditing or operational logging.
+
 API
 ----------------------------
 - Dart: `[QueryBuilder.count] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.count.html>`__
 - Dart(RawData): `[RawQueryBuilder.count] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.count.html>`__
 - Python: :py:meth:`[QueryBuilder.count] <delta_trace_db.query.query_builder.QueryBuilder.count>`
 - Python(RawData): :py:meth:`[RawQueryBuilder.count] <delta_trace_db.query.raw_query_builder.RawQueryBuilder.count>`
-
-Notes
-----------------------------
-
-- Recommended for measuring collection size or validating data volume.
-- :code:`cause` can be used for auditing or operational logging.
