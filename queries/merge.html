@@ -279,15 +279,15 @@ query may access the following collections:</p>
 <p>The permission requirements are as follows:</p>
 <ul class="simple">
 <li><p>For <strong>base</strong>, <strong>source</strong>, and <strong>serialBase</strong> collections,
-either <code class="docutils literal notranslate"><span class="pre">search</span></code> or <code class="docutils literal notranslate"><span class="pre">searchOne</span></code> permission is required.</p></li>
-<li><p>For the <strong>output</strong> collection, <code class="docutils literal notranslate"><span class="pre">merge</span></code> permission is required.</p></li>
+either <strong>search</strong> or <strong>searchOne</strong> permission is required.</p></li>
+<li><p>For the <strong>output</strong> collection, <strong>merge</strong> permission is required.</p></li>
 </ul>
 <p>If any required permission is missing, the merge operation will fail.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Merge queries are primarily intended for administrative maintenance purposes.
 In typical usage, they are executed with full permissions
-(i.e. <code class="docutils literal notranslate"><span class="pre">collectionPermissions</span> <span class="pre">=</span> <span class="pre">null</span></code>), and explicit permission
+(i.e. <strong>collectionPermissions = null</strong>), and explicit permission
 configuration for merge queries is uncommon.</p>
 <p>For an overview of server-side permission handling and execution flow,
 see <a class="reference internal" href="../server.html#server-side-coding"><span class="std std-ref">Server-Side Coding</span></a>.</p>

@@ -255,8 +255,8 @@ query may access the following collections:
 The permission requirements are as follows:
 
 - For **base**, **source**, and **serialBase** collections,
-  either ``search`` or ``searchOne`` permission is required.
-- For the **output** collection, ``merge`` permission is required.
+  either **search** or **searchOne** permission is required.
+- For the **output** collection, **merge** permission is required.
 
 If any required permission is missing, the merge operation will fail.
 
@@ -264,7 +264,7 @@ If any required permission is missing, the merge operation will fail.
 
    Merge queries are primarily intended for administrative maintenance purposes.
    In typical usage, they are executed with full permissions
-   (i.e. ``collectionPermissions = null``), and explicit permission
+   (i.e. **collectionPermissions = null**), and explicit permission
    configuration for merge queries is uncommon.
 
    For an overview of server-side permission handling and execution flow,

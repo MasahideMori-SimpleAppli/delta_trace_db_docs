@@ -47,12 +47,12 @@ Example:
 
 .. note::
 
-   The ``Permission`` object is part of the serializable ``Actor`` class.
-   You can create an ``Actor`` instance for each user and use the
-   ``collection_permissions`` property within it to manage access rights more cleanly.
+   The **Permission** object is part of the serializable **Actor** class.
+   You can create an **Actor** instance for each user and use the
+   **collection_permissions** property within it to manage access rights more cleanly.
 
-   Note that execute_query_object is a method that automatically determines whether it is a ``QueryObject``,
-   ``TransactionQueryObject``, or ``Dict`` and processes it appropriately.
+   Note that execute_query_object is a method that automatically determines whether it is a **QueryObject**,
+   **TransactionQueryObject**, or **Dict** and processes it appropriately.
 
 .. warning::
 

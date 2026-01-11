@@ -27,7 +27,7 @@ Typical logging strategies include:
 
 Regardless of the chosen strategy, we recommend the following:
 
-- **Always store write operations** (e.g., ``add``, ``update``, ``delete``)
+- **Always store write operations** (e.g., add, update, delete)
   so the entire database can be reconstructed.
 - **Optionally store read operations** depending on privacy policy
   and observability needs.

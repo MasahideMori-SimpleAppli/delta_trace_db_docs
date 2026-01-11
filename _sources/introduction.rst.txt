@@ -22,7 +22,7 @@ When serialized and saved, these query objects provide a **rich source of inform
 
 This makes DeltaTraceDB especially valuable for projects with stringent compliance and data integrity requirements.
 
-Furthermore, by utilizing advanced features such as the ``TemporalTrace`` class within queries,
+Furthermore, by utilizing advanced features such as the **TemporalTrace** class within queries,
 DeltaTraceDB can also support applications involving **space-scale communication networks** or **relay servers**,
 where latency is significant even at the speed of light.
 

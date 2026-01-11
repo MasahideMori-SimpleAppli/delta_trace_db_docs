@@ -28,7 +28,7 @@ In your Flutter or Dart project directory, run:
 
     dart pub add delta_trace_db
 
-Alternatively, add the following line manually to your ``pubspec.yaml``:
+Alternatively, add the following line manually to your **pubspec.yaml**:
 
 .. code-block:: yaml
 
@@ -47,7 +47,7 @@ You can install **DeltaTraceDB** for Python via **pip**:
 
     pip install delta-trace-db
 
-Alternatively, add it to your ``requirements.txt`` file:
+Alternatively, add it to your **requirements.txt** file:
 
 .. code-block:: text
 
