@@ -1,0 +1,47 @@
+======================================
+Using with AI Assistants
+======================================
+
+Overview
+--------
+
+DeltaTraceDB provides a dedicated **system prompt** for AI coding assistants.
+
+By loading this prompt into your AI assistant, it can generate correct
+DeltaTraceDB code without requiring you to explain the API each time.
+This is especially useful for:
+
+- Quickly writing queries without consulting the documentation
+- Avoiding common mistakes such as Python-specific naming conventions
+- Getting accurate code suggestions for both Python and Dart
+
+Prompt File
+-----------
+
+The prompt is available in the **prompt/** directory of the repository:
+
+`https://github.com/MasahideMori-SimpleAppli/delta_trace_db/blob/main/prompt/delta_trace_db_system_prompt.md <https://github.com/MasahideMori-SimpleAppli/delta_trace_db/blob/main/prompt/delta_trace_db_system_prompt.md>`__
+
+What the Prompt Covers
+----------------------
+
+The prompt includes the following topics:
+
+- **All query operations**: add, update, delete, search, get_all,
+  count, clear, clear_add, conform_to_template, rename_field,
+  remove_collection, transaction, and merge
+- **Search nodes**: comparison nodes, logical nodes, and type specifiers
+- **Sorting**: SingleSort and MultiSort
+- **Metadata**: Cause, Actor, Permission, and TemporalTrace
+- **Server-side patterns**: permission management and FastAPI integration
+- **Serialization**: saving and restoring the database as JSON
+- **Python-specific naming rules**: snake_case conversions, trailing underscores
+  for reserved words (**type_**, **from_**, **reversed_**), and other exceptions
+- **Dart API**: model definition and query usage
+- **Best practices and constraints**
+
+.. note::
+
+   The prompt is designed to be loaded as a **system prompt** or pasted at the
+   beginning of a conversation. It does not need to be updated frequently — only
+   when a new version of the library introduces breaking API changes.

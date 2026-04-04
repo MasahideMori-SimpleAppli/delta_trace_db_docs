@@ -42,6 +42,7 @@ If you need to manually adjust the database contents for maintenance or inspecti
    db_listeners
    server
    best_practice
+   ai_prompt
    glossary
    api/delta_trace_db
    notice
