@@ -20,7 +20,7 @@ Prompt File
 
 The prompt is available in the **prompt/** directory of the repository:
 
-`https://github.com/MasahideMori-SimpleAppli/delta_trace_db/blob/main/prompt/delta_trace_db_system_prompt.md <https://github.com/MasahideMori-SimpleAppli/delta_trace_db/blob/main/prompt/delta_trace_db_system_prompt.md>`__
+`https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/blob/main/prompt/delta_trace_db_system_prompt.md <https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/blob/main/prompt/delta_trace_db_system_prompt.md>`__
 
 What the Prompt Covers
 ----------------------
