@@ -87,7 +87,7 @@ Usage
 
           final searchResult = db.executeQuery<User>(searchQuery);
           final matchedUsers = searchResult.convert(User.fromDict);
-          print(matchedUsers.first.name); // → "Jiro"
+          print(matchedUsers.first.name); // → "Taro"
           print(searchResult.toDict());
 
           // Paging to the next result
@@ -102,13 +102,13 @@ Usage
           final nextPageSearchResult = db.executeQuery<User>(pagingQuery);
           // It can be easily converted into a class.
           final nextPageUsers = nextPageSearchResult.convert(User.fromDict);
-          print(nextPageUsers.first.name); // → "Taro"
+          print(nextPageUsers.first.name); // → "Jiro"
           print(nextPageSearchResult.toDict());
 
           // Search only one item (faster)
           final searchOneQuery = QueryBuilder.searchOne(
             target: 'users',
-            queryNode: FieldEquals("name", "Taro"),
+            queryNode: FieldEquals("id", 0),
           ).build();
 
           final searchOneResult = db.executeQuery<User>(searchOneQuery);
@@ -148,7 +148,7 @@ Usage
           ).build();
 
           final searchResult = db.executeQuery(searchQuery);
-          print(searchResult.result.first['name']); // → "Jiro"
+          print(searchResult.result.first['name']); // → "Taro"
           print(searchResult.toDict());
 
           // Paging to the next result
@@ -161,13 +161,13 @@ Usage
           ).build();
 
           final nextPageResult = db.executeQuery(pagingQuery);
-          print(nextPageResult.result.first['name']); // → "Taro"
+          print(nextPageResult.result.first['name']); // → "Jiro"
           print(nextPageResult.toDict());
 
           // Search only one item (faster)
           final searchOneQuery = RawQueryBuilder.searchOne(
             target: 'users',
-            queryNode: FieldEquals('name', 'Taro'),
+            queryNode: FieldEquals("id", 0),
           ).build();
 
           final searchOneResult = db.executeQuery(searchOneQuery);
@@ -250,7 +250,7 @@ Usage
             matched_users = [
                 User.from_dict(x) for x in search_result.convert(lambda v: v)
             ]
-            print(matched_users[0].name)  # → "Jiro"
+            print(matched_users[0].name)  # → "Taro"
             print(search_result.to_dict())
 
             # Paging to the next result
@@ -268,14 +268,14 @@ Usage
             next_page_users = [
                 User.from_dict(x) for x in next_page.convert(lambda v: v)
             ]
-            print(next_page_users[0].name)  # → "Taro"
+            print(next_page_users[0].name)  # → "Jiro"
             print(next_page.to_dict())
 
             # Search only one item (faster)
             search_one_query = (
                 QueryBuilder.search_one(
                     target="users",
-                    query_node=FieldEquals("name", "Taro"),
+                    query_node=FieldEquals("id", 0),
                 ).build()
             )
 
@@ -327,7 +327,7 @@ Usage
 
         search_result = db.execute_query(search_query)
 
-        print(search_result.result[0]["name"])  # → "Jiro"
+        print(search_result.result[0]["name"])  # → "Taro"
         print(search_result.to_dict())
 
         # Paging to the next result
@@ -341,13 +341,13 @@ Usage
 
         next_page_result = db.execute_query(paging_query)
 
-        print(next_page_result.result[0]["name"])  # → "Taro"
+        print(next_page_result.result[0]["name"])  # → "Jiro"
         print(next_page_result.to_dict())
 
         # Search only one item (faster)
         search_one_query = RawQueryBuilder.search_one(
             target="users",
-            query_node=FieldEquals("name", "Taro"),
+            query_node=FieldEquals("id", 0),
         ).build()
 
         search_one_result = db.execute_query(search_one_query)

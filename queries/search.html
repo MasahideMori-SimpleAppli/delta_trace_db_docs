@@ -115,7 +115,7 @@ Dart</label><div class="sd-tab-content docutils">
 
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">searchResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">searchQuery</span><span class="p">);</span>
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">matchedUsers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">searchResult</span><span class="p">.</span><span class="n">convert</span><span class="p">(</span><span class="n">User</span><span class="p">.</span><span class="n">fromDict</span><span class="p">);</span>
-<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">matchedUsers</span><span class="p">.</span><span class="n">first</span><span class="p">.</span><span class="n">name</span><span class="p">);</span><span class="w"> </span><span class="c1">// → &quot;Jiro&quot;</span>
+<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">matchedUsers</span><span class="p">.</span><span class="n">first</span><span class="p">.</span><span class="n">name</span><span class="p">);</span><span class="w"> </span><span class="c1">// → &quot;Taro&quot;</span>
 <span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">searchResult</span><span class="p">.</span><span class="n">toDict</span><span class="p">());</span>
 
 <span class="w">  </span><span class="c1">// Paging to the next result</span>
@@ -130,13 +130,13 @@ Dart</label><div class="sd-tab-content docutils">
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">nextPageSearchResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">pagingQuery</span><span class="p">);</span>
 <span class="w">  </span><span class="c1">// It can be easily converted into a class.</span>
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">nextPageUsers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nextPageSearchResult</span><span class="p">.</span><span class="n">convert</span><span class="p">(</span><span class="n">User</span><span class="p">.</span><span class="n">fromDict</span><span class="p">);</span>
-<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">nextPageUsers</span><span class="p">.</span><span class="n">first</span><span class="p">.</span><span class="n">name</span><span class="p">);</span><span class="w"> </span><span class="c1">// → &quot;Taro&quot;</span>
+<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">nextPageUsers</span><span class="p">.</span><span class="n">first</span><span class="p">.</span><span class="n">name</span><span class="p">);</span><span class="w"> </span><span class="c1">// → &quot;Jiro&quot;</span>
 <span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">nextPageSearchResult</span><span class="p">.</span><span class="n">toDict</span><span class="p">());</span>
 
 <span class="w">  </span><span class="c1">// Search only one item (faster)</span>
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">searchOneQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QueryBuilder</span><span class="p">.</span><span class="n">searchOne</span><span class="p">(</span>
 <span class="w">    </span><span class="nl">target:</span><span class="w"> </span><span class="s1">&#39;users&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="nl">queryNode:</span><span class="w"> </span><span class="n">FieldEquals</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Taro&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="nl">queryNode:</span><span class="w"> </span><span class="n">FieldEquals</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
 <span class="w">  </span><span class="p">).</span><span class="n">build</span><span class="p">();</span>
 
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">searchOneResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">(</span><span class="n">searchOneQuery</span><span class="p">);</span>
@@ -177,7 +177,7 @@ Dart(RawData)</label><div class="sd-tab-content docutils">
 <span class="w">  </span><span class="p">).</span><span class="n">build</span><span class="p">();</span>
 
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">searchResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span><span class="n">searchQuery</span><span class="p">);</span>
-<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">searchResult</span><span class="p">.</span><span class="n">result</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]);</span><span class="w"> </span><span class="c1">// → &quot;Jiro&quot;</span>
+<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">searchResult</span><span class="p">.</span><span class="n">result</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]);</span><span class="w"> </span><span class="c1">// → &quot;Taro&quot;</span>
 <span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">searchResult</span><span class="p">.</span><span class="n">toDict</span><span class="p">());</span>
 
 <span class="w">  </span><span class="c1">// Paging to the next result</span>
@@ -190,13 +190,13 @@ Dart(RawData)</label><div class="sd-tab-content docutils">
 <span class="w">  </span><span class="p">).</span><span class="n">build</span><span class="p">();</span>
 
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">nextPageResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span><span class="n">pagingQuery</span><span class="p">);</span>
-<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">nextPageResult</span><span class="p">.</span><span class="n">result</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]);</span><span class="w"> </span><span class="c1">// → &quot;Taro&quot;</span>
+<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">nextPageResult</span><span class="p">.</span><span class="n">result</span><span class="p">.</span><span class="n">first</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]);</span><span class="w"> </span><span class="c1">// → &quot;Jiro&quot;</span>
 <span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">nextPageResult</span><span class="p">.</span><span class="n">toDict</span><span class="p">());</span>
 
 <span class="w">  </span><span class="c1">// Search only one item (faster)</span>
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">searchOneQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RawQueryBuilder</span><span class="p">.</span><span class="n">searchOne</span><span class="p">(</span>
 <span class="w">    </span><span class="nl">target:</span><span class="w"> </span><span class="s1">&#39;users&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="nl">queryNode:</span><span class="w"> </span><span class="n">FieldEquals</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Taro&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="nl">queryNode:</span><span class="w"> </span><span class="n">FieldEquals</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
 <span class="w">  </span><span class="p">).</span><span class="n">build</span><span class="p">();</span>
 
 <span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">searchOneResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span><span class="n">searchOneQuery</span><span class="p">);</span>
@@ -280,7 +280,7 @@ Python</label><div class="sd-tab-content docutils">
     <span class="n">matched_users</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">User</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">search_result</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">)</span>
     <span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">matched_users</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># → &quot;Jiro&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">matched_users</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># → &quot;Taro&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">search_result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
     <span class="c1"># Paging to the next result</span>
@@ -298,14 +298,14 @@ Python</label><div class="sd-tab-content docutils">
     <span class="n">next_page_users</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">User</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">next_page</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">)</span>
     <span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">next_page_users</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># → &quot;Taro&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">next_page_users</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># → &quot;Jiro&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">next_page</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
     <span class="c1"># Search only one item (faster)</span>
     <span class="n">search_one_query</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">QueryBuilder</span><span class="o">.</span><span class="n">search_one</span><span class="p">(</span>
             <span class="n">target</span><span class="o">=</span><span class="s2">&quot;users&quot;</span><span class="p">,</span>
-            <span class="n">query_node</span><span class="o">=</span><span class="n">FieldEquals</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;Taro&quot;</span><span class="p">),</span>
+            <span class="n">query_node</span><span class="o">=</span><span class="n">FieldEquals</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="p">)</span>
 
@@ -358,7 +358,7 @@ Python(RawData)</label><div class="sd-tab-content docutils">
 
 <span class="n">search_result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">search_query</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">search_result</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>  <span class="c1"># → &quot;Jiro&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">search_result</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>  <span class="c1"># → &quot;Taro&quot;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">search_result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
 <span class="c1"># Paging to the next result</span>
@@ -372,13 +372,13 @@ Python(RawData)</label><div class="sd-tab-content docutils">
 
 <span class="n">next_page_result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">paging_query</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">next_page_result</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>  <span class="c1"># → &quot;Taro&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">next_page_result</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>  <span class="c1"># → &quot;Jiro&quot;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">next_page_result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 
 <span class="c1"># Search only one item (faster)</span>
 <span class="n">search_one_query</span> <span class="o">=</span> <span class="n">RawQueryBuilder</span><span class="o">.</span><span class="n">search_one</span><span class="p">(</span>
     <span class="n">target</span><span class="o">=</span><span class="s2">&quot;users&quot;</span><span class="p">,</span>
-    <span class="n">query_node</span><span class="o">=</span><span class="n">FieldEquals</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;Taro&quot;</span><span class="p">),</span>
+    <span class="n">query_node</span><span class="o">=</span><span class="n">FieldEquals</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 <span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 
 <span class="n">search_one_result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">search_one_query</span><span class="p">)</span>
