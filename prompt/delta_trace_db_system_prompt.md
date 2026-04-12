@@ -313,13 +313,25 @@ NotNode(node1)                  # 否定
 
 ### 型指定（EnumValueType）
 
-datetime や数値を正確に比較する場合に指定する。
+等値・大小比較ノードの `v_type` 引数に指定する。両辺をキャスト後に比較し、キャスト失敗時は常に `False`。
+
+| 値 | 動作 |
+|---|---|
+| `auto_`（デフォルト） | キャストなしでそのまま比較 |
+| `datetime_` | ISO 8601 文字列として解析し DateTime で比較。`DateTime` を直接渡すと自動設定 |
+| `int_` | 両辺を整数に変換して比較 |
+| `floatStrict_` | 両辺を浮動小数点数に変換して厳密に比較 |
+| `floatEpsilon12_` | 浮動小数点数に変換し、差が `1e-12` 未満なら等値とみなす |
+| `boolean_` | 両辺を文字列に変換・小文字化してブール値として比較 |
+| `string_` | 両辺を文字列に変換して比較 |
+| `stringIgnoreCase_` | 両辺を文字列に変換・小文字化して比較（大文字小文字を無視） |
 
 ```python
 from delta_trace_db import EnumValueType
 
 FieldGreaterThan("created_at", some_datetime, v_type=EnumValueType.datetime_)
 FieldEquals("score", 3.14, v_type=EnumValueType.floatEpsilon12_)
+FieldEquals("status", "active", v_type=EnumValueType.stringIgnoreCase_)  # "Active" も一致
 ```
 
 ---
@@ -330,12 +342,15 @@ FieldEquals("score", 3.14, v_type=EnumValueType.floatEpsilon12_)
 SingleSort(field="age", reversed_=False)           # 昇順
 SingleSort(field="age", reversed_=True)            # 降順
 SingleSort(field="created_at", v_type=EnumValueType.datetime_)  # datetime ソート
+SingleSort(field="name", v_type=EnumValueType.stringIgnoreCase_)  # 大文字小文字を無視してソート
 
 MultiSort(sort_orders=[
     SingleSort(field="last_name"),
     SingleSort(field="first_name"),
 ])
 ```
+
+`v_type` に指定できる値は比較ノードの `EnumValueType` と共通。`stringIgnoreCase_` を指定すると、両辺を小文字化してからアルファベット順にソートする。
 
 ---
 

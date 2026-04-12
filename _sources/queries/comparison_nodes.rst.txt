@@ -16,23 +16,23 @@ Supported Comparison Nodes
 Below is a list of all available comparison nodes and their behaviors.
 
 **Equality**
-   - **FieldEquals(field, value)**
+   - **FieldEquals(field, value, vType=auto_)**
      True if the field equals the value.
 
-   - **FieldNotEquals(field, value)**
+   - **FieldNotEquals(field, value, vType=auto_)**
      True if the field does not equal the value.
 
 **Relational (Greater/Less)**
-   - **FieldGreaterThan(field, value)**
+   - **FieldGreaterThan(field, value, vType=auto_)**
      True if the field value is greater than the given value.
 
-   - **FieldGreaterThanOrEqual(field, value)**
+   - **FieldGreaterThanOrEqual(field, value, vType=auto_)**
      True if the field value is greater than or equal to the given value.
 
-   - **FieldLessThan(field, value)**
+   - **FieldLessThan(field, value, vType=auto_)**
      True if the field value is smaller than the given value.
 
-   - **FieldLessThanOrEqual(field, value)**
+   - **FieldLessThanOrEqual(field, value, vType=auto_)**
      True if the field value is smaller than or equal to the given value.
 
 **Membership**
@@ -55,6 +55,75 @@ Below is a list of all available comparison nodes and their behaviors.
    - **FieldEndsWith(field, suffix)**
      True if the field’s value ends with the specified suffix.
 
+
+vType (EnumValueType)
+----------------------------
+
+The equality and relational comparison nodes accept an optional ``vType`` parameter of type ``EnumValueType``.
+This controls how both the field value and the comparison value are cast before the comparison is performed.
+If a cast fails (e.g. the value cannot be converted to the specified type), the result is always ``False``.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Value
+     - Behavior
+   * - ``auto_`` *(default)*
+     - Compares values as-is without any conversion.
+   * - ``datetime_``
+     - Parses both values as ISO 8601 strings and compares them as DateTime objects.
+       If a ``DateTime`` object is passed directly as the value, this type is set automatically.
+   * - ``int_``
+     - Converts both values to integers before comparing.
+   * - ``floatStrict_``
+     - Converts both values to floating-point numbers and compares them exactly.
+   * - ``floatEpsilon12_``
+     - Converts both values to floating-point numbers and treats them as equal
+       if the absolute difference is less than ``1e-12``.
+   * - ``boolean_``
+     - Converts both values to strings, lowercases them, and compares as booleans.
+   * - ``string_``
+     - Converts both values to strings and compares them.
+   * - ``stringIgnoreCase_``
+     - Converts both values to strings, lowercases them, and compares them
+       (case-insensitive string comparison).
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+         import 'package:delta_trace_db/delta_trace_db.dart';
+
+         // Case-insensitive string comparison
+         final node = FieldEquals('status', 'active',
+             vType: EnumValueType.stringIgnoreCase_);
+         node.evaluate({'status': 'Active'});  // true
+         node.evaluate({'status': 'ACTIVE'});  // true
+
+         // Integer comparison (field stored as string)
+         final node2 = FieldGreaterThan('count', '10',
+             vType: EnumValueType.int_);
+         node2.evaluate({'count': '20'});  // true
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+         from delta_trace_db import FieldEquals, FieldGreaterThan, EnumValueType
+
+         # Case-insensitive string comparison
+         node = FieldEquals('status', 'active',
+             v_type=EnumValueType.stringIgnoreCase_)
+         node.evaluate({'status': 'Active'})  # True
+         node.evaluate({'status': 'ACTIVE'})  # True
+
+         # Integer comparison (field stored as string)
+         node2 = FieldGreaterThan('count', '10',
+             v_type=EnumValueType.int_)
+         node2.evaluate({'count': '20'})  # True
 
 Examples
 ----------------------------

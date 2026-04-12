@@ -199,7 +199,9 @@ riceA | price=200 | createAt=2025-10-31T17:30:43.846100Z
 <section id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>If you specify the optional <strong>vType / v_type</strong> argument to a SingleSort object, the data will be converted to the specified type during sort comparison and sorted using that.</p></li>
+<li><p>If you specify the optional <strong>vType / v_type</strong> argument to a SingleSort object, the data will be converted to the specified type during sort comparison and sorted using that.
+The available values are the same as for comparison nodes (see <a class="reference internal" href="comparison_nodes.html#comparison-nodes"><span class="std std-ref">Comparison Nodes</span></a>).
+In particular, specifying <code class="docutils literal notranslate"><span class="pre">stringIgnoreCase_</span></code> enables case-insensitive alphabetical sorting.</p></li>
 <li><p>Nested fields in objects can be accessed using <strong>dot notation</strong>. For example, to access {“a”: {“b”: “c”}}, use <code class="code docutils literal notranslate"><span class="pre">&quot;a.b&quot;</span></code> as the field name.</p></li>
 </ul>
 </section>

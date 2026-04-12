@@ -170,6 +170,8 @@ Notes
 ----------------------------
 
 - If you specify the optional **vType / v_type** argument to a SingleSort object, the data will be converted to the specified type during sort comparison and sorted using that.
+  The available values are the same as for comparison nodes (see :ref:`comparison_nodes`).
+  In particular, specifying ``stringIgnoreCase_`` enables case-insensitive alphabetical sorting.
 - Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.
 
 API
