@@ -53,6 +53,14 @@ Understanding the differences between timezone-aware and local datetimes,
 preventing invalid comparisons, and recommended strategies for consistency.</p></li>
 </ul>
 </section>
+<section id="handle-exact-numbers-appropriately">
+<h2>Handle exact numbers appropriately<a class="headerlink" href="#handle-exact-numbers-appropriately" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Exact Numbers</strong>:
+Why values such as prices must be stored as strings to use the exact
+<code class="docutils literal notranslate"><span class="pre">decimal_</span></code> / <code class="docutils literal notranslate"><span class="pre">rational_</span></code> value types, and how to write data classes for them.</p></li>
+</ul>
+</section>
 <section id="persisting-data">
 <h2>Persisting Data<a class="headerlink" href="#persisting-data" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -70,6 +78,7 @@ long-lived data.</p>
 <p class="caption" role="heading"><span class="caption-text">Best Practice</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="best_practices/datetime.html">Handling Date and Time Safely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="best_practices/exact_numbers.html">Exact Numbers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="best_practices/serialization.html">Saving, Restoring, and Time Travel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="best_practices/logging.html">Query Logging Strategy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="best_practices/logging.html#api">API</a></li>
@@ -113,6 +122,7 @@ long-lived data.</p>
 <li class="toctree-l1"><a class="reference internal" href="server.html">Server-Side Coding</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Best Practices</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#handle-dates-and-times-appropriately">Handle dates and times appropriately</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#handle-exact-numbers-appropriately">Handle exact numbers appropriately</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#persisting-data">Persisting Data</a></li>
 </ul>
 </li>

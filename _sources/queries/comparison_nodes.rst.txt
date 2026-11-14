@@ -154,6 +154,7 @@ Unlike ``floatStrict_``, no digits are lost, so this is suitable for values such
   so pass ``"11"`` instead of ``11``. Store such values in the DB as strings.
 - ``PortableDecimal``, ``PortableRational`` and ``EnumRoundingMode`` are re-exported from ``delta_trace_db``.
 - Queries using these types cannot be read by delta_trace_db versions earlier than 0.2.0.
+- For how to store such values in data classes, see :doc:`../best_practices/exact_numbers`.
 
 .. tab-set::
 

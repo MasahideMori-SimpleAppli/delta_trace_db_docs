@@ -20,6 +20,13 @@ Handle dates and times appropriately
   Understanding the differences between timezone-aware and local datetimes,
   preventing invalid comparisons, and recommended strategies for consistency.
 
+Handle exact numbers appropriately
+--------------------------------------
+
+- **Exact Numbers**:
+  Why values such as prices must be stored as strings to use the exact
+  ``decimal_`` / ``rational_`` value types, and how to write data classes for them.
+
 Persisting Data
 ----------------------------
 
@@ -40,5 +47,6 @@ long-lived data.
    :caption: Best Practice
 
    best_practices/datetime
+   best_practices/exact_numbers
    best_practices/serialization
    best_practices/logging

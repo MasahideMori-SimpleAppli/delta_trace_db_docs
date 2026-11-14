@@ -79,6 +79,42 @@ print(tiny.evaluate({"price": "0.10000000000000000001"}))  # True
 print(FieldLessThan("r", "1/3", v_type=EnumValueType.rational_).evaluate({"r": "0.333"}))  # True
 ```
 
+In a data class, keep the value as `PortableDecimal` and save it as a `str` in `to_dict`.
+Never write a float into `to_dict` for a field compared with `decimal_`: the item silently stops matching.
+
+```python
+from typing import Any, Dict
+
+from file_state_manager import CloneableFile
+
+
+class Product(CloneableFile):
+    def __init__(self, name: str, price: PortableDecimal):
+        super().__init__()
+        self.name = name
+        self.price = price
+
+    @classmethod
+    def from_dict(cls, src: Dict[str, Any]) -> "Product":
+        return cls(name=src["name"], price=PortableDecimal.parse(src["price"]))
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {"name": self.name, "price": self.price.to_string()}  # always a str
+
+    def clone(self) -> "Product":
+        return Product.from_dict(self.to_dict())
+
+
+pdb = DeltaTraceDatabase()
+pdb.execute_query(QueryBuilder.add(target="products", add_data=[
+    Product(name="pen", price=PortableDecimal.parse("1.50")),
+    Product(name="book", price=PortableDecimal.parse("12.00")),
+]).build())
+cheap = pdb.execute_query(QueryBuilder.search(
+    target="products", query_node=FieldLessThan("price", PortableDecimal.parse("10"))).build())
+print([f"{p.name}: {p.price}" for p in cheap.convert(Product.from_dict)])  # ['pen: 1.50']
+```
+
 ### Datetimes
 
 Store datetimes as UTC ISO 8601 strings and use timezone-aware `datetime` values in conditions.

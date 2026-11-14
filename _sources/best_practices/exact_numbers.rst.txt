@@ -1,0 +1,158 @@
+======================================
+Exact Numbers
+======================================
+
+Overview
+--------
+
+For values where floating-point error is not acceptable, such as prices or quantities of money,
+DeltaTraceDB provides the ``decimal_`` and ``rational_`` value types
+(see :ref:`exact_decimal_rational`).
+They are used for comparison nodes, sorting and the aggregate query, and give identical results
+in Dart and Python.
+
+These types convert **only strings** and ``PortableDecimal`` / ``PortableRational`` objects.
+Therefore, **exact numbers must be stored in the database as strings**, such as ``"10.50"``.
+
+Why This Matters
+----------------
+
+If a value is stored as a number (int or double / float), it is treated as a conversion failure,
+and **no error is raised for searches and sorting**:
+
+- Comparison nodes with ``decimal_`` / ``rational_`` evaluate to **False** for that item,
+  so it silently disappears from the search results.
+- Sorting with ``decimal_`` / ``rational_`` treats the value as null, so the item moves to the end.
+- The aggregate query fails with **isSuccess = false**, so this case can be noticed.
+
+Numbers are rejected on purpose: a double cannot represent most decimal values exactly
+(e.g. ``0.1``), its string form differs between Dart and Python, and on the web Dart integers
+are doubles. Once a value has been stored as a number, its exact original value cannot be recovered.
+
+If a ``PortableDecimal`` object itself is put into the data, the add query fails, because the item is
+not JSON-compatible.
+
+Recommended Best Practices
+--------------------------
+
+In a data class (``CloneableFile``), keep the value as ``PortableDecimal`` (or ``PortableRational``),
+convert it to a string in **toDict / to_dict**, and parse it in **fromDict / from_dict**.
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+        import 'package:file_state_manager/file_state_manager.dart';
+
+        class Product extends CloneableFile {
+          final String name;
+          final PortableDecimal price;
+
+          Product({required this.name, required this.price});
+
+          static Product fromDict(Map<String, dynamic> src) => Product(
+                name: src["name"],
+                price: PortableDecimal.parse(src["price"]),
+              );
+
+          @override
+          Map<String, dynamic> toDict() => {
+                "name": name,
+                "price": price.toString(), // Always save as a String.
+              };
+
+          @override
+          Product clone() => Product.fromDict(toDict());
+        }
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          db.executeQuery(
+            QueryBuilder.add(
+              target: "products",
+              addData: [
+                Product(name: "pen", price: PortableDecimal.parse("1.50")),
+                Product(name: "book", price: PortableDecimal.parse("12.00")),
+              ],
+            ).build(),
+          );
+          final r = db.executeQuery<Product>(
+            QueryBuilder.search(
+              target: "products",
+              queryNode: FieldLessThan("price", PortableDecimal.parse("10")),
+            ).build(),
+          );
+          final products = r.convert(Product.fromDict);
+          print(products.map((e) => "${e.name}: ${e.price}").toList()); // [pen: 1.50]
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from typing import Any, Dict
+
+        from delta_trace_db import (DeltaTraceDatabase, FieldLessThan, PortableDecimal,
+                                    QueryBuilder)
+        from file_state_manager import CloneableFile
+
+
+        class Product(CloneableFile):
+            def __init__(self, name: str, price: PortableDecimal):
+                super().__init__()
+                self.name = name
+                self.price = price
+
+            @classmethod
+            def from_dict(cls, src: Dict[str, Any]) -> "Product":
+                return cls(name=src["name"], price=PortableDecimal.parse(src["price"]))
+
+            def to_dict(self) -> Dict[str, Any]:
+                return {
+                    "name": self.name,
+                    "price": self.price.to_string(),  # Always save as a str.
+                }
+
+            def clone(self) -> "Product":
+                return Product.from_dict(self.to_dict())
+
+
+        db = DeltaTraceDatabase()
+        db.execute_query(QueryBuilder.add(target="products", add_data=[
+            Product(name="pen", price=PortableDecimal.parse("1.50")),
+            Product(name="book", price=PortableDecimal.parse("12.00")),
+        ]).build())
+        r = db.execute_query(QueryBuilder.search(
+            target="products",
+            query_node=FieldLessThan("price", PortableDecimal.parse("10")),
+        ).build())
+        products = r.convert(Product.from_dict)
+        print([f"{p.name}: {p.price}" for p in products])  # ['pen: 1.50']
+
+Practical Notes
+---------------
+
+- Use the same rule for raw data (``RawQueryBuilder``): write ``{"price": "10.50"}``, not ``{"price": 10.5}``.
+- Also pass strings (or ``PortableDecimal`` / ``PortableRational`` objects) as the values of
+  comparison nodes: ``FieldEquals("price", "10.5", vType: EnumValueType.decimal_)``.
+- The string keeps the number of fractional digits (``"1.50"`` stays ``"1.50"``),
+  while comparisons are by value (``"1.50"`` equals ``"1.5"``).
+- If existing data contains numbers, migrate it to strings before using ``decimal_`` / ``rational_``
+  (for example, read all items with a getAll query, convert each value, and write them back with a
+  clearAdd query). Check the converted values, because a value stored as a double may already differ
+  from the intended decimal value.
+
+See Also
+--------
+
+- :ref:`exact_decimal_rational`
+- :doc:`../queries/aggregate`
+
+API
+----------------------------
+- Dart: `[PortableDecimal] <https://pub.dev/documentation/simple_portable_numeric/latest/simple_portable_numeric/PortableDecimal-class.html>`__
+- Dart: `[PortableRational] <https://pub.dev/documentation/simple_portable_numeric/latest/simple_portable_numeric/PortableRational-class.html>`__
+- Python: `[simple-portable-numeric] <https://pypi.org/project/simple-portable-numeric/>`__

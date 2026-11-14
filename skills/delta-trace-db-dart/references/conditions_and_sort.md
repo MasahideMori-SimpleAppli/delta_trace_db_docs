@@ -78,6 +78,44 @@ print(tiny.evaluate({"price": "0.10000000000000000001"})); // true
 print(FieldLessThan("r", "1/3", vType: EnumValueType.rational_).evaluate({"r": "0.333"})); // true
 ```
 
+In a data class, keep the value as `PortableDecimal` and save it as a `String` in `toDict`.
+Never write a double into `toDict` for a field compared with `decimal_`: the item silently stops matching.
+
+```dart
+import 'package:file_state_manager/file_state_manager.dart';
+
+class Product extends CloneableFile {
+  final String name;
+  final PortableDecimal price;
+
+  Product({required this.name, required this.price});
+
+  static Product fromDict(Map<String, dynamic> src) =>
+      Product(name: src["name"], price: PortableDecimal.parse(src["price"]));
+
+  @override
+  Map<String, dynamic> toDict() => {"name": name, "price": price.toString()}; // always a String
+
+  @override
+  Product clone() => Product.fromDict(toDict());
+}
+
+final pdb = DeltaTraceDatabase();
+pdb.executeQuery(
+  QueryBuilder.add(
+    target: "products",
+    addData: [
+      Product(name: "pen", price: PortableDecimal.parse("1.50")),
+      Product(name: "book", price: PortableDecimal.parse("12.00")),
+    ],
+  ).build(),
+);
+final cheap = pdb.executeQuery<Product>(
+  QueryBuilder.search(target: "products", queryNode: FieldLessThan("price", PortableDecimal.parse("10"))).build(),
+);
+print(cheap.convert(Product.fromDict).map((e) => "${e.name}: ${e.price}").toList()); // [pen: 1.50]
+```
+
 ### Date-times
 
 Store date-times as UTC ISO 8601 strings and use UTC `DateTime` values in conditions.

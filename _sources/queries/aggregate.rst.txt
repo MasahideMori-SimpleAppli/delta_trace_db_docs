@@ -62,7 +62,8 @@ Aggregation
        ``PortableRational`` objects. Numbers are **not** converted.
      - An exact rational string, e.g. ``"73/5"``.
 
-See :ref:`exact_decimal_rational` for why numbers are not converted by ``decimal_`` and ``rational_``.
+See :ref:`exact_decimal_rational` for why numbers are not converted by ``decimal_`` and ``rational_``,
+and :doc:`../best_practices/exact_numbers` for how to store such values.
 
 Usage
 ----------------------------

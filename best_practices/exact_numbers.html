@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Exact Numbers &#8212; DeltaTraceDB Docs 0.0.37 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="../_static/documentation_options.js?v=aa2ad26f"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Saving, Restoring, and Time Travel" href="serialization.html" />
+    <link rel="prev" title="Handling Date and Time Safely" href="datetime.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="exact-numbers">
+<h1>Exact Numbers<a class="headerlink" href="#exact-numbers" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>For values where floating-point error is not acceptable, such as prices or quantities of money,
+DeltaTraceDB provides the <code class="docutils literal notranslate"><span class="pre">decimal_</span></code> and <code class="docutils literal notranslate"><span class="pre">rational_</span></code> value types
+(see <a class="reference internal" href="../queries/comparison_nodes.html#exact-decimal-rational"><span class="std std-ref">Exact decimal / rational comparison</span></a>).
+They are used for comparison nodes, sorting and the aggregate query, and give identical results
+in Dart and Python.</p>
+<p>These types convert <strong>only strings</strong> and <code class="docutils literal notranslate"><span class="pre">PortableDecimal</span></code> / <code class="docutils literal notranslate"><span class="pre">PortableRational</span></code> objects.
+Therefore, <strong>exact numbers must be stored in the database as strings</strong>, such as <code class="docutils literal notranslate"><span class="pre">&quot;10.50&quot;</span></code>.</p>
+</section>
+<section id="why-this-matters">
+<h2>Why This Matters<a class="headerlink" href="#why-this-matters" title="Link to this heading">¶</a></h2>
+<p>If a value is stored as a number (int or double / float), it is treated as a conversion failure,
+and <strong>no error is raised for searches and sorting</strong>:</p>
+<ul class="simple">
+<li><p>Comparison nodes with <code class="docutils literal notranslate"><span class="pre">decimal_</span></code> / <code class="docutils literal notranslate"><span class="pre">rational_</span></code> evaluate to <strong>False</strong> for that item,
+so it silently disappears from the search results.</p></li>
+<li><p>Sorting with <code class="docutils literal notranslate"><span class="pre">decimal_</span></code> / <code class="docutils literal notranslate"><span class="pre">rational_</span></code> treats the value as null, so the item moves to the end.</p></li>
+<li><p>The aggregate query fails with <strong>isSuccess = false</strong>, so this case can be noticed.</p></li>
+</ul>
+<p>Numbers are rejected on purpose: a double cannot represent most decimal values exactly
+(e.g. <code class="docutils literal notranslate"><span class="pre">0.1</span></code>), its string form differs between Dart and Python, and on the web Dart integers
+are doubles. Once a value has been stored as a number, its exact original value cannot be recovered.</p>
+<p>If a <code class="docutils literal notranslate"><span class="pre">PortableDecimal</span></code> object itself is put into the data, the add query fails, because the item is
+not JSON-compatible.</p>
+</section>
+<section id="recommended-best-practices">
+<h2>Recommended Best Practices<a class="headerlink" href="#recommended-best-practices" title="Link to this heading">¶</a></h2>
+<p>In a data class (<code class="docutils literal notranslate"><span class="pre">CloneableFile</span></code>), keep the value as <code class="docutils literal notranslate"><span class="pre">PortableDecimal</span></code> (or <code class="docutils literal notranslate"><span class="pre">PortableRational</span></code>),
+convert it to a string in <strong>toDict / to_dict</strong>, and parse it in <strong>fromDict / from_dict</strong>.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Dart</label><div class="sd-tab-content docutils">
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:delta_trace_db/delta_trace_db.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:file_state_manager/file_state_manager.dart&#39;</span><span class="p">;</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">Product</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">CloneableFile</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">PortableDecimal</span><span class="w"> </span><span class="n">price</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">Product</span><span class="p">({</span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kd">required</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">price</span><span class="p">});</span>
+
+<span class="w">  </span><span class="kd">static</span><span class="w"> </span><span class="n">Product</span><span class="w"> </span><span class="n">fromDict</span><span class="p">(</span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">src</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Product</span><span class="p">(</span>
+<span class="w">        </span><span class="nl">name:</span><span class="w"> </span><span class="n">src</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+<span class="w">        </span><span class="nl">price:</span><span class="w"> </span><span class="n">PortableDecimal</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="n">src</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]),</span>
+<span class="w">      </span><span class="p">);</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kt">dynamic</span><span class="o">&gt;</span><span class="w"> </span><span class="n">toDict</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="w"> </span><span class="n">name</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;price&quot;</span><span class="o">:</span><span class="w"> </span><span class="n">price</span><span class="p">.</span><span class="n">toString</span><span class="p">(),</span><span class="w"> </span><span class="c1">// Always save as a String.</span>
+<span class="w">      </span><span class="p">};</span>
+
+<span class="w">  </span><span class="nd">@override</span>
+<span class="w">  </span><span class="n">Product</span><span class="w"> </span><span class="n">clone</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Product</span><span class="p">.</span><span class="n">fromDict</span><span class="p">(</span><span class="n">toDict</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DeltaTraceDatabase</span><span class="p">();</span>
+<span class="w">  </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span>
+<span class="w">    </span><span class="n">QueryBuilder</span><span class="p">.</span><span class="n">add</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">target:</span><span class="w"> </span><span class="s2">&quot;products&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">addData:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="n">Product</span><span class="p">(</span><span class="nl">name:</span><span class="w"> </span><span class="s2">&quot;pen&quot;</span><span class="p">,</span><span class="w"> </span><span class="nl">price:</span><span class="w"> </span><span class="n">PortableDecimal</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;1.50&quot;</span><span class="p">)),</span>
+<span class="w">        </span><span class="n">Product</span><span class="p">(</span><span class="nl">name:</span><span class="w"> </span><span class="s2">&quot;book&quot;</span><span class="p">,</span><span class="w"> </span><span class="nl">price:</span><span class="w"> </span><span class="n">PortableDecimal</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;12.00&quot;</span><span class="p">)),</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">    </span><span class="p">).</span><span class="n">build</span><span class="p">(),</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="n">QueryBuilder</span><span class="p">.</span><span class="n">search</span><span class="p">(</span>
+<span class="w">      </span><span class="nl">target:</span><span class="w"> </span><span class="s2">&quot;products&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nl">queryNode:</span><span class="w"> </span><span class="n">FieldLessThan</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">PortableDecimal</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;10&quot;</span><span class="p">)),</span>
+<span class="w">    </span><span class="p">).</span><span class="n">build</span><span class="p">(),</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">products</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">convert</span><span class="p">(</span><span class="n">Product</span><span class="p">.</span><span class="n">fromDict</span><span class="p">);</span>
+<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">products</span><span class="p">.</span><span class="n">map</span><span class="p">((</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="n">e</span><span class="p">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">${</span><span class="n">e</span><span class="p">.</span><span class="n">price</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">).</span><span class="n">toList</span><span class="p">());</span><span class="w"> </span><span class="c1">// [pen: 1.50]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Python</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">delta_trace_db</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">DeltaTraceDatabase</span><span class="p">,</span> <span class="n">FieldLessThan</span><span class="p">,</span> <span class="n">PortableDecimal</span><span class="p">,</span>
+                            <span class="n">QueryBuilder</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">file_state_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">CloneableFile</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Product</span><span class="p">(</span><span class="n">CloneableFile</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">price</span><span class="p">:</span> <span class="n">PortableDecimal</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="n">price</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">src</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Product&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">src</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">price</span><span class="o">=</span><span class="n">PortableDecimal</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">src</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">to_string</span><span class="p">(),</span>  <span class="c1"># Always save as a str.</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Product&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Product</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">DeltaTraceDatabase</span><span class="p">()</span>
+<span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">QueryBuilder</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="s2">&quot;products&quot;</span><span class="p">,</span> <span class="n">add_data</span><span class="o">=</span><span class="p">[</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;pen&quot;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">PortableDecimal</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;1.50&quot;</span><span class="p">)),</span>
+    <span class="n">Product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;book&quot;</span><span class="p">,</span> <span class="n">price</span><span class="o">=</span><span class="n">PortableDecimal</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;12.00&quot;</span><span class="p">)),</span>
+<span class="p">])</span><span class="o">.</span><span class="n">build</span><span class="p">())</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">QueryBuilder</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;products&quot;</span><span class="p">,</span>
+    <span class="n">query_node</span><span class="o">=</span><span class="n">FieldLessThan</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="n">PortableDecimal</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;10&quot;</span><span class="p">)),</span>
+<span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">())</span>
+<span class="n">products</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">Product</span><span class="o">.</span><span class="n">from_dict</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">price</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">products</span><span class="p">])</span>  <span class="c1"># [&#39;pen: 1.50&#39;]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="practical-notes">
+<h2>Practical Notes<a class="headerlink" href="#practical-notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Use the same rule for raw data (<code class="docutils literal notranslate"><span class="pre">RawQueryBuilder</span></code>): write <code class="docutils literal notranslate"><span class="pre">{&quot;price&quot;:</span> <span class="pre">&quot;10.50&quot;}</span></code>, not <code class="docutils literal notranslate"><span class="pre">{&quot;price&quot;:</span> <span class="pre">10.5}</span></code>.</p></li>
+<li><p>Also pass strings (or <code class="docutils literal notranslate"><span class="pre">PortableDecimal</span></code> / <code class="docutils literal notranslate"><span class="pre">PortableRational</span></code> objects) as the values of
+comparison nodes: <code class="docutils literal notranslate"><span class="pre">FieldEquals(&quot;price&quot;,</span> <span class="pre">&quot;10.5&quot;,</span> <span class="pre">vType:</span> <span class="pre">EnumValueType.decimal_)</span></code>.</p></li>
+<li><p>The string keeps the number of fractional digits (<code class="docutils literal notranslate"><span class="pre">&quot;1.50&quot;</span></code> stays <code class="docutils literal notranslate"><span class="pre">&quot;1.50&quot;</span></code>),
+while comparisons are by value (<code class="docutils literal notranslate"><span class="pre">&quot;1.50&quot;</span></code> equals <code class="docutils literal notranslate"><span class="pre">&quot;1.5&quot;</span></code>).</p></li>
+<li><p>If existing data contains numbers, migrate it to strings before using <code class="docutils literal notranslate"><span class="pre">decimal_</span></code> / <code class="docutils literal notranslate"><span class="pre">rational_</span></code>
+(for example, read all items with a getAll query, convert each value, and write them back with a
+clearAdd query). Check the converted values, because a value stored as a double may already differ
+from the intended decimal value.</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../queries/comparison_nodes.html#exact-decimal-rational"><span class="std std-ref">Exact decimal / rational comparison</span></a></p></li>
+<li><p><a class="reference internal" href="../queries/aggregate.html"><span class="doc">Aggregate</span></a></p></li>
+</ul>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/simple_portable_numeric/latest/simple_portable_numeric/PortableDecimal-class.html">[PortableDecimal]</a></p></li>
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/simple_portable_numeric/latest/simple_portable_numeric/PortableRational-class.html">[PortableRational]</a></p></li>
+<li><p>Python: <a class="reference external" href="https://pypi.org/project/simple-portable-numeric/">[simple-portable-numeric]</a></p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeltaTraceDB Docs</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../queries.html">Query Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../db_listeners.html">DB Listeners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">Server-Side Coding</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../best_practice.html">Best Practices</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../best_practice.html#handle-dates-and-times-appropriately">Handle dates and times appropriately</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../best_practice.html#handle-exact-numbers-appropriately">Handle exact numbers appropriately</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../best_practice.html#persisting-data">Persisting Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_prompt.html">Using with AI Assistants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/delta_trace_db.html">Python version API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notice.html">Notice</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../best_practice.html">Best Practices</a><ul>
+      <li>Previous: <a href="datetime.html" title="previous chapter">Handling Date and Time Safely</a></li>
+      <li>Next: <a href="serialization.html" title="next chapter">Saving, Restoring, and Time Travel</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Masahide Mori.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/best_practices/exact_numbers.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
