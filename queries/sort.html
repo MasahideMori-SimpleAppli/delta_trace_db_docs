@@ -201,7 +201,9 @@ riceA | price=200 | createAt=2025-10-31T17:30:43.846100Z
 <ul class="simple">
 <li><p>If you specify the optional <strong>vType / v_type</strong> argument to a SingleSort object, the data will be converted to the specified type during sort comparison and sorted using that.
 The available values are the same as for comparison nodes (see <a class="reference internal" href="comparison_nodes.html#comparison-nodes"><span class="std std-ref">Comparison Nodes</span></a>).
-In particular, specifying <code class="docutils literal notranslate"><span class="pre">stringIgnoreCase_</span></code> enables case-insensitive alphabetical sorting.</p></li>
+In particular, specifying <code class="docutils literal notranslate"><span class="pre">stringIgnoreCase_</span></code> enables case-insensitive alphabetical sorting.
+With <code class="docutils literal notranslate"><span class="pre">decimal_</span></code> or <code class="docutils literal notranslate"><span class="pre">rational_</span></code>, values are sorted exactly by numeric value, and values that cannot be
+converted (including numbers such as int and double) are treated as null.</p></li>
 <li><p>Nested fields in objects can be accessed using <strong>dot notation</strong>. For example, to access {“a”: {“b”: “c”}}, use <code class="code docutils literal notranslate"><span class="pre">&quot;a.b&quot;</span></code> as the field name.</p></li>
 </ul>
 </section>
@@ -256,6 +258,7 @@ In particular, specifying <code class="docutils literal notranslate"><span class
 <li class="toctree-l2"><a class="reference internal" href="conform_to_template.html">ConformToTemplate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rename_field.html">RenameField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate.html">Aggregate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>

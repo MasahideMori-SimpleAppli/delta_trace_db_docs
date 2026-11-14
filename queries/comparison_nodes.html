@@ -128,6 +128,16 @@ if the absolute difference is less than <code class="docutils literal notranslat
 <td><p>Converts both values to strings, lowercases them, and compares them
 (case-insensitive string comparison).</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">decimal_</span></code></p></td>
+<td><p>Converts both values to <code class="docutils literal notranslate"><span class="pre">PortableDecimal</span></code> and compares them exactly by value
+(see <a class="reference internal" href="#exact-decimal-rational"><span class="std std-ref">Exact decimal / rational comparison</span></a>).
+If a <code class="docutils literal notranslate"><span class="pre">PortableDecimal</span></code> object is passed directly as the value, this type is set automatically.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rational_</span></code></p></td>
+<td><p>Converts both values to <code class="docutils literal notranslate"><span class="pre">PortableRational</span></code> and compares them exactly by value
+(see <a class="reference internal" href="#exact-decimal-rational"><span class="std std-ref">Exact decimal / rational comparison</span></a>).
+If a <code class="docutils literal notranslate"><span class="pre">PortableRational</span></code> object is passed directly as the value, this type is set automatically.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="sd-tab-set docutils">
@@ -169,11 +179,70 @@ Python</label><div class="sd-tab-content docutils">
 </div>
 </div>
 </section>
-<section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<section id="exact-decimal-rational-comparison">
+<span id="exact-decimal-rational"></span><h2>Exact decimal / rational comparison<a class="headerlink" href="#exact-decimal-rational-comparison" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">decimal_</span></code> and <code class="docutils literal notranslate"><span class="pre">rational_</span></code> use the
+<a class="reference external" href="https://pub.dev/packages/simple_portable_numeric">simple_portable_numeric</a> package,
+which gives identical results in Dart and Python.
+Unlike <code class="docutils literal notranslate"><span class="pre">floatStrict_</span></code>, no digits are lost, so this is suitable for values such as prices.</p>
+<ul class="simple">
+<li><p>Values are compared by numeric value, so <code class="docutils literal notranslate"><span class="pre">&quot;1.50&quot;</span></code> equals <code class="docutils literal notranslate"><span class="pre">&quot;1.5&quot;</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">decimal_</span></code> accepts plain decimal strings such as <code class="docutils literal notranslate"><span class="pre">&quot;-12.340&quot;</span></code>.
+<code class="docutils literal notranslate"><span class="pre">rational_</span></code> also accepts fractions such as <code class="docutils literal notranslate"><span class="pre">&quot;1/3&quot;</span></code>.
+Exponent notation (<code class="docutils literal notranslate"><span class="pre">&quot;1e3&quot;</span></code>), whitespace and non-ASCII digits are rejected.</p></li>
+<li><p><strong>Only strings and</strong> <code class="docutils literal notranslate"><span class="pre">PortableDecimal</span></code> / <code class="docutils literal notranslate"><span class="pre">PortableRational</span></code> <strong>objects are converted.</strong>
+Numbers such as int and double (float) are treated as conversion failures, because their exactness
+cannot be guaranteed (e.g. int is a double on the web in Dart, and the string form of double differs
+between Dart and Python). This also applies to the comparison value,
+so pass <code class="docutils literal notranslate"><span class="pre">&quot;11&quot;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">11</span></code>. Store such values in the DB as strings.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PortableDecimal</span></code>, <code class="docutils literal notranslate"><span class="pre">PortableRational</span></code> and <code class="docutils literal notranslate"><span class="pre">EnumRoundingMode</span></code> are re-exported from <code class="docutils literal notranslate"><span class="pre">delta_trace_db</span></code>.</p></li>
+<li><p>Queries using these types cannot be read by delta_trace_db versions earlier than 0.2.0.</p></li>
+</ul>
 <div class="sd-tab-set docutils">
 <input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-2">
+Dart</label><div class="sd-tab-content docutils">
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:delta_trace_db/delta_trace_db.dart&#39;</span><span class="p">;</span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FieldEquals</span><span class="p">(</span><span class="s1">&#39;price&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;1.5&#39;</span><span class="p">,</span><span class="w"> </span><span class="nl">vType:</span><span class="w"> </span><span class="n">EnumValueType</span><span class="p">.</span><span class="n">decimal_</span><span class="p">);</span>
+<span class="n">node</span><span class="p">.</span><span class="n">evaluate</span><span class="p">({</span><span class="s1">&#39;price&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;1.50&#39;</span><span class="p">});</span><span class="w"> </span><span class="c1">// true</span>
+<span class="n">node</span><span class="p">.</span><span class="n">evaluate</span><span class="p">({</span><span class="s1">&#39;price&#39;</span><span class="o">:</span><span class="w"> </span><span class="m">1.5</span><span class="p">});</span><span class="w"> </span><span class="c1">// false (numbers are not converted)</span>
+
+<span class="c1">// vType is set automatically, and the value is saved as a String.</span>
+<span class="kd">final</span><span class="w"> </span><span class="n">node2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FieldGreaterThan</span><span class="p">(</span><span class="s1">&#39;price&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">PortableDecimal</span><span class="p">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;0.1&#39;</span><span class="p">));</span>
+<span class="n">node2</span><span class="p">.</span><span class="n">evaluate</span><span class="p">({</span><span class="s1">&#39;price&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;0.10000000000000000001&#39;</span><span class="p">});</span><span class="w"> </span><span class="c1">// true</span>
+
+<span class="kd">final</span><span class="w"> </span><span class="n">node3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FieldLessThan</span><span class="p">(</span><span class="s1">&#39;ratio&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;1/3&#39;</span><span class="p">,</span><span class="w"> </span><span class="nl">vType:</span><span class="w"> </span><span class="n">EnumValueType</span><span class="p">.</span><span class="n">rational_</span><span class="p">);</span>
+<span class="n">node3</span><span class="p">.</span><span class="n">evaluate</span><span class="p">({</span><span class="s1">&#39;ratio&#39;</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;0.333&#39;</span><span class="p">});</span><span class="w"> </span><span class="c1">// true</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+Python</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">delta_trace_db</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">EnumValueType</span><span class="p">,</span> <span class="n">FieldEquals</span><span class="p">,</span> <span class="n">FieldGreaterThan</span><span class="p">,</span>
+                            <span class="n">FieldLessThan</span><span class="p">,</span> <span class="n">PortableDecimal</span><span class="p">)</span>
+
+<span class="n">node</span> <span class="o">=</span> <span class="n">FieldEquals</span><span class="p">(</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="s1">&#39;1.5&#39;</span><span class="p">,</span> <span class="n">v_type</span><span class="o">=</span><span class="n">EnumValueType</span><span class="o">.</span><span class="n">decimal_</span><span class="p">)</span>
+<span class="n">node</span><span class="o">.</span><span class="n">evaluate</span><span class="p">({</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;1.50&#39;</span><span class="p">})</span>  <span class="c1"># True</span>
+<span class="n">node</span><span class="o">.</span><span class="n">evaluate</span><span class="p">({</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">})</span>  <span class="c1"># False (numbers are not converted)</span>
+
+<span class="c1"># v_type is set automatically, and the value is saved as a str.</span>
+<span class="n">node2</span> <span class="o">=</span> <span class="n">FieldGreaterThan</span><span class="p">(</span><span class="s1">&#39;price&#39;</span><span class="p">,</span> <span class="n">PortableDecimal</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;0.1&#39;</span><span class="p">))</span>
+<span class="n">node2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">({</span><span class="s1">&#39;price&#39;</span><span class="p">:</span> <span class="s1">&#39;0.10000000000000000001&#39;</span><span class="p">})</span>  <span class="c1"># True</span>
+
+<span class="n">node3</span> <span class="o">=</span> <span class="n">FieldLessThan</span><span class="p">(</span><span class="s1">&#39;ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;1/3&#39;</span><span class="p">,</span> <span class="n">v_type</span><span class="o">=</span><span class="n">EnumValueType</span><span class="o">.</span><span class="n">rational_</span><span class="p">)</span>
+<span class="n">node3</span><span class="o">.</span><span class="n">evaluate</span><span class="p">({</span><span class="s1">&#39;ratio&#39;</span><span class="p">:</span> <span class="s1">&#39;0.333&#39;</span><span class="p">})</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-4">
 Dart</label><div class="sd-tab-content docutils">
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:delta_trace_db/delta_trace_db.dart&#39;</span><span class="p">;</span>
 
@@ -185,8 +254,8 @@ Dart</label><div class="sd-tab-content docutils">
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" for="sd-tab-item-3">
+<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-5">
 Python</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">delta_trace_db</span><span class="w"> </span><span class="kn">import</span> <span class="n">FieldGreaterThanOrEqual</span><span class="p">,</span> <span class="n">FieldLessThanOrEqual</span>
 
@@ -249,6 +318,7 @@ Python</label><div class="sd-tab-content docutils">
 <li class="toctree-l2"><a class="reference internal" href="conform_to_template.html">ConformToTemplate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rename_field.html">RenameField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate.html">Aggregate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>

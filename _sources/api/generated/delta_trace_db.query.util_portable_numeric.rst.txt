@@ -1,0 +1,12 @@
+delta\_trace\_db.query.util\_portable\_numeric
+==============================================
+
+.. automodule:: delta_trace_db.query.util_portable_numeric
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      UtilPortableNumeric
+   

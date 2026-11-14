@@ -190,7 +190,12 @@ toDictを連鎖的に呼び出すようにしてください。</p>
 <li><p><strong>field</strong> (<em>str</em><em>,</em>) – The target variable name.</p></li>
 <li><p><strong>value</strong> (<em>Any</em>) – The compare value.
 If DateTime is specified, it will be automatically converted to
-Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.</p></li>
+Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.
+If PortableDecimal or PortableRational is specified, it will be saved as
+a str and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.decimal_</span></code> or
+<code class="docutils literal notranslate"><span class="pre">EnumValueType.rational_</span></code>. With these types, only str, PortableDecimal
+and PortableRational values are converted; numbers such as int and float
+are treated as conversion failures.</p></li>
 <li><p><strong>v_type</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.enum_value_type.html#delta_trace_db.query.nodes.enum_value_type.EnumValueType" title="delta_trace_db.query.nodes.enum_value_type.EnumValueType"><em>EnumValueType</em></a>) – Specifies the comparison type during calculation.
 If you select anything other than <code class="docutils literal notranslate"><span class="pre">auto_</span></code>,
 the value will be cast to that type before the comparison is performed.
@@ -251,7 +256,12 @@ null や bool など、大小比較できないオブジェクトを比較しよ
 <li><p><strong>field</strong> (<em>str</em><em>,</em>) – The target variable name.</p></li>
 <li><p><strong>value</strong> (<em>Any</em>) – The compare value.
 If DateTime is specified, it will be automatically converted to
-Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.</p></li>
+Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.
+If PortableDecimal or PortableRational is specified, it will be saved as
+a str and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.decimal_</span></code> or
+<code class="docutils literal notranslate"><span class="pre">EnumValueType.rational_</span></code>. With these types, only str, PortableDecimal
+and PortableRational values are converted; numbers such as int and float
+are treated as conversion failures.</p></li>
 <li><p><strong>v_type</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.enum_value_type.html#delta_trace_db.query.nodes.enum_value_type.EnumValueType" title="delta_trace_db.query.nodes.enum_value_type.EnumValueType"><em>EnumValueType</em></a>) – Specifies the comparison type during calculation.
 If you select anything other than <code class="docutils literal notranslate"><span class="pre">auto_</span></code>,
 the value will be cast to that type before the comparison is performed.
@@ -312,7 +322,12 @@ null や bool など、大小比較できないオブジェクトを比較しよ
 <li><p><strong>field</strong> (<em>str</em><em>,</em>) – The target variable name.</p></li>
 <li><p><strong>value</strong> (<em>Any</em>) – The compare value.
 If DateTime is specified, it will be automatically converted to
-Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.</p></li>
+Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.
+If PortableDecimal or PortableRational is specified, it will be saved as
+a str and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.decimal_</span></code> or
+<code class="docutils literal notranslate"><span class="pre">EnumValueType.rational_</span></code>. With these types, only str, PortableDecimal
+and PortableRational values are converted; numbers such as int and float
+are treated as conversion failures.</p></li>
 <li><p><strong>v_type</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.enum_value_type.html#delta_trace_db.query.nodes.enum_value_type.EnumValueType" title="delta_trace_db.query.nodes.enum_value_type.EnumValueType"><em>EnumValueType</em></a>) – Specifies the comparison type during calculation.
 If you select anything other than <code class="docutils literal notranslate"><span class="pre">auto_</span></code>,
 the value will be cast to that type before the comparison is performed.
@@ -423,7 +438,12 @@ null や bool など、大小比較できないオブジェクトを比較しよ
 <li><p><strong>field</strong> (<em>str</em><em>,</em>) – The target variable name.</p></li>
 <li><p><strong>value</strong> (<em>Any</em>) – The compare value.
 If DateTime is specified, it will be automatically converted to
-Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.</p></li>
+Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.
+If PortableDecimal or PortableRational is specified, it will be saved as
+a str and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.decimal_</span></code> or
+<code class="docutils literal notranslate"><span class="pre">EnumValueType.rational_</span></code>. With these types, only str, PortableDecimal
+and PortableRational values are converted; numbers such as int and float
+are treated as conversion failures.</p></li>
 <li><p><strong>v_type</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.enum_value_type.html#delta_trace_db.query.nodes.enum_value_type.EnumValueType" title="delta_trace_db.query.nodes.enum_value_type.EnumValueType"><em>EnumValueType</em></a>) – Specifies the comparison type during calculation.
 If you select anything other than <code class="docutils literal notranslate"><span class="pre">auto_</span></code>,
 the value will be cast to that type before the comparison is performed.
@@ -484,7 +504,12 @@ null や bool など、大小比較できないオブジェクトを比較しよ
 <li><p><strong>field</strong> (<em>str</em><em>,</em>) – The target variable name.</p></li>
 <li><p><strong>value</strong> (<em>Any</em>) – The compare value.
 If DateTime is specified, it will be automatically converted to
-Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.</p></li>
+Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.
+If PortableDecimal or PortableRational is specified, it will be saved as
+a str and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.decimal_</span></code> or
+<code class="docutils literal notranslate"><span class="pre">EnumValueType.rational_</span></code>. With these types, only str, PortableDecimal
+and PortableRational values are converted; numbers such as int and float
+are treated as conversion failures.</p></li>
 <li><p><strong>v_type</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.enum_value_type.html#delta_trace_db.query.nodes.enum_value_type.EnumValueType" title="delta_trace_db.query.nodes.enum_value_type.EnumValueType"><em>EnumValueType</em></a>) – Specifies the comparison type during calculation.
 If you select anything other than <code class="docutils literal notranslate"><span class="pre">auto_</span></code>,
 the value will be cast to that type before the comparison is performed.
@@ -591,7 +616,12 @@ toDictを連鎖的に呼び出すようにしてください。</p>
 <li><p><strong>field</strong> (<em>str</em><em>,</em>) – The target variable name.</p></li>
 <li><p><strong>value</strong> (<em>Any</em>) – The compare value.
 If DateTime is specified, it will be automatically converted to
-Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.</p></li>
+Iso8601String and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.datetime_</span></code>.
+If PortableDecimal or PortableRational is specified, it will be saved as
+a str and vType will be set to <code class="docutils literal notranslate"><span class="pre">EnumValueType.decimal_</span></code> or
+<code class="docutils literal notranslate"><span class="pre">EnumValueType.rational_</span></code>. With these types, only str, PortableDecimal
+and PortableRational values are converted; numbers such as int and float
+are treated as conversion failures.</p></li>
 <li><p><strong>v_type</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.enum_value_type.html#delta_trace_db.query.nodes.enum_value_type.EnumValueType" title="delta_trace_db.query.nodes.enum_value_type.EnumValueType"><em>EnumValueType</em></a>) – Specifies the comparison type during calculation.
 If you select anything other than <code class="docutils literal notranslate"><span class="pre">auto_</span></code>,
 the value will be cast to that type before the comparison is performed.

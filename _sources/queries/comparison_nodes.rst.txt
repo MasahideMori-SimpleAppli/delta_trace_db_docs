@@ -88,6 +88,14 @@ If a cast fails (e.g. the value cannot be converted to the specified type), the 
    * - ``stringIgnoreCase_``
      - Converts both values to strings, lowercases them, and compares them
        (case-insensitive string comparison).
+   * - ``decimal_``
+     - Converts both values to ``PortableDecimal`` and compares them exactly by value
+       (see :ref:`exact_decimal_rational`).
+       If a ``PortableDecimal`` object is passed directly as the value, this type is set automatically.
+   * - ``rational_``
+     - Converts both values to ``PortableRational`` and compares them exactly by value
+       (see :ref:`exact_decimal_rational`).
+       If a ``PortableRational`` object is passed directly as the value, this type is set automatically.
 
 .. tab-set::
 
@@ -124,6 +132,65 @@ If a cast fails (e.g. the value cannot be converted to the specified type), the 
          node2 = FieldGreaterThan('count', '10',
              v_type=EnumValueType.int_)
          node2.evaluate({'count': '20'})  # True
+
+.. _exact_decimal_rational:
+
+Exact decimal / rational comparison
+------------------------------------
+
+``decimal_`` and ``rational_`` use the
+`simple_portable_numeric <https://pub.dev/packages/simple_portable_numeric>`__ package,
+which gives identical results in Dart and Python.
+Unlike ``floatStrict_``, no digits are lost, so this is suitable for values such as prices.
+
+- Values are compared by numeric value, so ``"1.50"`` equals ``"1.5"``.
+- ``decimal_`` accepts plain decimal strings such as ``"-12.340"``.
+  ``rational_`` also accepts fractions such as ``"1/3"``.
+  Exponent notation (``"1e3"``), whitespace and non-ASCII digits are rejected.
+- **Only strings and** ``PortableDecimal`` / ``PortableRational`` **objects are converted.**
+  Numbers such as int and double (float) are treated as conversion failures, because their exactness
+  cannot be guaranteed (e.g. int is a double on the web in Dart, and the string form of double differs
+  between Dart and Python). This also applies to the comparison value,
+  so pass ``"11"`` instead of ``11``. Store such values in the DB as strings.
+- ``PortableDecimal``, ``PortableRational`` and ``EnumRoundingMode`` are re-exported from ``delta_trace_db``.
+- Queries using these types cannot be read by delta_trace_db versions earlier than 0.2.0.
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+         import 'package:delta_trace_db/delta_trace_db.dart';
+
+         final node = FieldEquals('price', '1.5', vType: EnumValueType.decimal_);
+         node.evaluate({'price': '1.50'}); // true
+         node.evaluate({'price': 1.5}); // false (numbers are not converted)
+
+         // vType is set automatically, and the value is saved as a String.
+         final node2 = FieldGreaterThan('price', PortableDecimal.parse('0.1'));
+         node2.evaluate({'price': '0.10000000000000000001'}); // true
+
+         final node3 = FieldLessThan('ratio', '1/3', vType: EnumValueType.rational_);
+         node3.evaluate({'ratio': '0.333'}); // true
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+         from delta_trace_db import (EnumValueType, FieldEquals, FieldGreaterThan,
+                                     FieldLessThan, PortableDecimal)
+
+         node = FieldEquals('price', '1.5', v_type=EnumValueType.decimal_)
+         node.evaluate({'price': '1.50'})  # True
+         node.evaluate({'price': 1.5})  # False (numbers are not converted)
+
+         # v_type is set automatically, and the value is saved as a str.
+         node2 = FieldGreaterThan('price', PortableDecimal.parse('0.1'))
+         node2.evaluate({'price': '0.10000000000000000001'})  # True
+
+         node3 = FieldLessThan('ratio', '1/3', v_type=EnumValueType.rational_)
+         node3.evaluate({'ratio': '0.333'})  # True
 
 Examples
 ----------------------------

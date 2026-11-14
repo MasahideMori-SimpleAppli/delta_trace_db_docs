@@ -1,0 +1,201 @@
+======================================
+Aggregate
+======================================
+
+Calculate count, sum, min, max and mean for the items that match a condition.
+
+Overview
+----------------------------
+
+The **aggregate** operation calculates several aggregations at once and returns them
+as a single map (dict) in :code:`result`.
+
+- This operation does **not modify** any data, and can be used inside a transaction.
+- The target items can be narrowed with an optional **queryNode / query_node**.
+  If it is omitted, all items in the collection are targeted.
+- Each aggregation is defined with an :code:`Aggregation` object.
+- The results are **identical in Dart and Python**, including floating-point sums.
+- Available from version 0.2.0.
+
+Aggregation
+----------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Argument
+     - Description
+   * - ``type`` / ``type_``
+     - ``EnumAggregateType.count_``, ``sum_``, ``min_``, ``max_`` or ``mean_``.
+   * - ``field``
+     - The target field. Nested fields can be specified with dot notation.
+       Required except for ``count_``.
+   * - ``vType`` / ``v_type``
+     - The calculation type: ``floatStrict_`` *(default)*, ``decimal_`` or ``rational_``.
+       Other types make the query fail. Ignored by ``count_``.
+   * - ``alias``
+     - The key of the result. If omitted, the type name and the field name are joined
+       (e.g. ``"sum_price"``), or ``"count_"`` for ``count_`` without a field.
+   * - ``scale``, ``rounding``
+     - Used only for ``mean_`` with ``decimal_``, and required for it.
+       The number of digits after the decimal point and the ``EnumRoundingMode``
+       (``halfEven``, ``halfUp``, ``down``, ``floor``, ``ceiling``).
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 45 35
+
+   * - vType
+     - Accepted values
+     - Result
+   * - ``floatStrict_``
+     - Numbers, and plain number strings such as ``"1.5"`` or ``"1e3"``
+       (``"inf"``, ``"NaN"``, ``"1_000"`` and whitespace are rejected).
+     - A floating-point number. Values are added from left to right in the stored order,
+       so Dart and Python return the same value.
+   * - ``decimal_``
+     - Strings and ``PortableDecimal`` objects. Numbers are **not** converted.
+     - An exact decimal string, e.g. ``"43.80"``.
+   * - ``rational_``
+     - Strings (including fractions such as ``"1/3"``), ``PortableDecimal`` and
+       ``PortableRational`` objects. Numbers are **not** converted.
+     - An exact rational string, e.g. ``"73/5"``.
+
+See :ref:`exact_decimal_rational` for why numbers are not converted by ``decimal_`` and ``rational_``.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          db.executeQuery(
+            RawQueryBuilder.add(
+              target: 'orders',
+              rawAddData: [
+                {'status': 'paid', 'price': '10.50', 'qty': 2},
+                {'status': 'paid', 'price': '3.3', 'qty': 1.5},
+                {'status': 'paid', 'price': '30', 'qty': 4},
+                {'status': 'cancel', 'price': '100', 'qty': 10},
+              ],
+            ).build(),
+          );
+
+          final result = db.executeQuery(
+            RawQueryBuilder.aggregate(
+              target: 'orders',
+              queryNode: FieldEquals('status', 'paid'),
+              aggregations: [
+                Aggregation(EnumAggregateType.count_, alias: 'n'),
+                Aggregation(
+                  EnumAggregateType.sum_,
+                  field: 'price',
+                  vType: EnumValueType.decimal_,
+                  alias: 'total',
+                ),
+                Aggregation(
+                  EnumAggregateType.mean_,
+                  field: 'price',
+                  vType: EnumValueType.decimal_,
+                  scale: 2,
+                  rounding: EnumRoundingMode.halfEven,
+                  alias: 'avg',
+                ),
+                Aggregation(
+                  EnumAggregateType.max_,
+                  field: 'price',
+                  vType: EnumValueType.decimal_,
+                ),
+                Aggregation(EnumAggregateType.sum_, field: 'qty'),
+              ],
+            ).build(),
+          );
+          print(result.result.first);
+          print("hitCount = ${result.hitCount}");
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from delta_trace_db import (Aggregation, DeltaTraceDatabase, EnumAggregateType,
+                                    EnumRoundingMode, EnumValueType, FieldEquals,
+                                    RawQueryBuilder)
+
+        db = DeltaTraceDatabase()
+        db.execute_query(RawQueryBuilder.add(
+            target="orders",
+            raw_add_data=[
+                {"status": "paid", "price": "10.50", "qty": 2},
+                {"status": "paid", "price": "3.3", "qty": 1.5},
+                {"status": "paid", "price": "30", "qty": 4},
+                {"status": "cancel", "price": "100", "qty": 10},
+            ],
+        ).build())
+
+        result = db.execute_query(RawQueryBuilder.aggregate(
+            target="orders",
+            query_node=FieldEquals("status", "paid"),
+            aggregations=[
+                Aggregation(EnumAggregateType.count_, alias="n"),
+                Aggregation(EnumAggregateType.sum_, field="price",
+                            v_type=EnumValueType.decimal_, alias="total"),
+                Aggregation(EnumAggregateType.mean_, field="price",
+                            v_type=EnumValueType.decimal_, scale=2,
+                            rounding=EnumRoundingMode.halfEven, alias="avg"),
+                Aggregation(EnumAggregateType.max_, field="price",
+                            v_type=EnumValueType.decimal_),
+                Aggregation(EnumAggregateType.sum_, field="qty"),
+            ],
+        ).build())
+        print(result.result[0])
+        print(f"hit_count = {result.hit_count}")
+
+Result
+----------------------------
+
+This function returns a :code:`QueryResult`.
+
+Example output (Dart):
+
+.. code-block:: text
+
+    {n: 3, total: 43.80, avg: 14.60, max_price: 30, sum_qty: 7.5}
+    hitCount = 3
+
+- The aggregation results are stored as **a single map (dict)** in :code:`result`.
+- :code:`hitCount` / :code:`hit_count` is the number of items that matched the condition.
+- Because this query only reads data, :code:`updateCount` is always **0**.
+
+Notes
+----------------------------
+
+- Null and missing values are excluded from every aggregation.
+- ``count_`` without a field counts the matched items. With a field, it counts the items
+  whose value is not null. ``count_`` never converts values, so it works for any type.
+- If there are no values, ``count_`` is 0, ``sum_`` is 0 (``0.0`` or ``"0"``),
+  and ``min_``, ``max_`` and ``mean_`` are null.
+- If a value cannot be converted, or a definition is invalid (e.g. a duplicate key, or
+  ``mean_`` with ``decimal_`` without ``scale``), the query fails with **isSuccess = false**
+  and the reason in **errorMessage / error_message**. A wrong result is never returned silently.
+- In Python, do not use the built-in ``sum()`` when the result must match the Dart version;
+  since Python 3.12 it uses compensated summation and can return a different value.
+- On the server side, the **aggregate** permission is required.
+  A **search** permission does not allow this query.
+- :code:`cause` can be used for auditing or operational logging.
+
+API
+----------------------------
+- Dart: `[QueryBuilder.aggregate] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.aggregate.html>`__
+- Dart(RawData): `[RawQueryBuilder.aggregate] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/RawQueryBuilder/RawQueryBuilder.aggregate.html>`__
+- Dart: `[Aggregation] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/Aggregation-class.html>`__
+- Python: :py:meth:`[QueryBuilder.aggregate] <delta_trace_db.query.query_builder.QueryBuilder.aggregate>`
+- Python: :py:meth:`[Aggregation] <delta_trace_db.query.aggregate.aggregation.Aggregation>`

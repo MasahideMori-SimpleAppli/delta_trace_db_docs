@@ -1,0 +1,12 @@
+delta\_trace\_db.query.aggregate.enum\_aggregate\_type
+======================================================
+
+.. automodule:: delta_trace_db.query.aggregate.enum_aggregate_type
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      EnumAggregateType
+   

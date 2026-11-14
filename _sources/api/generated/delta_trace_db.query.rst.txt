@@ -10,6 +10,7 @@
    :toctree:
    :recursive:
 
+   aggregate
    cause
    enum_query_type
    merge_query_params
@@ -23,4 +24,5 @@
    transaction_query
    transaction_query_result
    util_field
+   util_portable_numeric
    util_query

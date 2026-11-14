@@ -26,6 +26,7 @@ You can use these queries on both the client and the server side.
    queries/conform_to_template
    queries/rename_field
    queries/count
+   queries/aggregate
    queries/clear
    queries/remove_collection
    queries/merge

@@ -5,43 +5,57 @@ Using with AI Assistants
 Overview
 --------
 
-DeltaTraceDB provides a dedicated **system prompt** for AI coding assistants.
+DeltaTraceDB provides **Agent Skills** for AI coding assistants.
 
-By loading this prompt into your AI assistant, it can generate correct
-DeltaTraceDB code without requiring you to explain the API each time.
+A skill is a folder containing a :code:`SKILL.md` file and reference documents.
+AI assistants that support skills (such as Claude Code) load it automatically when you work with
+DeltaTraceDB, so they can generate correct code without you explaining the API each time.
 This is especially useful for:
 
 - Quickly writing queries without consulting the documentation
-- Avoiding common mistakes such as Python-specific naming conventions
-- Getting accurate code suggestions for both Python and Dart
+- Avoiding common mistakes, such as Python-specific naming exceptions or forgetting :code:`.build()`
+- Getting accurate code for new features such as exact decimal comparison and aggregation
 
-Prompt File
------------
+Skills
+------
 
-The prompt is available in the **prompt/** directory of the repository:
+There is one skill per language. Install only the one for the language you use;
+each skill is self-contained, which avoids mixing up the Dart and Python APIs.
 
-`https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/blob/main/prompt/delta_trace_db_system_prompt.md <https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/blob/main/prompt/delta_trace_db_system_prompt.md>`__
+- Dart / Flutter:
+  `skills/delta-trace-db-dart <https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/tree/main/skills/delta-trace-db-dart>`__
+- Python:
+  `skills/delta-trace-db-python <https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/tree/main/skills/delta-trace-db-python>`__
 
-What the Prompt Covers
-----------------------
+How to Install
+--------------
 
-The prompt includes the following topics:
+Copy the skill folder into the skills directory of your AI assistant.
+For example, with Claude Code:
 
-- **All query operations**: add, update, delete, search, get_all,
-  count, clear, clear_add, conform_to_template, rename_field,
-  remove_collection, transaction, and merge
-- **Search nodes**: comparison nodes, logical nodes, and type specifiers
-- **Sorting**: SingleSort and MultiSort
-- **Metadata**: Cause, Actor, Permission, and TemporalTrace
-- **Server-side patterns**: permission management and FastAPI integration
-- **Serialization**: saving and restoring the database as JSON
-- **Python-specific naming rules**: snake_case conversions, trailing underscores
-  for reserved words (**type_**, **from_**, **reversed_**), and other exceptions
-- **Dart API**: model definition and query usage
-- **Best practices and constraints**
+- For one project: :code:`<your project>/.claude/skills/delta-trace-db-dart/`
+- For all projects: :code:`~/.claude/skills/delta-trace-db-dart/`
+
+For other assistants, follow their instructions for Agent Skills.
+If your assistant does not support skills, you can paste the contents of :code:`SKILL.md`
+(and the reference file you need) at the beginning of the conversation.
+
+What the Skills Cover
+---------------------
+
+- **Core rules**: building and executing queries, choosing between QueryBuilder and RawQueryBuilder,
+  checking results, and common mistakes
+- **All query operations**: add, update, delete, search, getAll, count, aggregate, clear, clearAdd,
+  conformToTemplate, renameField, removeCollection, merge, and transactions
+- **Search nodes and sorting**: comparison nodes, logical nodes, value types including exact
+  ``decimal_`` / ``rational_``, SingleSort and MultiSort
+- **Aggregation**: count, sum, min, max and mean
+- **Metadata and server-side use**: Cause, Actor, Permission, TemporalTrace, and server-side execution
+- **Persistence and listeners**: saving and restoring the database and queries, and UI listeners
+- **Python naming**: trailing underscores (**type_**, **from_**, **reversed_**), Actor arguments,
+  enum member names, and JSON keys (Python skill only)
 
 .. note::
 
-   The prompt is designed to be loaded as a **system prompt** or pasted at the
-   beginning of a conversation. It does not need to be updated frequently — only
-   when a new version of the library introduces breaking API changes.
+   Every code example in the skills has been executed and checked against DeltaTraceDB 0.2.0.
+   The skills are updated together with the library when the API changes.

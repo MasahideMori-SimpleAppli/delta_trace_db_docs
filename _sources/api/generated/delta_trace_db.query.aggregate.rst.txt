@@ -1,0 +1,15 @@
+delta\_trace\_db.query.aggregate
+================================
+
+.. automodule:: delta_trace_db.query.aggregate
+
+   
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   aggregation
+   enum_aggregate_type
+   util_aggregate

@@ -105,6 +105,8 @@ Notes
 ----------------------------
 
 - Recommended for measuring collection size or validating data volume.
+- This query has no condition. To count only the items that match a condition,
+  use the :doc:`aggregate <aggregate>` query with ``EnumAggregateType.count_``.
 - :code:`cause` can be used for auditing or operational logging.
 
 API

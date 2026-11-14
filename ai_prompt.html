@@ -39,43 +39,59 @@
 <h1>Using with AI Assistants<a class="headerlink" href="#using-with-ai-assistants" title="Link to this heading">¶</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
-<p>DeltaTraceDB provides a dedicated <strong>system prompt</strong> for AI coding assistants.</p>
-<p>By loading this prompt into your AI assistant, it can generate correct
-DeltaTraceDB code without requiring you to explain the API each time.
+<p>DeltaTraceDB provides <strong>Agent Skills</strong> for AI coding assistants.</p>
+<p>A skill is a folder containing a <code class="code docutils literal notranslate"><span class="pre">SKILL.md</span></code> file and reference documents.
+AI assistants that support skills (such as Claude Code) load it automatically when you work with
+DeltaTraceDB, so they can generate correct code without you explaining the API each time.
 This is especially useful for:</p>
 <ul class="simple">
 <li><p>Quickly writing queries without consulting the documentation</p></li>
-<li><p>Avoiding common mistakes such as Python-specific naming conventions</p></li>
-<li><p>Getting accurate code suggestions for both Python and Dart</p></li>
+<li><p>Avoiding common mistakes, such as Python-specific naming exceptions or forgetting <code class="code docutils literal notranslate"><span class="pre">.build()</span></code></p></li>
+<li><p>Getting accurate code for new features such as exact decimal comparison and aggregation</p></li>
 </ul>
 </section>
-<section id="prompt-file">
-<h2>Prompt File<a class="headerlink" href="#prompt-file" title="Link to this heading">¶</a></h2>
-<p>The prompt is available in the <strong>prompt/</strong> directory of the repository:</p>
-<p><a class="reference external" href="https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/blob/main/prompt/delta_trace_db_system_prompt.md">https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/blob/main/prompt/delta_trace_db_system_prompt.md</a></p>
-</section>
-<section id="what-the-prompt-covers">
-<h2>What the Prompt Covers<a class="headerlink" href="#what-the-prompt-covers" title="Link to this heading">¶</a></h2>
-<p>The prompt includes the following topics:</p>
+<section id="skills">
+<h2>Skills<a class="headerlink" href="#skills" title="Link to this heading">¶</a></h2>
+<p>There is one skill per language. Install only the one for the language you use;
+each skill is self-contained, which avoids mixing up the Dart and Python APIs.</p>
 <ul class="simple">
-<li><p><strong>All query operations</strong>: add, update, delete, search, get_all,
-count, clear, clear_add, conform_to_template, rename_field,
-remove_collection, transaction, and merge</p></li>
-<li><p><strong>Search nodes</strong>: comparison nodes, logical nodes, and type specifiers</p></li>
-<li><p><strong>Sorting</strong>: SingleSort and MultiSort</p></li>
-<li><p><strong>Metadata</strong>: Cause, Actor, Permission, and TemporalTrace</p></li>
-<li><p><strong>Server-side patterns</strong>: permission management and FastAPI integration</p></li>
-<li><p><strong>Serialization</strong>: saving and restoring the database as JSON</p></li>
-<li><p><strong>Python-specific naming rules</strong>: snake_case conversions, trailing underscores
-for reserved words (<strong>type_</strong>, <strong>from_</strong>, <strong>reversed_</strong>), and other exceptions</p></li>
-<li><p><strong>Dart API</strong>: model definition and query usage</p></li>
-<li><p><strong>Best practices and constraints</strong></p></li>
+<li><p>Dart / Flutter:
+<a class="reference external" href="https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/tree/main/skills/delta-trace-db-dart">skills/delta-trace-db-dart</a></p></li>
+<li><p>Python:
+<a class="reference external" href="https://github.com/MasahideMori-SimpleAppli/delta_trace_db_docs/tree/main/skills/delta-trace-db-python">skills/delta-trace-db-python</a></p></li>
+</ul>
+</section>
+<section id="how-to-install">
+<h2>How to Install<a class="headerlink" href="#how-to-install" title="Link to this heading">¶</a></h2>
+<p>Copy the skill folder into the skills directory of your AI assistant.
+For example, with Claude Code:</p>
+<ul class="simple">
+<li><p>For one project: <code class="code docutils literal notranslate"><span class="pre">&lt;your</span> <span class="pre">project&gt;/.claude/skills/delta-trace-db-dart/</span></code></p></li>
+<li><p>For all projects: <code class="code docutils literal notranslate"><span class="pre">~/.claude/skills/delta-trace-db-dart/</span></code></p></li>
+</ul>
+<p>For other assistants, follow their instructions for Agent Skills.
+If your assistant does not support skills, you can paste the contents of <code class="code docutils literal notranslate"><span class="pre">SKILL.md</span></code>
+(and the reference file you need) at the beginning of the conversation.</p>
+</section>
+<section id="what-the-skills-cover">
+<h2>What the Skills Cover<a class="headerlink" href="#what-the-skills-cover" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Core rules</strong>: building and executing queries, choosing between QueryBuilder and RawQueryBuilder,
+checking results, and common mistakes</p></li>
+<li><p><strong>All query operations</strong>: add, update, delete, search, getAll, count, aggregate, clear, clearAdd,
+conformToTemplate, renameField, removeCollection, merge, and transactions</p></li>
+<li><p><strong>Search nodes and sorting</strong>: comparison nodes, logical nodes, value types including exact
+<code class="docutils literal notranslate"><span class="pre">decimal_</span></code> / <code class="docutils literal notranslate"><span class="pre">rational_</span></code>, SingleSort and MultiSort</p></li>
+<li><p><strong>Aggregation</strong>: count, sum, min, max and mean</p></li>
+<li><p><strong>Metadata and server-side use</strong>: Cause, Actor, Permission, TemporalTrace, and server-side execution</p></li>
+<li><p><strong>Persistence and listeners</strong>: saving and restoring the database and queries, and UI listeners</p></li>
+<li><p><strong>Python naming</strong>: trailing underscores (<strong>type_</strong>, <strong>from_</strong>, <strong>reversed_</strong>), Actor arguments,
+enum member names, and JSON keys (Python skill only)</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The prompt is designed to be loaded as a <strong>system prompt</strong> or pasted at the
-beginning of a conversation. It does not need to be updated frequently — only
-when a new version of the library introduces breaking API changes.</p>
+<p>Every code example in the skills has been executed and checked against DeltaTraceDB 0.2.0.
+The skills are updated together with the library when the API changes.</p>
 </div>
 </section>
 </section>
@@ -116,8 +132,9 @@ when a new version of the library introduces breaking API changes.</p>
 <li class="toctree-l1"><a class="reference internal" href="best_practice.html">Best Practices</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using with AI Assistants</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#prompt-file">Prompt File</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-the-prompt-covers">What the Prompt Covers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#skills">Skills</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-install">How to Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-the-skills-cover">What the Skills Cover</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
