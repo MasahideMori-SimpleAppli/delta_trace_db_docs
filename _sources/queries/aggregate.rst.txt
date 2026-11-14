@@ -175,6 +175,20 @@ Example output (Dart):
 - :code:`hitCount` / :code:`hit_count` is the number of items that matched the condition.
 - Because this query only reads data, :code:`updateCount` is always **0**.
 
+Security
+----------------------------
+
+.. warning::
+
+   Treat the **aggregate** permission as equivalent to **read (search)** access.
+
+   Although this query does not return the items themselves, their contents can still be discovered.
+   For example, by repeating ``count_`` with :code:`FieldStartsWith` while extending the prefix
+   one character at a time, the full value of a field can be found.
+   In addition, ``min_`` and ``max_`` return field values directly.
+
+   Grant the aggregate permission only to users who are allowed to read the target collection.
+
 Notes
 ----------------------------
 

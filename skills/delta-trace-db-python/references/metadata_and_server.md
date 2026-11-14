@@ -35,6 +35,8 @@ print(q.to_dict()["cause"]["what"])  # Update profile
 It is a whitelist: a query runs only if its type is listed for its target collection
 (`EnumQueryType.aggregate` and `EnumQueryType.merge` need their own entries).
 Passing `None` allows everything — fine in a local script, never on a server.
+Grant `aggregate` only together with read access: counts and min / max values can reveal the
+contents of a collection even though no items are returned.
 
 Never trust permissions sent by a client. Build them on the server from your own user data
 (for example from the authenticated user's `Actor.collection_permissions` stored on the server).

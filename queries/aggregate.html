@@ -229,6 +229,18 @@ hitCount = 3
 <li><p>Because this query only reads data, <code class="code docutils literal notranslate"><span class="pre">updateCount</span></code> is always <strong>0</strong>.</p></li>
 </ul>
 </section>
+<section id="security">
+<h2>Security<a class="headerlink" href="#security" title="Link to this heading">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Treat the <strong>aggregate</strong> permission as equivalent to <strong>read (search)</strong> access.</p>
+<p>Although this query does not return the items themselves, their contents can still be discovered.
+For example, by repeating <code class="docutils literal notranslate"><span class="pre">count_</span></code> with <code class="code docutils literal notranslate"><span class="pre">FieldStartsWith</span></code> while extending the prefix
+one character at a time, the full value of a field can be found.
+In addition, <code class="docutils literal notranslate"><span class="pre">min_</span></code> and <code class="docutils literal notranslate"><span class="pre">max_</span></code> return field values directly.</p>
+<p>Grant the aggregate permission only to users who are allowed to read the target collection.</p>
+</div>
+</section>
 <section id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
 <ul class="simple">

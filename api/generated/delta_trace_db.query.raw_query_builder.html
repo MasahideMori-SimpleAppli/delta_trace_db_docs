@@ -98,13 +98,21 @@ for the items that match the criteria.
 The result is returned as a single dict in QueryResult.result,
 whose keys are the Aggregation.output_key values,
 and QueryResult.hit_count is the number of matched items.
-If a value cannot be converted, the query fails.</p>
+If a value cannot be converted, the query fails.
+Security: treat the aggregate permission as equivalent to read (search)
+access. Even though no items are returned, the contents can be discovered,
+e.g. by repeating <code class="docutils literal notranslate"><span class="pre">count_</span></code> with FieldStartsWith while extending the prefix
+one character at a time, and <code class="docutils literal notranslate"><span class="pre">min_</span></code> / <code class="docutils literal notranslate"><span class="pre">max_</span></code> return field values directly.</p>
 <p>(ja) 条件に一致するアイテムについて、件数・合計・最小・最大・平均などの
 集計を計算します。
 結果は QueryResult.result に1つの辞書として返され、
 そのキーは Aggregation.output_key の値です。
 QueryResult.hit_count は条件に一致した件数です。
-値を変換できない場合、クエリは失敗します。</p>
+値を変換できない場合、クエリは失敗します。
+セキュリティ：aggregate の権限は、読み取り（search）の権限と同等に扱って
+ください。アイテム自体は返されませんが、例えば FieldStartsWith の前方一致を
+1文字ずつ伸ばしながら <code class="docutils literal notranslate"><span class="pre">count_</span></code> を繰り返すことで内容を特定できます。
+また、<code class="docutils literal notranslate"><span class="pre">min_</span></code> / <code class="docutils literal notranslate"><span class="pre">max_</span></code> はフィールドの値をそのまま返します。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">

@@ -5,6 +5,11 @@ returns them as **one map** in `result.first`. `hitCount` is the number of match
 It is read-only, can be used in transactions, and needs its own `EnumQueryType.aggregate` permission
 on servers (a `search` permission does not allow it). Requires DeltaTraceDB 0.2.0 or later.
 
+**Security:** treat the `aggregate` permission as equivalent to read (`search`) access.
+No items are returned, but the contents can still be discovered — for example, by repeating `count_`
+with `FieldStartsWith` while extending the prefix one character at a time — and `min_` / `max_`
+return field values directly. Grant it only to users who may read the target collection.
+
 ```
 QueryBuilder.aggregate({required target, required aggregations, queryNode})   // RawQueryBuilder is the same
 ```
