@@ -151,6 +151,7 @@ print(jst.evaluate({"createdAt": "2025-06-01T00:00:00"}))  # True
   are and fails the query if they cannot be compared).
 - With `datetime_`, a naive value compared with an aware value is treated as `None`, so aware values come first.
   Pass `naive_utc_offset_minutes` to `SingleSort` to sort them together.
+- In a `MultiSort`, these rules apply to each `SingleSort`, and `naive_utc_offset_minutes` is set on each `SingleSort`.
 - `stringIgnoreCase_` gives case-insensitive alphabetical order.
 
 ```python

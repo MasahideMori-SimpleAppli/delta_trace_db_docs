@@ -153,6 +153,7 @@ print(jst.evaluate({"createdAt": "2025-06-01T00:00:00"})); // true
   are and fails the query if they cannot be compared).
 - With `datetime_`, a naive value compared with an aware value is treated as null, so aware values come first.
   Pass `naiveUtcOffsetMinutes` to `SingleSort` to sort them together.
+- In a `MultiSort`, these rules apply to each `SingleSort`, and `naiveUtcOffsetMinutes` is set on each `SingleSort`.
 - `stringIgnoreCase_` gives case-insensitive alphabetical order.
 
 ```dart

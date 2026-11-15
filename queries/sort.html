@@ -209,6 +209,7 @@ converted (including numbers such as int and double) are treated as null.</p></l
 <li><p>With <code class="docutils literal notranslate"><span class="pre">datetime_</span></code>, when a timezone-aware value is compared with a naive value, the naive value is treated as null,
 so aware values come first and naive values follow them.
 To sort them together, specify <strong>naiveUtcOffsetMinutes / naive_utc_offset_minutes</strong> (e.g. 540 for UTC+9).</p></li>
+<li><p>In a MultiSort, these rules apply to each SingleSort, and <strong>naiveUtcOffsetMinutes / naive_utc_offset_minutes</strong> is set on each SingleSort.</p></li>
 <li><p>Nested fields in objects can be accessed using <strong>dot notation</strong>. For example, to access {“a”: {“b”: “c”}}, use <code class="code docutils literal notranslate"><span class="pre">&quot;a.b&quot;</span></code> as the field name.</p></li>
 </ul>
 </section>
