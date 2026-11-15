@@ -40,14 +40,14 @@
 <p class="rubric">Classes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#delta_trace_db.query.sort.single_sort.SingleSort" title="delta_trace_db.query.sort.single_sort.SingleSort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleSort</span></code></a>(field[, reversed_, v_type])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#delta_trace_db.query.sort.single_sort.SingleSort" title="delta_trace_db.query.sort.single_sort.SingleSort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SingleSort</span></code></a>(field[, reversed_, v_type, ...])</p></td>
 <td><p>(en) This class allows you to specify single-key sorting for the return values of a query.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py class">
 <dt class="sig sig-object py" id="delta_trace_db.query.sort.single_sort.SingleSort">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">delta_trace_db.query.sort.single_sort.</span></span><span class="sig-name descname"><span class="pre">SingleSort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reversed_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.nodes.enum_value_type.html#delta_trace_db.query.nodes.enum_value_type.EnumValueType" title="delta_trace_db.query.nodes.enum_value_type.EnumValueType"><span class="pre">EnumValueType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">EnumValueType.auto_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.sort.single_sort.SingleSort" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">delta_trace_db.query.sort.single_sort.</span></span><span class="sig-name descname"><span class="pre">SingleSort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reversed_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.nodes.enum_value_type.html#delta_trace_db.query.nodes.enum_value_type.EnumValueType" title="delta_trace_db.query.nodes.enum_value_type.EnumValueType"><span class="pre">EnumValueType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">EnumValueType.auto_</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">naive_utc_offset_minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delta_trace_db.query.sort.single_sort.SingleSort" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="delta_trace_db.query.sort.abstract_sort.html#delta_trace_db.query.sort.abstract_sort.AbstractSort" title="delta_trace_db.query.sort.abstract_sort.AbstractSort"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractSort</span></code></a></p>
 <p>(en) This class allows you to specify single-key sorting for
 the return values of a query.
@@ -65,8 +65,17 @@ Also, boolean values are calculated as 1 for true and 0 for false.</p>
 <li><p><strong>v_type</strong> (<a class="reference internal" href="delta_trace_db.query.nodes.enum_value_type.html#delta_trace_db.query.nodes.enum_value_type.EnumValueType" title="delta_trace_db.query.nodes.enum_value_type.EnumValueType"><em>EnumValueType</em></a>) – Specifies the comparison type during calculation.
 If you select anything other than <code class="docutils literal notranslate"><span class="pre">auto_</span></code>,
 the value will be cast to that type before the comparison is performed.
-If an exception occurs, such as a conversion failure,
-an Exception is thrown.</p></li>
+A value that cannot be converted is treated as None
+(e.g. a non-numeric string, or a bool, NaN or infinity with <code class="docutils literal notranslate"><span class="pre">int_</span></code>).
+With <code class="docutils literal notranslate"><span class="pre">datetime_</span></code>, when a timezone-aware value is compared with
+a naive value, the naive value is treated as None.
+With <code class="docutils literal notranslate"><span class="pre">auto_</span></code>, values are compared as they are, and the query fails
+if they cannot be compared.
+The results are identical to the Dart version.</p></li>
+<li><p><strong>naive_utc_offset_minutes</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – Used only with <code class="docutils literal notranslate"><span class="pre">datetime_</span></code>. If specified, naive datetimes are interpreted as
+times at UTC + this many minutes (e.g. 540 for UTC+9) before sorting,
+so aware and naive values are sorted together.
+Must be greater than -1440 and less than 1440.</p></li>
 </ul>
 </dd>
 </dl>
@@ -112,7 +121,7 @@ toDictを連鎖的に呼び出すようにしてください。</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="delta_trace_db.query.sort.single_sort.SingleSort.version">
-<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'5'</span></em><a class="headerlink" href="#delta_trace_db.query.sort.single_sort.SingleSort.version" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'6'</span></em><a class="headerlink" href="#delta_trace_db.query.sort.single_sort.SingleSort.version" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

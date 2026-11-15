@@ -204,6 +204,11 @@ The available values are the same as for comparison nodes (see <a class="referen
 In particular, specifying <code class="docutils literal notranslate"><span class="pre">stringIgnoreCase_</span></code> enables case-insensitive alphabetical sorting.
 With <code class="docutils literal notranslate"><span class="pre">decimal_</span></code> or <code class="docutils literal notranslate"><span class="pre">rational_</span></code>, values are sorted exactly by numeric value, and values that cannot be
 converted (including numbers such as int and double) are treated as null.</p></li>
+<li><p>With any <strong>vType</strong> except <code class="docutils literal notranslate"><span class="pre">auto_</span></code>, a value that cannot be converted is treated as null
+(it moves to the end in ascending order). The conversion rules are described in <a class="reference internal" href="comparison_nodes.html#conversion-rules"><span class="std std-ref">Conversion rules</span></a>.</p></li>
+<li><p>With <code class="docutils literal notranslate"><span class="pre">datetime_</span></code>, when a timezone-aware value is compared with a naive value, the naive value is treated as null,
+so aware values come first and naive values follow them.
+To sort them together, specify <strong>naiveUtcOffsetMinutes / naive_utc_offset_minutes</strong> (e.g. 540 for UTC+9).</p></li>
 <li><p>Nested fields in objects can be accessed using <strong>dot notation</strong>. For example, to access {“a”: {“b”: “c”}}, use <code class="code docutils literal notranslate"><span class="pre">&quot;a.b&quot;</span></code> as the field name.</p></li>
 </ul>
 </section>

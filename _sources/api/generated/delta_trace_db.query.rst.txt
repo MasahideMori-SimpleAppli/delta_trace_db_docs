@@ -26,3 +26,4 @@
    util_field
    util_portable_numeric
    util_query
+   util_value_parse

@@ -44,7 +44,8 @@ read the file that matches the task before writing non-trivial code.
 6. **Nested fields use dot notation** (`"address.city"`) in nodes, sorts and aggregations.
    `rename_field` only works on top-level fields.
 7. **Store datetimes as UTC ISO 8601 strings** and compare them with `EnumValueType.datetime_`
-   (passing a timezone-aware `datetime` as a node value sets it automatically).
+   (passing a timezone-aware `datetime` as a node value sets it automatically). Aware and naive values are
+   never compared with each other; pass `naive_utc_offset_minutes` (e.g. 540 for UTC+9) when stored values are naive.
 8. **Store exact numbers such as prices as strings** (`"10.50"`) and compare / sort / aggregate them with
    `EnumValueType.decimal_` or `rational_`. These types convert only `str` and
    `PortableDecimal` / `PortableRational` objects; `int`, `float` and `bool` values are treated as conversion failures.

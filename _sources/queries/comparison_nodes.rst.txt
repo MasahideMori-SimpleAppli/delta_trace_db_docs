@@ -133,6 +133,68 @@ If a cast fails (e.g. the value cannot be converted to the specified type), the 
              v_type=EnumValueType.int_)
          node2.evaluate({'count': '20'})  # True
 
+.. _conversion_rules:
+
+Conversion rules
+------------------------------------
+
+Values are converted with the same rules in the Dart and Python versions (version 0.3.0 or later),
+so the same query returns the same result in both.
+
+- **Numeric strings** (``int_``, ``floatStrict_``, ``floatEpsilon12_``) follow Dart's ``int.parse`` /
+  ``double.parse``. Surrounding whitespace is ignored. ``int_`` accepts decimal digits and ``0x`` hexadecimal
+  numbers within 64 bits (``"0x10"`` is 16). The floating-point types accept forms such as ``"1e3"``, ``".5"``,
+  ``"Infinity"`` and ``"NaN"``. ``"1_000"``, ``"inf"``, ``"nan"`` and non-ASCII digits (e.g. full-width digits)
+  are not converted, and bool values are not converted to numbers.
+- **boolean_** accepts only ``"true"`` / ``"false"`` (case-insensitive) and bool values.
+- **datetime_** accepts only valid ISO 8601 date-times, e.g. ``2025-01-01T09:00:00+09:00``,
+  ``2025-01-01T00:00:00Z``, ``2025-01-01`` or ``20250101T000000Z``.
+  Out-of-range values (month 13, February 30, hour 24, minute 60, etc.), a lowercase ``z``,
+  mixed basic / extended formats, week dates and ordinal dates are not converted.
+
+Timezone-aware and naive date-times
+------------------------------------
+
+A **timezone-aware** date-time has ``Z`` or an offset such as ``+09:00`` (in Dart, a UTC ``DateTime``);
+a **naive** one has neither (in Dart, a local ``DateTime``).
+With ``datetime_``, an aware value and a naive value are **not compared with each other**:
+the node returns ``False`` (``FieldNotEquals`` included), so such items are not returned by a search.
+This avoids results that depend on the timezone of the machine that runs the query.
+
+If the data contains naive date-times, specify **naiveUtcOffsetMinutes / naive_utc_offset_minutes**.
+Naive values (both the field value and the compare value) are then interpreted as times at
+UTC + that many minutes, and compared with aware values correctly.
+The value must be greater than -1440 and less than 1440 (e.g. 540 for UTC+9, -300 for UTC-5).
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+         // "2025-01-01T09:00:00" (naive) is treated as UTC+9, i.e. 2025-01-01T00:00:00Z.
+         final node = FieldEquals('createdAt', DateTime.utc(2025, 1, 1),
+             vType: EnumValueType.datetime_, naiveUtcOffsetMinutes: 540);
+         node.evaluate({'createdAt': '2025-01-01T09:00:00'});  // true
+         node.evaluate({'createdAt': '2025-01-01T00:00:00Z'});  // true
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+         from datetime import datetime, timezone
+
+         # "2025-01-01T09:00:00" (naive) is treated as UTC+9, i.e. 2025-01-01T00:00:00Z.
+         node = FieldEquals('createdAt', datetime(2025, 1, 1, tzinfo=timezone.utc),
+             v_type=EnumValueType.datetime_, naive_utc_offset_minutes=540)
+         node.evaluate({'createdAt': '2025-01-01T09:00:00'})  # True
+         node.evaluate({'createdAt': '2025-01-01T00:00:00Z'})  # True
+
+.. note::
+
+   Queries that use naiveUtcOffsetMinutes are read by versions earlier than 0.3.0 without an error,
+   but the option is ignored.
+
 .. _exact_decimal_rational:
 
 Exact decimal / rational comparison

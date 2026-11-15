@@ -174,6 +174,11 @@ Notes
   In particular, specifying ``stringIgnoreCase_`` enables case-insensitive alphabetical sorting.
   With ``decimal_`` or ``rational_``, values are sorted exactly by numeric value, and values that cannot be
   converted (including numbers such as int and double) are treated as null.
+- With any **vType** except ``auto_``, a value that cannot be converted is treated as null
+  (it moves to the end in ascending order). The conversion rules are described in :ref:`conversion_rules`.
+- With ``datetime_``, when a timezone-aware value is compared with a naive value, the naive value is treated as null,
+  so aware values come first and naive values follow them.
+  To sort them together, specify **naiveUtcOffsetMinutes / naive_utc_offset_minutes** (e.g. 540 for UTC+9).
 - Nested fields in objects can be accessed using **dot notation**. For example, to access {"a": {"b": "c"}}, use :code:`"a.b"` as the field name.
 
 API

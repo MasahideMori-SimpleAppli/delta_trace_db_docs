@@ -53,5 +53,6 @@ the keys are the camelCase form of the Python names:
 | `merge_query_params` | `mergeQueryParams` |
 | `relation_key` / `source_keys` / `dsl_tmp` / `serial_base` | `relationKey` / `sourceKeys` / `dslTmp` / `serialBase` |
 | `v_type` | `vType` |
+| `naive_utc_offset_minutes` | `naiveUtcOffsetMinutes` |
 | `is_success`, `db_length`, `update_count`, `hit_count`, `error_message` | `isSuccess`, `dbLength`, `updateCount`, `hitCount`, `errorMessage` |
 | `chain_parent_serial`, `confidence_score` | `chainParentSerial`, `confidenceScore` |

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>delta_trace_db.query.util_value_parse &#8212; DeltaTraceDB Docs 0.0.37 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="../../_static/documentation_options.js?v=aa2ad26f"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Notice" href="../../notice.html" />
+    <link rel="prev" title="delta_trace_db.query.util_query" href="delta_trace_db.query.util_query.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-delta_trace_db.query.util_value_parse">
+<span id="delta-trace-db-query-util-value-parse"></span><h1>delta_trace_db.query.util_value_parse<a class="headerlink" href="#module-delta_trace_db.query.util_value_parse" title="Link to this heading">¶</a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#delta_trace_db.query.util_value_parse.UtilValueParse" title="delta_trace_db.query.util_value_parse.UtilValueParse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UtilValueParse</span></code></a>()</p></td>
+<td><p>(en) Conversions used by EnumValueType that give the same results as the Dart version (int.parse, double.parse and DateTime comparison on the Dart VM).</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">delta_trace_db.query.util_value_parse.</span></span><span class="sig-name descname"><span class="pre">UtilValueParse</span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>(en) Conversions used by EnumValueType that give the same results as the Dart version
+(int.parse, double.parse and DateTime comparison on the Dart VM).
+Python’s int() and float() accept more forms (e.g. “1_000”, “inf” and non-ASCII digits),
+so they are not used directly.</p>
+<p>(ja) EnumValueType で使用する、Dart版（Dart VM の int.parse、double.parse、DateTime の比較）と
+同じ結果になる変換です。
+Python の int() や float() はより多くの形式（”1_000”、”inf”、ASCII以外の数字など）を受け付けるため、
+直接は使用しません。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.check_offset">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.check_offset" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Checks a naive_utc_offset_minutes argument.</p>
+<p>(ja) naive_utc_offset_minutes 引数を検査します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>minutes</strong> (<em>Optional</em><em>[</em><em>int</em><em>]</em>) – None, or an offset from UTC in minutes (greater than -1440 and less than 1440).</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the value is out of range or not an int.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.datetimes">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">datetimes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">naive_utc_offset_minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">datetime</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">datetime</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.datetimes" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Returns the field value and the compare value for <code class="docutils literal notranslate"><span class="pre">datetime_</span></code> comparison.
+If naive_utc_offset_minutes is not None, naive values are converted with that offset.
+Otherwise, ValueError is raised if exactly one of them is timezone-aware, so that mixing
+naive and aware datetimes is treated as a conversion failure, the same as the Dart version.</p>
+<p>(ja) <code class="docutils literal notranslate"><span class="pre">datetime_</span></code> の比較のために、フィールドの値と比較値を返します。
+naive_utc_offset_minutes が None でない場合、naive な値はそのオフセットで変換されます。
+それ以外の場合、一方だけがタイムゾーン付きなら ValueError を送出し、
+Dart版と同様に naive と aware の混在を変換失敗として扱います。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the value cannot be parsed or the timezone awareness differs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.is_aware">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_aware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.is_aware" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Returns True if the datetime is timezone-aware
+(corresponds to a UTC DateTime in the Dart version).</p>
+<p>(ja) datetime がタイムゾーン付きの場合に True を返します
+（Dart版の UTC の DateTime に相当します）。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.parse_bool">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.parse_bool" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Parses “true” or “false” (case-insensitive), the same as the Dart version.</p>
+<p>(ja) Dart版と同様に “true” または “false”（大文字小文字を区別しない）を解析します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the string is neither “true” nor “false”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.parse_float">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.parse_float" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Parses a string like Dart’s double.parse: surrounding whitespace is ignored,
+and “Infinity” / “NaN” are accepted but “inf”, “nan”, “_” and non-ASCII digits are not.</p>
+<p>(ja) Dart の double.parse と同様に文字列を解析します。前後の空白は無視し、
+“Infinity” と “NaN” は受け付けますが、”inf”、”nan”、”_”、ASCII以外の数字は受け付けません。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – The string to parse.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the string cannot be parsed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.parse_int">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.parse_int" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Parses a string like Dart’s int.parse: surrounding whitespace is ignored,
+decimal digits or a 0x hexadecimal number with an optional sign are accepted,
+and the result is a 64-bit integer (hexadecimal values wrap around).</p>
+<p>(ja) Dart の int.parse と同様に文字列を解析します。前後の空白は無視し、
+符号付きの10進数または 0x で始まる16進数を受け付け、結果は64ビット整数です
+（16進数は折り返します）。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – The string to parse.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the string cannot be parsed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.parse_iso_datetime">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_iso_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.parse_iso_datetime" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Parses an ISO 8601 string for <code class="docutils literal notranslate"><span class="pre">datetime_</span></code>, accepting exactly the same strings
+as the Dart version. Out-of-range components (e.g. month 13, February 30, hour 24)
+and formats the Dart version does not accept (e.g. week dates) are rejected.</p>
+<p>(ja) <code class="docutils literal notranslate"><span class="pre">datetime_</span></code> 用に ISO 8601 の文字列を解析します。Dart版と全く同じ文字列を受け付けます。
+範囲外の値（13月、2月30日、24時など）や、Dart版が受け付けない形式（週番号形式など）は拒否します。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – The string to parse.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the string cannot be parsed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.to_aware">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_aware</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_minutes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.to_aware" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Returns the datetime as an aware datetime. A naive datetime is interpreted as
+a local time at UTC + offset_minutes.</p>
+<p>(ja) datetime を aware な datetime として返します。naive な datetime は
+UTC + offset_minutes の時刻として解釈されます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.to_float">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.to_float" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Converts a value for <code class="docutils literal notranslate"><span class="pre">floatStrict_</span></code> / <code class="docutils literal notranslate"><span class="pre">floatEpsilon12_</span></code> comparison, the same as
+double.parse(value.toString()) in the Dart version. bool values are not converted.</p>
+<p>(ja) <code class="docutils literal notranslate"><span class="pre">floatStrict_</span></code> / <code class="docutils literal notranslate"><span class="pre">floatEpsilon12_</span></code> の比較のために値を変換します。
+Dart版の double.parse(value.toString()) と同じ結果です。bool の値は変換しません。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the value cannot be converted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="delta_trace_db.query.util_value_parse.UtilValueParse.to_int">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#delta_trace_db.query.util_value_parse.UtilValueParse.to_int" title="Link to this definition">¶</a></dt>
+<dd><p>(en) Converts a value for <code class="docutils literal notranslate"><span class="pre">int_</span></code> comparison, the same as int.parse(value.toString())
+in the Dart version. bool and float values are not converted.</p>
+<p>(ja) <code class="docutils literal notranslate"><span class="pre">int_</span></code> の比較のために値を変換します。Dart版の int.parse(value.toString()) と同じ結果です。
+bool と float の値は変換しません。</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the value cannot be converted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">DeltaTraceDB Docs</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../queries.html">Query Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../db_listeners.html">DB Listeners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../server.html">Server-Side Coding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../best_practice.html">Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ai_prompt.html">Using with AI Assistants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../delta_trace_db.html">Python version API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../delta_trace_db.html#delta-trace-db-package">delta_trace_db package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../notice.html">Notice</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../delta_trace_db.html">Python version API Reference</a><ul>
+  <li><a href="delta_trace_db.query.html">delta_trace_db.query</a><ul>
+      <li>Previous: <a href="delta_trace_db.query.util_query.html" title="previous chapter">delta_trace_db.query.util_query</a></li>
+      <li>Next: <a href="../../notice.html" title="next chapter">Notice</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Masahide Mori.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../../_sources/api/generated/delta_trace_db.query.util_value_parse.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -22,6 +22,9 @@ All nodes take the field name first. Nested fields use dot notation (`"address.c
 The six equality / relational nodes accept an optional `v_type` of type `EnumValueType`.
 With any type other than `auto_`, both the field value and `value` are converted before comparing,
 and a conversion failure makes the node `False` (it never raises).
+Strings are **not** converted with `int()` / `float()`: the rules match the Dart version, so `"1_000"`,
+`"inf"` and non-ASCII digits are not converted, `int_` accepts `"0x10"` (16), int_ does not convert float or
+bool values, and `boolean_` accepts only `"true"` / `"false"`.
 `None` / missing fields are never greater or less than anything.
 
 ## Logical nodes
@@ -118,13 +121,23 @@ print([f"{p.name}: {p.price}" for p in cheap.convert(Product.from_dict)])  # ['p
 ### Datetimes
 
 Store datetimes as UTC ISO 8601 strings and use timezone-aware `datetime` values in conditions.
-Comparing naive (local) and aware (UTC) datetimes mixes up the results.
+
+- Only valid ISO 8601 datetimes are converted (e.g. `2025-01-01T09:00:00+09:00`, `2025-01-01T00:00:00Z`,
+  `2025-01-01`). Month 13, hour 24, a lowercase `z` and week dates are conversion failures.
+- An aware value (`Z` or an offset) and a naive value (no offset) are never compared: the node is
+  `False` (even `FieldNotEquals`), so such items are not returned.
+- If stored values are naive, pass `naive_utc_offset_minutes` (e.g. `540` for UTC+9): naive values are then
+  read as times at UTC + that many minutes.
 
 ```python
 from datetime import datetime, timezone
 
 after = FieldGreaterThan("createdAt", datetime(2025, 1, 1, tzinfo=timezone.utc))
 print(after.evaluate({"createdAt": "2025-06-01T00:00:00+00:00"}))  # True
+print(after.evaluate({"createdAt": "2025-06-01T00:00:00"}))  # False
+jst = FieldGreaterThan("createdAt", datetime(2025, 1, 1, tzinfo=timezone.utc),
+                       v_type=EnumValueType.datetime_, naive_utc_offset_minutes=540)
+print(jst.evaluate({"createdAt": "2025-06-01T00:00:00"}))  # True
 ```
 
 ## Sorting
@@ -134,9 +147,10 @@ print(after.evaluate({"createdAt": "2025-06-01T00:00:00+00:00"}))  # True
 
 - `None` / missing values go last in ascending order and first in descending order.
 - `v_type` converts values before comparing, with the same values as above.
-  With `decimal_` / `rational_`, values that cannot be converted are treated as `None`.
-  For the other types, a value that cannot be converted makes the query fail,
-  so store consistent types in a sorted field.
+  A value that cannot be converted is treated as `None` (except with `auto_`, which compares values as they
+  are and fails the query if they cannot be compared).
+- With `datetime_`, a naive value compared with an aware value is treated as `None`, so aware values come first.
+  Pass `naive_utc_offset_minutes` to `SingleSort` to sort them together.
 - `stringIgnoreCase_` gives case-insensitive alphabetical order.
 
 ```python
