@@ -7,7 +7,7 @@ The examples use `RawQueryBuilder`; `QueryBuilder` is identical except that it t
 
 Contents: [Common arguments](#common-arguments) · [add](#add) · [search / search_one / get_all](#search--search_one--get_all) ·
 [Paging](#paging) · [update / update_one](#update--update_one) · [delete / delete_one](#delete--delete_one) ·
-[count](#count) · [clear / clear_add](#clear--clear_add) · [conform_to_template](#conform_to_template) ·
+[count](#count) · [clear / clear_add](#clear--clear_add) · [add_csv / clear_add_csv](#add_csv--clear_add_csv) · [conform_to_template](#conform_to_template) ·
 [rename_field](#rename_field) · [remove_collection](#remove_collection) · [Transactions](#transactions) · [merge](#merge)
 
 ## Common arguments
@@ -124,6 +124,31 @@ print(db.execute_query(RawQueryBuilder.count(target="users").build()).hit_count)
 db.execute_query(RawQueryBuilder.clear_add(
     target="tags", raw_add_data=[{"id": -1, "label": "new"}], serial_key="id", reset_serial=True).build())
 db.execute_query(RawQueryBuilder.clear(target="tags").build())
+```
+
+## add_csv / clear_add_csv
+
+`add_csv` adds the rows of CSV text (like `add`), and `clear_add_csv` empties the collection first (like `clear_add`).
+They accept `serial_key`, `return_data` and `must_affect_at_least_one` (and `reset_serial` for `clear_add_csv`).
+The first record is the header, and each following row becomes an item of `{column name: cell text}`.
+**All values are strings** — use `decimal_` (or another `v_type`) to compare, sort or aggregate them as numbers.
+Quoted values (`"a, b"`, `""` for a quote, line breaks inside quotes), LF / CRLF / CR line ends, a leading BOM
+and trailing empty lines are supported. An invalid CSV fails the query without changing anything
+(no collection is created), and `error_message` shows the kind and line, e.g. `CsvFormatError(columnCount, line 3)`.
+`UtilCsv.to_items(text)` checks and converts a CSV with the same rules and raises `CsvFormatError`
+(`kind`: `EnumCsvErrorKind.header` / `columnCount` / `format`, and `line`). Requires DeltaTraceDB 0.4.0 or later.
+
+```python
+imported = db.execute_query(QueryBuilder.add_csv(
+    target="items",
+    csv_text='id,name,price\n,"Pen, blue",1.20\n,Notebook,3.50\n',
+    serial_key="id",
+    return_data=True,
+).build())
+print(imported.result[0])  # {'id': 0, 'name': 'Pen, blue', 'price': '1.20'}
+
+bad = db.execute_query(QueryBuilder.add_csv(target="items", csv_text="id,name\n1").build())
+print(bad.error_message)  # CsvFormatError(columnCount, line 2)
 ```
 
 ## conform_to_template

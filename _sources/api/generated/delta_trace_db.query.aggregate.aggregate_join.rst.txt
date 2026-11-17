@@ -1,0 +1,12 @@
+delta\_trace\_db.query.aggregate.aggregate\_join
+================================================
+
+.. automodule:: delta_trace_db.query.aggregate.aggregate_join
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AggregateJoin
+   

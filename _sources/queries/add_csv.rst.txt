@@ -1,0 +1,138 @@
+======================================
+AddCsv & ClearAddCsv
+======================================
+
+**addCsv** adds the rows of CSV text to a collection, and **clearAddCsv** adds them after **clear**.
+
+Overview
+----------------------------
+
+These queries take CSV text as a string and convert it into items on the database side:
+
+- :code:`addCsv` works like :code:`add`. If the collection does not exist, it is created.
+- :code:`clearAddCsv` works like :code:`clearAdd`. It **removes all items** and then inserts the rows.
+
+The CSV text itself is stored in the query (:code:`csvText`), so a query log records
+the imported data as it was given.
+
+CSV format:
+
+- The first record is the header. Each following record becomes an item of
+  :code:`{column name: cell text}`.
+- **All values are added as strings.** Convert them after the import if you need other types
+  (for example, with :code:`conformToTemplate` or :code:`update`).
+- Values are separated by commas and may be enclosed in double quotes.
+  Inside quotes, :code:`""` is a quote, and line breaks may be included.
+- Lines end with LF, CRLF or CR. A leading BOM and trailing empty lines are ignored.
+
+If the CSV is invalid, the query fails and **nothing is changed**
+(a new collection is not created either). The :code:`errorMessage` of the result is one of:
+
+- :code:`CsvFormatError(header, line 0)` : The header has an empty or duplicate column name.
+- :code:`CsvFormatError(columnCount, line N)` : A row has a different number of columns from the header.
+- :code:`CsvFormatError(format, line N)` : A quoted value is not closed, or a character follows a closing quote.
+
+:code:`N` is the line number (1-based) where the record with the error starts.
+
+If you want to check a CSV before sending the query, you can use :code:`UtilCsv.toItems`
+(Python: :code:`UtilCsv.to_items`), which raises :code:`CsvFormatError` with the same kind and line.
+
+.. warning::
+
+   :code:`clearAddCsv` **permanently deletes data** in the target collection.
+
+   It is strongly recommended to **back up your DB before executing**.
+
+Usage
+----------------------------
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          const csv = 'id,name,price\n,Apple,1.20\n,"Banana, large",0.50\n';
+
+          final addQuery = QueryBuilder.addCsv(
+            target: 'products',
+            csvText: csv,
+            serialKey: 'id', // Must be one of the CSV column names.
+            returnData: true,
+          ).build();
+          final result = db.executeQuery(addQuery);
+          print(result.toDict());
+
+          // Replace the contents of the collection.
+          final clearAddQuery = QueryBuilder.clearAddCsv(
+            target: 'products',
+            csvText: csv,
+            serialKey: 'id',
+            resetSerial: true,
+          ).build();
+          print(db.executeQuery(clearAddQuery).isSuccess);
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from delta_trace_db import DeltaTraceDatabase, QueryBuilder
+
+        db = DeltaTraceDatabase()
+        csv = 'id,name,price\n,Apple,1.20\n,"Banana, large",0.50\n'
+
+        add_query = QueryBuilder.add_csv(
+            target="products",
+            csv_text=csv,
+            serial_key="id",  # Must be one of the CSV column names.
+            return_data=True,
+        ).build()
+        result = db.execute_query(add_query)
+        print(result.to_dict())
+
+        # Replace the contents of the collection.
+        clear_add_query = QueryBuilder.clear_add_csv(
+            target="products",
+            csv_text=csv,
+            serial_key="id",
+            reset_serial=True,
+        ).build()
+        print(db.execute_query(clear_add_query).is_success)
+
+Result
+----------------------------
+
+Example output (addCsv):
+
+.. code-block:: text
+
+    {className: QueryResult, version: 6, isSuccess: true, target: products, type: addCsv,
+    result: [
+        {id: 0, name: Apple, price: 1.20},
+        {id: 1, name: Banana, large, price: 0.50}
+    ], dbLength: 2, updateCount: 2, hitCount: 0, errorMessage: null}
+
+Notes
+----------------------------
+
+- :code:`serialKey`, :code:`resetSerial`, :code:`returnData`, :code:`mustAffectAtLeastOne` and
+  :code:`cause` work in the same way as in :code:`add` and :code:`clearAdd`.
+- As with :code:`clearAdd`, the number of affected items of :code:`clearAddCsv` is the number of
+  cleared items. Set :code:`mustAffectAtLeastOne` to false if the collection may be empty.
+- Both queries can be used in a transaction.
+- To allow these queries on a server, add :code:`addCsv` / :code:`clearAddCsv` to the
+  :code:`Permission` of the collection.
+
+API
+----------------------------
+- Dart: `[QueryBuilder.addCsv] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.addCsv.html>`__
+- Dart: `[QueryBuilder.clearAddCsv] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.clearAddCsv.html>`__
+- Dart: `[UtilCsv] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/UtilCsv-class.html>`__
+- Python: :py:meth:`[QueryBuilder.add_csv] <delta_trace_db.query.query_builder.QueryBuilder.add_csv>`
+- Python: :py:meth:`[QueryBuilder.clear_add_csv] <delta_trace_db.query.query_builder.QueryBuilder.clear_add_csv>`
+- Python: :py:class:`[UtilCsv] <delta_trace_db.query.util_csv.UtilCsv>`

@@ -16,6 +16,8 @@ as a single map (dict) in :code:`result`.
 - Each aggregation is defined with an :code:`Aggregation` object.
 - The results are **identical in Dart and Python**, including floating-point sums.
 - Available from version 0.2.0.
+- Since version 0.4.0, items of other collections can be joined, and the results can be
+  calculated per group (e.g. per product and month). See :doc:`aggregate_join_group`.
 
 Aggregation
 ----------------------------
@@ -30,13 +32,19 @@ Aggregation
      - ``EnumAggregateType.count_``, ``sum_``, ``min_``, ``max_`` or ``mean_``.
    * - ``field``
      - The target field. Nested fields can be specified with dot notation.
-       Required except for ``count_``.
+       This or ``fields`` is required except for ``count_``.
+   * - ``fields``
+     - Used instead of ``field`` to aggregate the **product** of the values of these fields
+       (e.g. ``['quantity', 'unitPrice']`` for sales). The values of each item are converted
+       with ``vType`` and multiplied in order. If any of the values is null, the item is excluded.
+       Available from version 0.4.0.
    * - ``vType`` / ``v_type``
      - The calculation type: ``floatStrict_`` *(default)*, ``decimal_`` or ``rational_``.
        Other types make the query fail. Ignored by ``count_``.
    * - ``alias``
      - The key of the result. If omitted, the type name and the field name are joined
-       (e.g. ``"sum_price"``), or ``"count_"`` for ``count_`` without a field.
+       (e.g. ``"sum_price"``; with ``fields``, the field names are joined with ``*``,
+       e.g. ``"sum_quantity*unitPrice"``), or ``"count_"`` for ``count_`` without a field.
    * - ``scale``, ``rounding``
      - Used only for ``mean_`` with ``decimal_``, and required for it.
        The number of digits after the decimal point and the ``EnumRoundingMode``

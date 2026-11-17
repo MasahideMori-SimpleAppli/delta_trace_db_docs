@@ -16,7 +16,7 @@
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Clear &amp; ClearAdd" href="clear.html" />
+    <link rel="next" title="Aggregate: Joins &amp; Groups" href="aggregate_join_group.html" />
     <link rel="prev" title="Count" href="count.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
@@ -49,6 +49,8 @@ If it is omitted, all items in the collection are targeted.</p></li>
 <li><p>Each aggregation is defined with an <code class="code docutils literal notranslate"><span class="pre">Aggregation</span></code> object.</p></li>
 <li><p>The results are <strong>identical in Dart and Python</strong>, including floating-point sums.</p></li>
 <li><p>Available from version 0.2.0.</p></li>
+<li><p>Since version 0.4.0, items of other collections can be joined, and the results can be
+calculated per group (e.g. per product and month). See <a class="reference internal" href="aggregate_join_group.html"><span class="doc">Aggregate: Joins &amp; Groups</span></a>.</p></li>
 </ul>
 </section>
 <section id="aggregation">
@@ -69,17 +71,24 @@ If it is omitted, all items in the collection are targeted.</p></li>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">field</span></code></p></td>
 <td><p>The target field. Nested fields can be specified with dot notation.
-Required except for <code class="docutils literal notranslate"><span class="pre">count_</span></code>.</p></td>
+This or <code class="docutils literal notranslate"><span class="pre">fields</span></code> is required except for <code class="docutils literal notranslate"><span class="pre">count_</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vType</span></code> / <code class="docutils literal notranslate"><span class="pre">v_type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fields</span></code></p></td>
+<td><p>Used instead of <code class="docutils literal notranslate"><span class="pre">field</span></code> to aggregate the <strong>product</strong> of the values of these fields
+(e.g. <code class="docutils literal notranslate"><span class="pre">['quantity',</span> <span class="pre">'unitPrice']</span></code> for sales). The values of each item are converted
+with <code class="docutils literal notranslate"><span class="pre">vType</span></code> and multiplied in order. If any of the values is null, the item is excluded.
+Available from version 0.4.0.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vType</span></code> / <code class="docutils literal notranslate"><span class="pre">v_type</span></code></p></td>
 <td><p>The calculation type: <code class="docutils literal notranslate"><span class="pre">floatStrict_</span></code> <em>(default)</em>, <code class="docutils literal notranslate"><span class="pre">decimal_</span></code> or <code class="docutils literal notranslate"><span class="pre">rational_</span></code>.
 Other types make the query fail. Ignored by <code class="docutils literal notranslate"><span class="pre">count_</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alias</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">alias</span></code></p></td>
 <td><p>The key of the result. If omitted, the type name and the field name are joined
-(e.g. <code class="docutils literal notranslate"><span class="pre">&quot;sum_price&quot;</span></code>), or <code class="docutils literal notranslate"><span class="pre">&quot;count_&quot;</span></code> for <code class="docutils literal notranslate"><span class="pre">count_</span></code> without a field.</p></td>
+(e.g. <code class="docutils literal notranslate"><span class="pre">&quot;sum_price&quot;</span></code>; with <code class="docutils literal notranslate"><span class="pre">fields</span></code>, the field names are joined with <code class="docutils literal notranslate"><span class="pre">*</span></code>,
+e.g. <code class="docutils literal notranslate"><span class="pre">&quot;sum_quantity*unitPrice&quot;</span></code>), or <code class="docutils literal notranslate"><span class="pre">&quot;count_&quot;</span></code> for <code class="docutils literal notranslate"><span class="pre">count_</span></code> without a field.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">rounding</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">rounding</span></code></p></td>
 <td><p>Used only for <code class="docutils literal notranslate"><span class="pre">mean_</span></code> with <code class="docutils literal notranslate"><span class="pre">decimal_</span></code>, and required for it.
 The number of digits after the decimal point and the <code class="docutils literal notranslate"><span class="pre">EnumRoundingMode</span></code>
 (<code class="docutils literal notranslate"><span class="pre">halfEven</span></code>, <code class="docutils literal notranslate"><span class="pre">halfUp</span></code>, <code class="docutils literal notranslate"><span class="pre">down</span></code>, <code class="docutils literal notranslate"><span class="pre">floor</span></code>, <code class="docutils literal notranslate"><span class="pre">ceiling</span></code>).</p></td>
@@ -313,7 +322,9 @@ A <strong>search</strong> permission does not allow this query.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="rename_field.html">RenameField</a></li>
 <li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Aggregate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate_join_group.html">Aggregate: Joins &amp; Groups</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="add_csv.html">AddCsv &amp; ClearAddCsv</a></li>
 <li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transaction.html">Transaction Queries</a></li>
@@ -338,7 +349,7 @@ A <strong>search</strong> permission does not allow this query.</p></li>
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="../queries.html">Query Operations</a><ul>
       <li>Previous: <a href="count.html" title="previous chapter">Count</a></li>
-      <li>Next: <a href="clear.html" title="next chapter">Clear &amp; ClearAdd</a></li>
+      <li>Next: <a href="aggregate_join_group.html" title="next chapter">Aggregate: Joins &amp; Groups</a></li>
   </ul></li>
   </ul></li>
 </ul>

@@ -22,10 +22,13 @@ The attribute of a constructed object is still `type` (e.g. `result.type`, `aggr
 Enum members keep their original names, including camelCase and trailing underscores:
 
 - `EnumQueryType`: `add`, `update`, `updateOne`, `delete`, `deleteOne`, `search`, `searchOne`, `getAll`,
-  `conformToTemplate`, `renameField`, `count`, `clear`, `clearAdd`, `removeCollection`, `merge`, `aggregate`
+  `conformToTemplate`, `renameField`, `count`, `clear`, `clearAdd`, `removeCollection`, `merge`, `aggregate`,
+  `addCsv`, `clearAddCsv`
 - `EnumValueType`: `auto_`, `datetime_`, `int_`, `floatStrict_`, `floatEpsilon12_`, `boolean_`, `string_`,
   `stringIgnoreCase_`, `decimal_`, `rational_`
 - `EnumAggregateType`: `count_`, `sum_`, `min_`, `max_`, `mean_`
+- `EnumAggregateGroupUnit`: `day`, `week`, `month`, `quarter`, `year`
+- `EnumCsvErrorKind`: `header`, `columnCount`, `format`
 - `EnumRoundingMode`: `halfEven`, `halfUp`, `down`, `floor`, `ceiling`
 - `EnumActorType`: `human`, `ai`, `system`
 
@@ -53,6 +56,10 @@ the keys are the camelCase form of the Python names:
 | `merge_query_params` | `mergeQueryParams` |
 | `relation_key` / `source_keys` / `dsl_tmp` / `serial_base` | `relationKey` / `sourceKeys` / `dslTmp` / `serialBase` |
 | `v_type` | `vType` |
+| `csv_text` | `csvText` |
+| `group_by` | `groupBy` |
+| `local_key` / `foreign_key` | `localKey` / `foreignKey` |
+| `utc_offset_minutes` / `week_start` / `start_month` | `utcOffsetMinutes` / `weekStart` / `startMonth` |
 | `naive_utc_offset_minutes` | `naiveUtcOffsetMinutes` |
 | `is_success`, `db_length`, `update_count`, `hit_count`, `error_message` | `isSuccess`, `dbLength`, `updateCount`, `hitCount`, `errorMessage` |
 | `chain_parent_serial`, `confidence_score` | `chainParentSerial`, `confidenceScore` |

@@ -79,10 +79,10 @@ If your assistant does not support skills, you can paste the contents of <code c
 <li><p><strong>Core rules</strong>: building and executing queries, choosing between QueryBuilder and RawQueryBuilder,
 checking results, and common mistakes</p></li>
 <li><p><strong>All query operations</strong>: add, update, delete, search, getAll, count, aggregate, clear, clearAdd,
-conformToTemplate, renameField, removeCollection, merge, and transactions</p></li>
+addCsv, clearAddCsv, conformToTemplate, renameField, removeCollection, merge, and transactions</p></li>
 <li><p><strong>Search nodes and sorting</strong>: comparison nodes, logical nodes, value types including exact
 <code class="docutils literal notranslate"><span class="pre">decimal_</span></code> / <code class="docutils literal notranslate"><span class="pre">rational_</span></code>, SingleSort and MultiSort</p></li>
-<li><p><strong>Aggregation</strong>: count, sum, min, max and mean</p></li>
+<li><p><strong>Aggregation</strong>: count, sum, min, max and mean, joins across collections, and grouping by key or period</p></li>
 <li><p><strong>Metadata and server-side use</strong>: Cause, Actor, Permission, TemporalTrace, and server-side execution</p></li>
 <li><p><strong>Persistence and listeners</strong>: saving and restoring the database and queries, and UI listeners</p></li>
 <li><p><strong>Python naming</strong>: trailing underscores (<strong>type_</strong>, <strong>from_</strong>, <strong>reversed_</strong>), Actor arguments,
@@ -90,7 +90,7 @@ enum member names, and JSON keys (Python skill only)</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Every code example in the skills has been executed and checked against DeltaTraceDB 0.2.0.
+<p>Every code example in the skills has been executed and checked against DeltaTraceDB 0.4.0.
 The skills are updated together with the library when the API changes.</p>
 </div>
 </section>

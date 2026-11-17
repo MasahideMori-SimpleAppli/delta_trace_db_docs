@@ -10,6 +10,11 @@ delta\_trace\_db.query.aggregate
    :toctree:
    :recursive:
 
+   aggregate_group_key
+   aggregate_join
    aggregation
+   enum_aggregate_group_unit
    enum_aggregate_type
    util_aggregate
+   util_group
+   util_join

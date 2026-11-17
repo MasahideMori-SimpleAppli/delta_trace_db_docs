@@ -27,7 +27,9 @@ You can use these queries on both the client and the server side.
    queries/rename_field
    queries/count
    queries/aggregate
+   queries/aggregate_join_group
    queries/clear
+   queries/add_csv
    queries/remove_collection
    queries/merge
    queries/transaction

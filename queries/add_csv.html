@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>AddCsv &amp; ClearAddCsv &#8212; DeltaTraceDB Docs 0.0.37 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <script src="../_static/documentation_options.js?v=aa2ad26f"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Remove Collection" href="remove_collection.html" />
+    <link rel="prev" title="Clear &amp; ClearAdd" href="clear.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="addcsv-clearaddcsv">
+<h1>AddCsv &amp; ClearAddCsv<a class="headerlink" href="#addcsv-clearaddcsv" title="Link to this heading">¶</a></h1>
+<p><strong>addCsv</strong> adds the rows of CSV text to a collection, and <strong>clearAddCsv</strong> adds them after <strong>clear</strong>.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>These queries take CSV text as a string and convert it into items on the database side:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">addCsv</span></code> works like <code class="code docutils literal notranslate"><span class="pre">add</span></code>. If the collection does not exist, it is created.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">clearAddCsv</span></code> works like <code class="code docutils literal notranslate"><span class="pre">clearAdd</span></code>. It <strong>removes all items</strong> and then inserts the rows.</p></li>
+</ul>
+<p>The CSV text itself is stored in the query (<code class="code docutils literal notranslate"><span class="pre">csvText</span></code>), so a query log records
+the imported data as it was given.</p>
+<p>CSV format:</p>
+<ul class="simple">
+<li><p>The first record is the header. Each following record becomes an item of
+<code class="code docutils literal notranslate"><span class="pre">{column</span> <span class="pre">name:</span> <span class="pre">cell</span> <span class="pre">text}</span></code>.</p></li>
+<li><p><strong>All values are added as strings.</strong> Convert them after the import if you need other types
+(for example, with <code class="code docutils literal notranslate"><span class="pre">conformToTemplate</span></code> or <code class="code docutils literal notranslate"><span class="pre">update</span></code>).</p></li>
+<li><p>Values are separated by commas and may be enclosed in double quotes.
+Inside quotes, <code class="code docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> is a quote, and line breaks may be included.</p></li>
+<li><p>Lines end with LF, CRLF or CR. A leading BOM and trailing empty lines are ignored.</p></li>
+</ul>
+<p>If the CSV is invalid, the query fails and <strong>nothing is changed</strong>
+(a new collection is not created either). The <code class="code docutils literal notranslate"><span class="pre">errorMessage</span></code> of the result is one of:</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">CsvFormatError(header,</span> <span class="pre">line</span> <span class="pre">0)</span></code> : The header has an empty or duplicate column name.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">CsvFormatError(columnCount,</span> <span class="pre">line</span> <span class="pre">N)</span></code> : A row has a different number of columns from the header.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">CsvFormatError(format,</span> <span class="pre">line</span> <span class="pre">N)</span></code> : A quoted value is not closed, or a character follows a closing quote.</p></li>
+</ul>
+<p><code class="code docutils literal notranslate"><span class="pre">N</span></code> is the line number (1-based) where the record with the error starts.</p>
+<p>If you want to check a CSV before sending the query, you can use <code class="code docutils literal notranslate"><span class="pre">UtilCsv.toItems</span></code>
+(Python: <code class="code docutils literal notranslate"><span class="pre">UtilCsv.to_items</span></code>), which raises <code class="code docutils literal notranslate"><span class="pre">CsvFormatError</span></code> with the same kind and line.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="code docutils literal notranslate"><span class="pre">clearAddCsv</span></code> <strong>permanently deletes data</strong> in the target collection.</p>
+<p>It is strongly recommended to <strong>back up your DB before executing</strong>.</p>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+Dart</label><div class="sd-tab-content docutils">
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="s1">&#39;package:delta_trace_db/delta_trace_db.dart&#39;</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DeltaTraceDatabase</span><span class="p">();</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">csv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;id,name,price</span><span class="se">\n</span><span class="s1">,Apple,1.20</span><span class="se">\n</span><span class="s1">,&quot;Banana, large&quot;,0.50</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">addQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QueryBuilder</span><span class="p">.</span><span class="n">addCsv</span><span class="p">(</span>
+<span class="w">    </span><span class="nl">target:</span><span class="w"> </span><span class="s1">&#39;products&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">csvText:</span><span class="w"> </span><span class="n">csv</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">serialKey:</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="w"> </span><span class="c1">// Must be one of the CSV column names.</span>
+<span class="w">    </span><span class="nl">returnData:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="p">).</span><span class="n">build</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span><span class="n">addQuery</span><span class="p">);</span>
+<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">toDict</span><span class="p">());</span>
+
+<span class="w">  </span><span class="c1">// Replace the contents of the collection.</span>
+<span class="w">  </span><span class="kd">final</span><span class="w"> </span><span class="n">clearAddQuery</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QueryBuilder</span><span class="p">.</span><span class="n">clearAddCsv</span><span class="p">(</span>
+<span class="w">    </span><span class="nl">target:</span><span class="w"> </span><span class="s1">&#39;products&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">csvText:</span><span class="w"> </span><span class="n">csv</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">serialKey:</span><span class="w"> </span><span class="s1">&#39;id&#39;</span><span class="p">,</span>
+<span class="w">    </span><span class="nl">resetSerial:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="p">).</span><span class="n">build</span><span class="p">();</span>
+<span class="w">  </span><span class="n">print</span><span class="p">(</span><span class="n">db</span><span class="p">.</span><span class="n">executeQuery</span><span class="p">(</span><span class="n">clearAddQuery</span><span class="p">).</span><span class="n">isSuccess</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+Python</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">delta_trace_db</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeltaTraceDatabase</span><span class="p">,</span> <span class="n">QueryBuilder</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">DeltaTraceDatabase</span><span class="p">()</span>
+<span class="n">csv</span> <span class="o">=</span> <span class="s1">&#39;id,name,price</span><span class="se">\n</span><span class="s1">,Apple,1.20</span><span class="se">\n</span><span class="s1">,&quot;Banana, large&quot;,0.50</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+<span class="n">add_query</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="o">.</span><span class="n">add_csv</span><span class="p">(</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;products&quot;</span><span class="p">,</span>
+    <span class="n">csv_text</span><span class="o">=</span><span class="n">csv</span><span class="p">,</span>
+    <span class="n">serial_key</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span>  <span class="c1"># Must be one of the CSV column names.</span>
+    <span class="n">return_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">add_query</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+
+<span class="c1"># Replace the contents of the collection.</span>
+<span class="n">clear_add_query</span> <span class="o">=</span> <span class="n">QueryBuilder</span><span class="o">.</span><span class="n">clear_add_csv</span><span class="p">(</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;products&quot;</span><span class="p">,</span>
+    <span class="n">csv_text</span><span class="o">=</span><span class="n">csv</span><span class="p">,</span>
+    <span class="n">serial_key</span><span class="o">=</span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+    <span class="n">reset_serial</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">execute_query</span><span class="p">(</span><span class="n">clear_add_query</span><span class="p">)</span><span class="o">.</span><span class="n">is_success</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="result">
+<h2>Result<a class="headerlink" href="#result" title="Link to this heading">¶</a></h2>
+<p>Example output (addCsv):</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{className: QueryResult, version: 6, isSuccess: true, target: products, type: addCsv,
+result: [
+    {id: 0, name: Apple, price: 1.20},
+    {id: 1, name: Banana, large, price: 0.50}
+], dbLength: 2, updateCount: 2, hitCount: 0, errorMessage: null}
+</pre></div>
+</div>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">serialKey</span></code>, <code class="code docutils literal notranslate"><span class="pre">resetSerial</span></code>, <code class="code docutils literal notranslate"><span class="pre">returnData</span></code>, <code class="code docutils literal notranslate"><span class="pre">mustAffectAtLeastOne</span></code> and
+<code class="code docutils literal notranslate"><span class="pre">cause</span></code> work in the same way as in <code class="code docutils literal notranslate"><span class="pre">add</span></code> and <code class="code docutils literal notranslate"><span class="pre">clearAdd</span></code>.</p></li>
+<li><p>As with <code class="code docutils literal notranslate"><span class="pre">clearAdd</span></code>, the number of affected items of <code class="code docutils literal notranslate"><span class="pre">clearAddCsv</span></code> is the number of
+cleared items. Set <code class="code docutils literal notranslate"><span class="pre">mustAffectAtLeastOne</span></code> to false if the collection may be empty.</p></li>
+<li><p>Both queries can be used in a transaction.</p></li>
+<li><p>To allow these queries on a server, add <code class="code docutils literal notranslate"><span class="pre">addCsv</span></code> / <code class="code docutils literal notranslate"><span class="pre">clearAddCsv</span></code> to the
+<code class="code docutils literal notranslate"><span class="pre">Permission</span></code> of the collection.</p></li>
+</ul>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.addCsv.html">[QueryBuilder.addCsv]</a></p></li>
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.clearAddCsv.html">[QueryBuilder.clearAddCsv]</a></p></li>
+<li><p>Dart: <a class="reference external" href="https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/UtilCsv-class.html">[UtilCsv]</a></p></li>
+<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.query_builder.html#delta_trace_db.query.query_builder.QueryBuilder.add_csv" title="delta_trace_db.query.query_builder.QueryBuilder.add_csv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[QueryBuilder.add_csv]</span></code></a></p></li>
+<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.query_builder.html#delta_trace_db.query.query_builder.QueryBuilder.clear_add_csv" title="delta_trace_db.query.query_builder.QueryBuilder.clear_add_csv"><code class="xref py py-meth docutils literal notranslate"><span class="pre">[QueryBuilder.clear_add_csv]</span></code></a></p></li>
+<li><p>Python: <a class="reference internal" href="../api/generated/delta_trace_db.query.util_csv.html#delta_trace_db.query.util_csv.UtilCsv" title="delta_trace_db.query.util_csv.UtilCsv"><code class="xref py py-class docutils literal notranslate"><span class="pre">[UtilCsv]</span></code></a></p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DeltaTraceDB Docs</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../queries.html">Query Operations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cloneable_file.html">CloneableFile or Raw Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="add.html">Add items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update.html">Update or UpdateOne</a></li>
+<li class="toctree-l2"><a class="reference internal" href="delete.html">Delete or DeleteOne</a></li>
+<li class="toctree-l2"><a class="reference internal" href="search.html">Search or SearchOne</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_all.html">GetAll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="conform_to_template.html">ConformToTemplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rename_field.html">RenameField</a></li>
+<li class="toctree-l2"><a class="reference internal" href="count.html">Count</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate.html">Aggregate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="aggregate_join_group.html">Aggregate: Joins &amp; Groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clear.html">Clear &amp; ClearAdd</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">AddCsv &amp; ClearAddCsv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="remove_collection.html">Remove Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="merge.html">Merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transaction.html">Transaction Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="send_to_server.html">Appendix: Send to server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nodes.html">Appendix: Nodes for Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sort.html">Appendix: Sort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meta_data.html">Appendix: Query Metadata</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../db_listeners.html">DB Listeners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server.html">Server-Side Coding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best_practice.html">Best Practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ai_prompt.html">Using with AI Assistants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/delta_trace_db.html">Python version API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notice.html">Notice</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../queries.html">Query Operations</a><ul>
+      <li>Previous: <a href="clear.html" title="previous chapter">Clear &amp; ClearAdd</a></li>
+      <li>Next: <a href="remove_collection.html" title="next chapter">Remove Collection</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025-2026, Masahide Mori.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/queries/add_csv.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

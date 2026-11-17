@@ -104,16 +104,24 @@ Setting a name is useful if you want to be more precise about registration and r
 
 <dl class="py method">
 <dt class="sig sig-object py" id="delta_trace_db.db.delta_trace_db_collection.Collection.aggregate">
-<span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.query.html#delta_trace_db.query.query.Query" title="delta_trace_db.query.query.Query"><span class="pre">Query</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="delta_trace_db.query.query_result.html#delta_trace_db.query.query_result.QueryResult" title="delta_trace_db.query.query_result.QueryResult"><span class="pre">QueryResult</span></a></span></span><a class="headerlink" href="#delta_trace_db.db.delta_trace_db_collection.Collection.aggregate" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="delta_trace_db.query.query.html#delta_trace_db.query.query.Query" title="delta_trace_db.query.query.Query"><span class="pre">Query</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">join_sources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="delta_trace_db.query.query_result.html#delta_trace_db.query.query_result.QueryResult" title="delta_trace_db.query.query_result.QueryResult"><span class="pre">QueryResult</span></a></span></span><a class="headerlink" href="#delta_trace_db.db.delta_trace_db_collection.Collection.aggregate" title="Link to this definition">¶</a></dt>
 <dd><p>(en) Calculates the aggregations of the query for the matched items.
-If the definitions are invalid or a value cannot be converted,
+The joins of the query are applied before the query node is evaluated,
+and the items are grouped by the group keys of the query.
+If the definitions are invalid, a join fails or a value cannot be converted,
 a failed result with the reason in error_message is returned.</p>
 <p>(ja) 条件に一致したアイテムについて、クエリの集計を計算します。
-定義が不正な場合や値を変換できない場合は、error_message に理由を入れた
-失敗の結果を返します。</p>
+クエリの結合は検索ノードの評価の前に適用され、
+アイテムはクエリのグループキーでグループ化されます。
+定義が不正な場合、結合に失敗した場合、値を変換できない場合は、
+error_message に理由を入れた失敗の結果を返します。</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>q</strong> (<a class="reference internal" href="delta_trace_db.query.query.html#delta_trace_db.query.query.Query" title="delta_trace_db.query.query.Query"><em>Query</em></a>) – The query.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q</strong> (<a class="reference internal" href="delta_trace_db.query.query.html#delta_trace_db.query.query.Query" title="delta_trace_db.query.query.Query"><em>Query</em></a>) – The query.</p></li>
+<li><p><strong>join_sources</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em><em>]</em>) – The items of each joined collection, keyed by the collection name.
+A collection that does not exist must not be included.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

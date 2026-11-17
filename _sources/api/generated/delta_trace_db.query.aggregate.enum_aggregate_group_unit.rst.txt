@@ -1,0 +1,12 @@
+delta\_trace\_db.query.aggregate.enum\_aggregate\_group\_unit
+=============================================================
+
+.. automodule:: delta_trace_db.query.aggregate.enum_aggregate_group_unit
+
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      EnumAggregateGroupUnit
+   

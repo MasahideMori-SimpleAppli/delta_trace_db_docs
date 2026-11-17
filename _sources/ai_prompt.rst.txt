@@ -46,10 +46,10 @@ What the Skills Cover
 - **Core rules**: building and executing queries, choosing between QueryBuilder and RawQueryBuilder,
   checking results, and common mistakes
 - **All query operations**: add, update, delete, search, getAll, count, aggregate, clear, clearAdd,
-  conformToTemplate, renameField, removeCollection, merge, and transactions
+  addCsv, clearAddCsv, conformToTemplate, renameField, removeCollection, merge, and transactions
 - **Search nodes and sorting**: comparison nodes, logical nodes, value types including exact
   ``decimal_`` / ``rational_``, SingleSort and MultiSort
-- **Aggregation**: count, sum, min, max and mean
+- **Aggregation**: count, sum, min, max and mean, joins across collections, and grouping by key or period
 - **Metadata and server-side use**: Cause, Actor, Permission, TemporalTrace, and server-side execution
 - **Persistence and listeners**: saving and restoring the database and queries, and UI listeners
 - **Python naming**: trailing underscores (**type_**, **from_**, **reversed_**), Actor arguments,
@@ -57,5 +57,5 @@ What the Skills Cover
 
 .. note::
 
-   Every code example in the skills has been executed and checked against DeltaTraceDB 0.2.0.
+   Every code example in the skills has been executed and checked against DeltaTraceDB 0.4.0.
    The skills are updated together with the library when the API changes.

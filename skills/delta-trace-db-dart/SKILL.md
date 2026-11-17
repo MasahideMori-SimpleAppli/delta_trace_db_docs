@@ -16,9 +16,9 @@ read the file that matches the task before writing non-trivial code.
 
 | Task | Read |
 |---|---|
-| Any query type (add, update, delete, search, getAll, count, clear, clearAdd, conformToTemplate, renameField, removeCollection, merge), paging, transactions | `references/queries.md` |
+| Any query type (add, update, delete, search, getAll, count, clear, clearAdd, addCsv, clearAddCsv, conformToTemplate, renameField, removeCollection, merge), paging, transactions | `references/queries.md` |
 | Search conditions, `EnumValueType` (incl. exact `decimal_` / `rational_`), sorting | `references/conditions_and_sort.md` |
-| count / sum / min / max / mean (`aggregate` query) | `references/aggregate.md` |
+| count / sum / min / max / mean, joins across collections, grouping by key or period (`aggregate` query) | `references/aggregate.md` |
 | Cause / Actor / Permission, server-side execution, saving and loading, listeners | `references/metadata_and_server.md` |
 
 ## Core rules
@@ -122,3 +122,7 @@ and `errorMessage`.
 - Expecting `count` to accept a condition — `count` returns the collection size;
   count matching items with `aggregate` + `EnumAggregateType.count_`.
 - Putting `removeCollection` or `merge` in a transaction — they are not allowed there.
+- `RawQueryBuilder.addCsv(...)` — the CSV constructors are on `QueryBuilder` only.
+- Aggregating CSV-imported numbers with the default `floatStrict_` for money — every CSV value is a string;
+  use `decimal_` for exact totals.
+- Reading `result.first` of an aggregate with `groupBy` as the only result — there is one map per group.

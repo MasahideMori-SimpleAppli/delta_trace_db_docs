@@ -1,0 +1,290 @@
+======================================
+Aggregate: Joins & Groups
+======================================
+
+Aggregate across collections, and calculate the results per group (e.g. per product and month).
+
+Overview
+----------------------------
+
+The **aggregate** query has three options for aggregating data that is split into several collections,
+such as tables imported from SQL with :doc:`add_csv`:
+
+- **joins**: For each item, the matching item of another collection is attached under an alias,
+  so its fields can be used as ``alias.field`` (e.g. ``p.price``).
+- **groupBy / group_by**: The items are grouped by the values of the key fields, and the aggregations
+  are calculated for each group. Date-time values can be grouped by day, week, month, quarter or year.
+- **fields** of :code:`Aggregation`: Aggregates the product of several fields
+  (e.g. quantity × unit price). See :doc:`aggregate`.
+
+The query is processed in this order: **join → queryNode → group → aggregate → sort**.
+Because :code:`queryNode` is evaluated after the joins, it can also use the fields of joined items.
+
+- The query does **not modify** any data, and does not create a collection for the joined items.
+- The results are **identical in Dart and Python**.
+- Available from version 0.4.0.
+
+Example data
+----------------------------
+
+In the examples below, an order has several lines (``order_items``),
+and the order date is stored in the order header (``orders``).
+
+.. code-block:: text
+
+    orders:      orderId, orderedAt
+    order_items: orderId, productId, quantity, unitPrice
+    products:    id, name, unitsPerSet
+
+AggregateJoin
+----------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Argument
+     - Description
+   * - ``collection``
+     - The name of the collection to join.
+   * - ``localKey`` / ``local_key``
+     - The field of the item whose value is used for the join (e.g. ``productId``).
+       Nested fields can be specified with dot notation.
+       The joins are applied in order, so the fields of an earlier join (e.g. ``p.categoryId``)
+       can also be used.
+   * - ``foreignKey`` / ``foreign_key``
+     - The field of the joined item that is compared with the ``localKey`` value (e.g. ``id``).
+   * - ``alias``
+     - The name under which the joined item is attached (e.g. ``p``).
+       It must not be empty, contain a dot, or be the same as a field of the item or another alias.
+
+**Exactly one item must match.** The query fails (a wrong result is never returned silently) if:
+
+- the joined collection does not exist,
+- the ``localKey`` value is null or missing,
+- no item has the same ``foreignKey`` value, or
+- more than one item has the same ``foreignKey`` value (a duplicate would count the line twice).
+
+This check applies to every item of the target collection, including items that
+:code:`queryNode` excludes later (e.g. lines outside the period).
+
+Values are compared by their JSON representation, so ``1`` and ``"1"`` do not match.
+Values imported with :doc:`add_csv` are all strings, so they match each other.
+
+AggregateGroupKey
+----------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Argument
+     - Description
+   * - ``field``
+     - The field whose value is used as the key. Fields of joined items can also be used
+       (e.g. ``o.orderedAt``). Items whose value is null form a group whose key is null.
+   * - ``unit``
+     - If set, the value is read as an ISO 8601 date-time string (the same format as ``datetime_``)
+       and grouped by the period that contains it:
+       ``EnumAggregateGroupUnit.day``, ``week``, ``month``, ``quarter`` or ``year``.
+       If a value cannot be read, the query fails.
+   * - ``utcOffsetMinutes`` / ``utc_offset_minutes``
+     - Used only with ``unit``. The time zone in which the periods are divided, as an offset from UTC
+       in minutes (e.g. ``540`` for Japan). Values without a time zone are read as times in this
+       time zone. The default is ``0`` (UTC).
+   * - ``weekStart`` / ``week_start``
+     - Used only with ``week``. The first day of the week as an ISO 8601 weekday number
+       (``1`` = Monday, ..., ``7`` = Sunday). The default is ``1``.
+   * - ``startMonth`` / ``start_month``
+     - Used only with ``quarter`` and ``year``. The month in which the year starts
+       (e.g. ``4`` for a fiscal year that starts in April). The default is ``1``.
+   * - ``alias``
+     - The key of the value in the result. If omitted, ``field`` is used.
+
+The labels of the periods sort in time order:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 40 40
+
+   * - unit
+     - Label
+     - Example
+   * - ``day``
+     - The date
+     - ``2026-10-05``
+   * - ``week``
+     - The first day of the week
+     - ``2026-10-05`` (Monday start)
+   * - ``month``
+     - The month
+     - ``2026-10``
+   * - ``quarter``
+     - The first and last months
+     - ``2026-04/2026-06``
+   * - ``year``
+     - The first and last months
+     - ``2026-01/2026-12``, or ``2026-04/2027-03`` with ``startMonth: 4``
+
+Usage
+----------------------------
+
+Monthly sales and the number of units sold per product (in Japan time):
+
+.. tab-set::
+
+   .. tab-item:: Dart
+
+      .. code-block:: dart
+
+        import 'package:delta_trace_db/delta_trace_db.dart';
+
+        void main() {
+          final db = DeltaTraceDatabase();
+          for (final (name, csv) in [
+            ('orders',
+                'orderId,orderedAt\n'
+                'o1,2026-10-01T10:00:00+09:00\n'
+                'o2,2026-10-15T10:00:00+09:00\n'
+                'o3,2026-11-02T09:00:00+09:00\n'),
+            ('order_items',
+                'orderId,productId,quantity,unitPrice\n'
+                'o1,P1,2,100.50\n'
+                'o2,P1,1,100.50\n'
+                'o2,P2,3,0\n'
+                'o3,P2,1,0\n'),
+            ('products', 'id,name,unitsPerSet\nP1,apple,6\nP2,orange,10\n'),
+          ]) {
+            db.executeQuery(QueryBuilder.addCsv(target: name, csvText: csv).build());
+          }
+
+          final result = db.executeQuery(
+            QueryBuilder.aggregate(
+              target: 'order_items',
+              joins: [
+                AggregateJoin(collection: 'orders', localKey: 'orderId', foreignKey: 'orderId', alias: 'o'),
+                AggregateJoin(collection: 'products', localKey: 'productId', foreignKey: 'id', alias: 'p'),
+              ],
+              groupBy: [
+                AggregateGroupKey('o.orderedAt',
+                    unit: EnumAggregateGroupUnit.month, utcOffsetMinutes: 540, alias: 'month'),
+                AggregateGroupKey('productId'),
+              ],
+              aggregations: [
+                Aggregation(EnumAggregateType.sum_,
+                    fields: ['quantity', 'unitPrice'], vType: EnumValueType.decimal_, alias: 'sales'),
+                Aggregation(EnumAggregateType.sum_,
+                    fields: ['quantity', 'p.unitsPerSet'], vType: EnumValueType.decimal_, alias: 'units'),
+              ],
+              sortObj: MultiSort([
+                SingleSort(field: 'month'),
+                SingleSort(field: 'productId'),
+              ]),
+            ).build(),
+          );
+          for (final row in result.result) {
+            print(row);
+          }
+        }
+
+   .. tab-item:: Python
+
+      .. code-block:: python
+
+        from delta_trace_db import (AggregateGroupKey, AggregateJoin, Aggregation, DeltaTraceDatabase,
+                                    EnumAggregateGroupUnit, EnumAggregateType, EnumValueType,
+                                    MultiSort, QueryBuilder, SingleSort)
+
+        db = DeltaTraceDatabase()
+        for name, csv in [
+            ("orders",
+             "orderId,orderedAt\n"
+             "o1,2026-10-01T10:00:00+09:00\n"
+             "o2,2026-10-15T10:00:00+09:00\n"
+             "o3,2026-11-02T09:00:00+09:00\n"),
+            ("order_items",
+             "orderId,productId,quantity,unitPrice\n"
+             "o1,P1,2,100.50\n"
+             "o2,P1,1,100.50\n"
+             "o2,P2,3,0\n"
+             "o3,P2,1,0\n"),
+            ("products", "id,name,unitsPerSet\nP1,apple,6\nP2,orange,10\n"),
+        ]:
+            db.execute_query(QueryBuilder.add_csv(target=name, csv_text=csv).build())
+
+        result = db.execute_query(QueryBuilder.aggregate(
+            target="order_items",
+            joins=[
+                AggregateJoin(collection="orders", local_key="orderId", foreign_key="orderId", alias="o"),
+                AggregateJoin(collection="products", local_key="productId", foreign_key="id", alias="p"),
+            ],
+            group_by=[
+                AggregateGroupKey("o.orderedAt", unit=EnumAggregateGroupUnit.month,
+                                  utc_offset_minutes=540, alias="month"),
+                AggregateGroupKey("productId"),
+            ],
+            aggregations=[
+                Aggregation(EnumAggregateType.sum_, fields=["quantity", "unitPrice"],
+                            v_type=EnumValueType.decimal_, alias="sales"),
+                Aggregation(EnumAggregateType.sum_, fields=["quantity", "p.unitsPerSet"],
+                            v_type=EnumValueType.decimal_, alias="units"),
+            ],
+            sort_obj=MultiSort([SingleSort(field="month"), SingleSort(field="productId")]),
+        ).build())
+        for row in result.result:
+            print(row)
+
+To limit the period, add a :code:`queryNode` on the joined field, for example
+``FieldGreaterThanOrEqual('o.orderedAt', '2026-10-01T00:00:00+09:00', vType: EnumValueType.datetime_)``.
+
+Result
+----------------------------
+
+Example output (Dart):
+
+.. code-block:: text
+
+    {month: 2026-10, productId: P1, sales: 301.50, units: 18}
+    {month: 2026-10, productId: P2, sales: 0, units: 30}
+    {month: 2026-11, productId: P2, sales: 0, units: 10}
+
+- :code:`result` contains **one map (dict) per group**: the group key values followed by the
+  aggregation results.
+- The groups are in the order in which they first appear, or sorted by :code:`sortObj` / :code:`sort_obj`.
+  Specify the output keys (aliases) as the sort fields. Output keys that contain a dot
+  (e.g. ``o.orderedAt`` without an alias) cannot be used for sorting, so set an alias.
+- Without :code:`groupBy`, :code:`result` contains a single map, as before.
+- :code:`hitCount` / :code:`hit_count` is the number of items that matched the condition.
+- Products that were not sold in a period do not appear in the result of that period,
+  because they have no lines.
+
+Security
+----------------------------
+
+.. warning::
+
+   With joins, the executing user needs the **search** or **searchOne** permission on each joined
+   collection in addition to the **aggregate** permission on the target collection.
+   The group keys return field values directly, so treat this query as read access to all of them.
+
+Notes
+----------------------------
+
+- Values imported with :doc:`add_csv` are strings. Use ``decimal_`` (or ``rational_``) to calculate
+  them exactly. ``decimal_`` returns the result as a string (e.g. ``"18"``).
+- To get the average per line, use ``mean_`` (``decimal_`` needs ``scale`` and ``rounding``).
+  The average of monthly totals (e.g. the average monthly units over a year) is not calculated in one
+  query. Calculate the total for the whole period and divide it by the number of months, so that
+  months without sales are counted as 0.
+- The output keys of the group keys and the aggregations must not be the same.
+
+API
+----------------------------
+- Dart: `[QueryBuilder.aggregate] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/QueryBuilder/QueryBuilder.aggregate.html>`__
+- Dart: `[AggregateJoin] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/AggregateJoin-class.html>`__
+- Dart: `[AggregateGroupKey] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/AggregateGroupKey-class.html>`__
+- Dart: `[EnumAggregateGroupUnit] <https://pub.dev/documentation/delta_trace_db/latest/delta_trace_db/EnumAggregateGroupUnit.html>`__
+- Python: :py:meth:`[QueryBuilder.aggregate] <delta_trace_db.query.query_builder.QueryBuilder.aggregate>`
+- Python: :py:class:`[AggregateJoin] <delta_trace_db.query.aggregate.aggregate_join.AggregateJoin>`
+- Python: :py:class:`[AggregateGroupKey] <delta_trace_db.query.aggregate.aggregate_group_key.AggregateGroupKey>`
+- Python: :py:class:`[EnumAggregateGroupUnit] <delta_trace_db.query.aggregate.enum_aggregate_group_unit.EnumAggregateGroupUnit>`

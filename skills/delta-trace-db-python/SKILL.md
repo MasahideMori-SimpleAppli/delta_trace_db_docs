@@ -16,9 +16,9 @@ read the file that matches the task before writing non-trivial code.
 
 | Task | Read |
 |---|---|
-| Any query type (add, update, delete, search, get_all, count, clear, clear_add, conform_to_template, rename_field, remove_collection, merge), paging, transactions | `references/queries.md` |
+| Any query type (add, update, delete, search, get_all, count, clear, clear_add, add_csv, clear_add_csv, conform_to_template, rename_field, remove_collection, merge), paging, transactions | `references/queries.md` |
 | Search conditions, `EnumValueType` (incl. exact `decimal_` / `rational_`), sorting | `references/conditions_and_sort.md` |
-| count / sum / min / max / mean (`aggregate` query) | `references/aggregate.md` |
+| count / sum / min / max / mean, joins across collections, grouping by key or period (`aggregate` query) | `references/aggregate.md` |
 | Cause / Actor / Permission, server-side execution (FastAPI), saving and loading, listeners | `references/metadata_and_server.md` |
 | Argument names that are not plain snake_case, enum member names, JSON keys | `references/naming.md` |
 
@@ -134,3 +134,6 @@ and `error_message`.
 - Expecting `count` to accept a condition — `count` returns the collection size;
   count matching items with `aggregate` + `EnumAggregateType.count_`.
 - Putting `remove_collection` or `merge` in a transaction — they are not allowed there.
+- Aggregating CSV-imported numbers with the default `floatStrict_` for money — every CSV value is a string;
+  use `decimal_` for exact totals.
+- Reading `result[0]` of an aggregate with `group_by` as the only result — there is one dict per group.

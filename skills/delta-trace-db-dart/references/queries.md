@@ -7,7 +7,7 @@ The examples use `RawQueryBuilder`; `QueryBuilder` is identical except that it t
 
 Contents: [Common arguments](#common-arguments) · [add](#add) · [search / searchOne / getAll](#search--searchone--getall) ·
 [Paging](#paging) · [update / updateOne](#update--updateone) · [delete / deleteOne](#delete--deleteone) ·
-[count](#count) · [clear / clearAdd](#clear--clearadd) · [conformToTemplate](#conformtotemplate) ·
+[count](#count) · [clear / clearAdd](#clear--clearadd) · [addCsv / clearAddCsv](#addcsv--clearaddcsv) · [conformToTemplate](#conformtotemplate) ·
 [renameField](#renamefield) · [removeCollection](#removecollection) · [Transactions](#transactions) · [merge](#merge)
 
 ## Common arguments
@@ -162,6 +162,34 @@ db.executeQuery(
   ).build(),
 );
 db.executeQuery(RawQueryBuilder.clear(target: "tags").build());
+```
+
+## addCsv / clearAddCsv
+
+`addCsv` adds the rows of CSV text (like `add`), and `clearAddCsv` empties the collection first (like `clearAdd`).
+They accept `serialKey`, `returnData` and `mustAffectAtLeastOne` (and `resetSerial` for `clearAddCsv`).
+The first record is the header, and each following row becomes an item of `{column name: cell text}`.
+**All values are strings** — use `decimal_` (or another `vType`) to compare, sort or aggregate them as numbers.
+Quoted values (`"a, b"`, `""` for a quote, line breaks inside quotes), LF / CRLF / CR line ends, a leading BOM
+and trailing empty lines are supported. An invalid CSV fails the query without changing anything
+(no collection is created), and `errorMessage` shows the kind and line, e.g. `CsvFormatError(columnCount, line 3)`.
+`UtilCsv.toItems(text)` checks and converts a CSV with the same rules and raises `CsvFormatError`
+(`kind`: `EnumCsvErrorKind.header` / `columnCount` / `format`, and `line`). Requires DeltaTraceDB 0.4.0 or later.
+The constructors are on `QueryBuilder` only.
+
+```dart
+final imported = db.executeQuery(
+  QueryBuilder.addCsv(
+    target: "items",
+    csvText: 'id,name,price\n,"Pen, blue",1.20\n,Notebook,3.50\n',
+    serialKey: "id",
+    returnData: true,
+  ).build(),
+);
+print(imported.result.first); // {id: 0, name: Pen, blue, price: 1.20}
+
+final bad = db.executeQuery(QueryBuilder.addCsv(target: "items", csvText: "id,name\n1").build());
+print(bad.errorMessage); // CsvFormatError(columnCount, line 2)
 ```
 
 ## conformToTemplate
