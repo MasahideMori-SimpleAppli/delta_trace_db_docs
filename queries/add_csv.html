@@ -152,8 +152,8 @@ result: [
 <ul class="simple">
 <li><p><code class="code docutils literal notranslate"><span class="pre">serialKey</span></code>, <code class="code docutils literal notranslate"><span class="pre">resetSerial</span></code>, <code class="code docutils literal notranslate"><span class="pre">returnData</span></code>, <code class="code docutils literal notranslate"><span class="pre">mustAffectAtLeastOne</span></code> and
 <code class="code docutils literal notranslate"><span class="pre">cause</span></code> work in the same way as in <code class="code docutils literal notranslate"><span class="pre">add</span></code> and <code class="code docutils literal notranslate"><span class="pre">clearAdd</span></code>.</p></li>
-<li><p>As with <code class="code docutils literal notranslate"><span class="pre">clearAdd</span></code>, the number of affected items of <code class="code docutils literal notranslate"><span class="pre">clearAddCsv</span></code> is the number of
-cleared items. Set <code class="code docutils literal notranslate"><span class="pre">mustAffectAtLeastOne</span></code> to false if the collection may be empty.</p></li>
+<li><p>As with <code class="code docutils literal notranslate"><span class="pre">clearAdd</span></code>, the number of affected items (<code class="code docutils literal notranslate"><span class="pre">updateCount</span></code>) of <code class="code docutils literal notranslate"><span class="pre">clearAddCsv</span></code>
+is the number of cleared items plus the number of added items.</p></li>
 <li><p>Both queries can be used in a transaction.</p></li>
 <li><p>To allow these queries on a server, add <code class="code docutils literal notranslate"><span class="pre">addCsv</span></code> / <code class="code docutils literal notranslate"><span class="pre">clearAddCsv</span></code> to the
 <code class="code docutils literal notranslate"><span class="pre">Permission</span></code> of the collection.</p></li>

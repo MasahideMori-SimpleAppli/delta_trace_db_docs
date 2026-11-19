@@ -85,6 +85,8 @@ query option [return_data] is set to true.</p>
 <li><p><strong>db_length</strong> (<em>int</em>) – DB side item length.
 This is The total number of items in the collection.</p></li>
 <li><p><strong>update_count</strong> (<em>int</em>) – The total number of items add, updated or deleted.
+For clearAdd and clearAddCsv, this is the number of cleared items
+plus the number of added items.
 When issuing a removeCollection query,
 if the target collection already exists, the result will be 1.
 if a non-existent collection is specified the result will be 0.</p></li>

@@ -65,6 +65,9 @@ of DeltaTraceDB. `PortableDecimal`, `PortableRational` and `EnumRoundingMode` ar
 
 - Only **strings** (plain notation such as `"-12.340"`; no exponent, whitespace or `_`) and
   `PortableDecimal` / `PortableRational` objects are converted.
+  For a value in exponent notation, such as `"1.2E-05"` in a CSV file exported from spreadsheet software,
+  convert it with `PortableDecimal.parseLenient` and store its `toString()`
+  (needs simple_portable_numeric 0.1.0 or later).
 - `int` and `double` values are treated as conversion failures, both in the database and as the node
   value, because their exactness cannot be guaranteed (on the web, Dart ints are doubles).
   So store such values as strings, and write `"11"`, not `11`, in conditions.

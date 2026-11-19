@@ -209,6 +209,9 @@ Unlike ``floatStrict_``, no digits are lost, so this is suitable for values such
 - ``decimal_`` accepts plain decimal strings such as ``"-12.340"``.
   ``rational_`` also accepts fractions such as ``"1/3"``.
   Exponent notation (``"1e3"``), whitespace and non-ASCII digits are rejected.
+  For a value in exponent notation, such as ``"1.2E-05"`` in a CSV file exported from spreadsheet software,
+  convert it with ``PortableDecimal.parseLenient`` (Python: ``parse_lenient``) and store its string form
+  (needs simple_portable_numeric 0.1.0 or later).
 - **Only strings and** ``PortableDecimal`` / ``PortableRational`` **objects are converted.**
   Numbers such as int and double (float) are treated as conversion failures, because their exactness
   cannot be guaranteed (e.g. int is a double on the web in Dart, and the string form of double differs

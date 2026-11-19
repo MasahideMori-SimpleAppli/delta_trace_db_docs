@@ -48,7 +48,8 @@ Aggregation
    * - ``scale``, ``rounding``
      - Used only for ``mean_`` with ``decimal_``, and required for it.
        The number of digits after the decimal point and the ``EnumRoundingMode``
-       (``halfEven``, ``halfUp``, ``down``, ``floor``, ``ceiling``).
+       (``halfEven``, ``halfUp``, ``down``, ``floor``, ``ceiling``, ``up``).
+       ``up`` rounds away from zero and needs simple_portable_numeric 0.1.0 or later.
 
 .. list-table::
    :header-rows: 1

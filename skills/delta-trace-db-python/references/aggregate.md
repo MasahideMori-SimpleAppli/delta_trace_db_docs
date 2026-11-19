@@ -26,7 +26,7 @@ QueryBuilder.aggregate(target, aggregations, query_node=None, cause=None, joins=
 | `fields` | Instead of `field`: aggregate the **product** of these fields, e.g. `["quantity", "unitPrice"]` for sales. Each value is converted with `v_type`; an item with a `None` value in any of them is skipped. 0.4.0 or later. |
 | `v_type` | Calculation type: `floatStrict_` (default), `decimal_` or `rational_`. Other types make the query fail. Ignored by `count_`. |
 | `alias` | Key in the result dict. Default: type name + field, e.g. `"sum_price"` (`fields` are joined with `*`, e.g. `"sum_quantity*unitPrice"`); `"count_"` for `count_` without a field. Duplicate keys make the query fail. |
-| `scale`, `rounding` | Only for `mean_` with `decimal_`, and required there: digits after the decimal point and `EnumRoundingMode` (`halfEven`, `halfUp`, `down`, `floor`, `ceiling`). |
+| `scale`, `rounding` | Only for `mean_` with `decimal_`, and required there: digits after the decimal point and `EnumRoundingMode` (`halfEven`, `halfUp`, `down`, `floor`, `ceiling`, `up`; `up` rounds away from zero and needs simple_portable_numeric 0.1.0 or later). |
 
 Rules:
 

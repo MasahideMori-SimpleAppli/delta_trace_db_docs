@@ -130,7 +130,7 @@ Example output (clearAdd):
     result: [
         {id: 0, name: Taro},
         {id: 1, name: Hanako}
-    ], dbLength: 2, updateCount: 0, hitCount: 0, errorMessage: null}
+    ], dbLength: 2, updateCount: 2, hitCount: 0, errorMessage: null}
 
 Notes
 ----------------------------

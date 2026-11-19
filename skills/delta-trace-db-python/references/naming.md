@@ -29,7 +29,7 @@ Enum members keep their original names, including camelCase and trailing undersc
 - `EnumAggregateType`: `count_`, `sum_`, `min_`, `max_`, `mean_`
 - `EnumAggregateGroupUnit`: `day`, `week`, `month`, `quarter`, `year`
 - `EnumCsvErrorKind`: `header`, `columnCount`, `format`
-- `EnumRoundingMode`: `halfEven`, `halfUp`, `down`, `floor`, `ceiling`
+- `EnumRoundingMode`: `halfEven`, `halfUp`, `down`, `floor`, `ceiling`, `up`
 - `EnumActorType`: `human`, `ai`, `system`
 
 ## Exception 4: listener callbacks are named `cb`

@@ -122,8 +122,8 @@ Notes
 
 - :code:`serialKey`, :code:`resetSerial`, :code:`returnData`, :code:`mustAffectAtLeastOne` and
   :code:`cause` work in the same way as in :code:`add` and :code:`clearAdd`.
-- As with :code:`clearAdd`, the number of affected items of :code:`clearAddCsv` is the number of
-  cleared items. Set :code:`mustAffectAtLeastOne` to false if the collection may be empty.
+- As with :code:`clearAdd`, the number of affected items (:code:`updateCount`) of :code:`clearAddCsv`
+  is the number of cleared items plus the number of added items.
 - Both queries can be used in a transaction.
 - To allow these queries on a server, add :code:`addCsv` / :code:`clearAddCsv` to the
   :code:`Permission` of the collection.
